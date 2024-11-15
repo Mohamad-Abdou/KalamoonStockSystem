@@ -4,7 +4,7 @@ namespace App\Policies;
 
 use App\Models\User;
 
-class ItemsGroupPolicy
+class ItemGroupPolicy
 {
     // إمكانية عرض صفحة إدارة المجموعات
     public function viewAny(User $user): bool
@@ -29,7 +29,7 @@ class ItemsGroupPolicy
     /**
      * Determine whether the user can view the model.
      */
-    /*public function view(User $user, Items_group $itemsGroup): bool
+    /*public function view(User $user, ItemGroup $itemsGroup): bool
     {
         //
     }
@@ -38,12 +38,12 @@ class ItemsGroupPolicy
 
 
 
-    public function restore(User $user, Items_group $itemsGroup): bool
+    public function restore(User $user, ItemGroup $itemsGroup): bool
     {
         //
     }
 
-    public function forceDelete(User $user, Items_group $itemsGroup): bool
+    public function forceDelete(User $user, ItemGroup $itemsGroup): bool
     {
         //
     }*/

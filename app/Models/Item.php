@@ -13,18 +13,18 @@ class Item extends Model
     use HasFactory;
 
     // لتفعيل الترتيب
-    public $sortable = ['name', 'item_groups_id'];
+    public $sortable = ['name', 'item_group_id'];
     use Sortable;
     protected $fillable = [
         'name',
-        'descripton',
-        'items_groups_id',
+        'description',
+        'item_group_id',
     ];
 
     // ربط مودل المجموعات
-    public function Items_group()
+    public function Item_group()
     {
-        return $this->belongsTo(items_group::class, 'items_groups_id');
+        return $this->belongsTo(ItemGroup::class, 'item_group_id');
     }
     
 }

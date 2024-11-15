@@ -3,8 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Item;
-use App\Models\Items_group;
-use Illuminate\Auth\Middleware\Authorize;
+use App\Models\ItemGroup;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -43,7 +42,7 @@ class ItemTable extends Component
     {
         $item = Item::find($itemId);
         if ($item) {
-            $item->items_groups_id = $groupId;
+            $item->item_group_id = $groupId;
             $item->save();
             session()->flash('message', 'تم تحديث المجموعة بنجاح.');
         }
@@ -54,21 +53,21 @@ class ItemTable extends Component
         $this->authorize('viewAny', Item::class);
 
         // جلب العناصر مع التصفية والبحث
-        $query = Item::with('items_group')
+        $query = Item::with('item_group')
             ->when($this->selectedGroup, function ($query) {
-                return $query->where('items_groups_id', $this->selectedGroup); // تعديل اسم العمود
+                return $query->where('item_group_id', $this->selectedGroup); // تعديل اسم العمود
             })
             ->when($this->search, function ($query) {
                 return $query->where(function ($q) {
                     $q->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('descripton', 'like', '%' . $this->search . '%');
+                        ->orWhere('description', 'like', '%' . $this->search . '%');
                 });
             });
 
         $items = $query->paginate(10);
 
         // جلب جميع المجموعات لعرضها في القائمة المنسدلة
-        $groups = Items_group::all();
+        $groups = ItemGroup::all();
 
         return view('livewire.item-table', [
             'items' => $items,
