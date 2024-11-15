@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\ItemController;
-use App\Http\Controllers\ItemsGroupController;
+use App\Http\Controllers\ItemGroupController;
 use App\Http\Controllers\ProfileController;
-use App\Models\Items_group;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,5 +20,5 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::resource('/items', ItemController::class)->middleware(['auth', 'verified']);
-Route::resource('/items_groups', ItemsGroupController::class)->only(['store', 'index'])->middleware(['auth', 'verified']);
+Route::resource('/item_groups', ItemGroupController::class)->only(['store', 'index'])->middleware(['auth', 'verified']);
 require __DIR__.'/auth.php';

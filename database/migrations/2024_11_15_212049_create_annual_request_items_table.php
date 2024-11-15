@@ -11,12 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items', function (Blueprint $table) {
+        Schema::create('annual_request_item', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 50);
-            $table->string("description", 300);
-            $table->foreignId('item_group_id')->constrained();
-            $table->boolean('active')->default(1);
+            $table->foreignId('annual_request_id')->constrained()->onDelete('cascade');
+            $table->foreignId('item_id');
+            $table->integer('quantity');
+            $table->boolean('frozen')->default(0);
+            $table->string('freeze_reason')->nullable();
             $table->timestamps();
         });
     }
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('items');
+        Schema::dropIfExists('annual_request_items');
     }
 };

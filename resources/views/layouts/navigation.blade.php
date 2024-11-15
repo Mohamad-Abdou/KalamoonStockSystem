@@ -23,9 +23,9 @@
                         </x-nav-link>
                     </div>
                 @endcan
-                @can('viewAny', App\Models\Items_group::class)
+                @can('viewAny', App\Models\ItemGroup::class)
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                        <x-nav-link :href="route('items_groups.index')" :active="request()->routeIs('items_groups.index')">
+                        <x-nav-link :href="route('item_groups.index')" :active="request()->routeIs('item_groups.index')">
                             {{ __('إدارة المجموعات') }}
                         </x-nav-link>
                     </div>

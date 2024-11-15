@@ -5,9 +5,9 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Item>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\RequestFlow>
  */
-class ItemFactory extends Factory
+class RequestFlowFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -16,11 +16,8 @@ class ItemFactory extends Factory
      */
     public function definition(): array
     {
-        
         return [
-            'name' => fake('ar_AS')->firstName(),
-            'description' => 'This is A description',
-            'item_group_id' => '1',
+            
         ];
     }
 }

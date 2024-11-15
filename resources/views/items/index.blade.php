@@ -24,20 +24,21 @@
                             <x-input-error :messages="$errors->get('name')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="descripton" :value="__('وصف المادة')" class="text-white mb-2" />
-                            <x-text-input id="descripton" class="block w-full" type="text" name="descripton"
-                                :value="old('descripton')" required />
-                            <x-input-error :messages="$errors->get('descripton')" class="mt-2" />
+                            <x-input-label for="description" :value="__('وصف المادة')" class="text-white mb-2" />
+                            <x-text-input id="description" class="block w-full" type="text" name="description"
+                                :value="old('description')" required />
+                            <x-input-error :messages="$errors->get('description')" class="mt-2" />
                         </div>
                         <div>
-                            <x-input-label for="items_groups_id" :value="__('المجموعة')" class="text-white mb-2" />
-                            <x-input-dropdown-list id="items_groups_id" class="block w-full" name="items_groups_id" placeholder="">
+                            <x-input-label for="item_group_id" :value="__('المجموعة')" class="text-white mb-2" />
+                            <x-input-dropdown-list id="item_group_id" class="block w-full" name="item_group_id"
+                                placeholder="">
                                 <option value="" disabled selected hidden>اختر المجموعة</option>
                                 @foreach ($groups as $group)
                                     <option value="{{ $group->id }}">{{ $group->name }}</option>
                                 @endforeach
                             </x-input-dropdown-list>
-                            <x-input-error :messages="$errors->get('items_groups_id')" class="mt-2" />
+                            <x-input-error :messages="$errors->get('item_group_id')" class="mt-2" />
                         </div>
                         <x-secondary-button type="submit" class="mt-2 bg-second-color text-black">
                             {{ __('إضافة') }}

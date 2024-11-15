@@ -3,11 +3,11 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 use App\Models\Item;          // Import your model(s)
-use App\Models\Items_group;
+use App\Models\ItemGroup;
+use App\Policies\ItemGroupPolicy;
 use App\Policies\ItemPolicy;  // Import corresponding policy/policies
-use App\Policies\ItemsGroupPolicy;
+
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,7 +18,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         Item::class => ItemPolicy::class,
-        Items_group::class => ItemsGroupPolicy::class, 
+        ItemGroup::class => ItemGroupPolicy::class, 
     ];
 
     /**

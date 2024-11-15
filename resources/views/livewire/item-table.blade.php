@@ -4,8 +4,8 @@
         <input wire:model.live="search" type="text" class="border px-4 py-2 rounded basis-1/2"
             placeholder="البحث بالاسم والوصف" />
 
-        <x-input-dropdown-list wire:change="filterByGroup($event.target.value)" id="items_groups_id"
-            class="block basis-1/4" name="items_groups_id" placeholder="">
+        <x-input-dropdown-list wire:change="filterByGroup($event.target.value)" id="item_group_id"
+            class="block basis-1/4" name="item_group_id" placeholder="">
             <option value="" disabled selected hidden>تصفية بالمجموعة</option>
             @foreach ($groups as $group)
                 <option value="{{ $group->id }}">{{ $group->name }}</option>
@@ -39,14 +39,14 @@
                         {{ $item->name }}
                     </x-table.data>
                     <x-table.data class="w-1/3">
-                        {{ $item->descripton }}
+                        {{ $item->description }}
                     </x-table.data>
                     
                     <x-table.data>
                         <x-input-dropdown-list class="border rounded w-full"
                             wire:change="updateItemGroup({{ $item->id }}, $event.target.value)">
                             @foreach ($groups as $group)
-                                <option value="{{ $group->id }}" @if ($group->id === $item->items_groups_id) selected @endif>
+                                <option value="{{ $group->id }}" @if ($group->id === $item->item_group_id) selected @endif>
                                     {{ $group->name }}
                                 </option>
                             @endforeach

@@ -4,8 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\User;
-use App\Models\Items_group;
-use Illuminate\Contracts\Session\Session;
+use App\Models\ItemGroup;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class UserGroupTable extends Component
@@ -28,9 +27,9 @@ class UserGroupTable extends Component
 
     public function toggleGroupAssociation($userId, $groupId)
     {
-        $this->authorize('update', Items_group::class);
+        $this->authorize('update', ItemGroup::class);
         $user = User::find($userId);
-        $isAssociated = $user->itemsGroups()->wherePivot('items_group_id', $groupId)->exists();
+        $isAssociated = $user->itemsGroups()->wherePivot('item_group_id', $groupId)->exists();
         // فحص حالة العلاقة
         if ($isAssociated) {
             // إزالة العلااقة في حال وجودها
@@ -51,15 +50,16 @@ class UserGroupTable extends Component
 
     public function confirmDeleteGroup($groupId)
     {
-        $this->authorize('delete', Items_group::class);
-        $group = Items_group::find($groupId);
+        $this->authorize('delete', ItemGroup::class);
+        $group = ItemGroup::find($groupId);
         if ($group->items()->count() > 0) {
             $this->dispatch('showMessage', 'عملية غير ناجحة', 'لا يمكن حذف هذه المجموعة لوجود مواد ضمنها، يرجى إزالة جميع المواد ثم إعادة المحاولة');
             return;
         }   
+        
         $group->delete();
 
-        $this->users = User::with('itemsGroups')
+        $this->users = User::with('itemGroups')
         ->where('type', '>', 1) // Exclude premium users
         ->get()
         ->map(function ($user) {
@@ -71,7 +71,7 @@ class UserGroupTable extends Component
     public function render()
     {
         return view('livewire.user-group-table', [
-            'groups' => Items_group::all()
+            'groups' => ItemGroup::all()
         ]);
     }
 }

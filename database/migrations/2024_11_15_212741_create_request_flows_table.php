@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items_groups', function (Blueprint $table) {
+        Schema::create('request_flows', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 50)->unique();;
+            $table->foreignId('user_id');
+            $table->integer('request_type');
+            $table->integer('order');
         });
-        
     }
-    
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('items_groups');
+        Schema::dropIfExists('request_flows');
     }
 };

@@ -15,15 +15,15 @@
                 <!-- قسم لإضافة مجموعة -->
                 <section class="bg-primary overflow-hidden shadow-xl sm:rounded-lg p-5">
                     <h3 class="text-center text-white font-semibold">إضافة مجموعة جديدة</h3>
-                    <form method="POST" action="{{ route('items_groups.store') }}">
+                    <form method="POST" action="{{ route('item_groups.store') }}">
                         @csrf
                         <div>
-                            <x-input-label for="goure_name" class="text-white" :value="__('اسم المجموعة')" />
+                            <x-input-label for="group_name" class="text-white" :value="__('اسم المجموعة')" />
                             <x-text-input id="group_name" class="block mt-3 w-full" type="text" name="name"
                                 :value="old('group_name')" required />
                             <x-input-error :messages="$errors->get('group_name')" class="mt-2" />
                         </div>
-                        
+
                         <x-secondary-button type="submit" class="mt-2 bg-second-color text-black">
                             {{ __('إضافة') }}
                         </x-secondary-button>
