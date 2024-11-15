@@ -19,8 +19,8 @@ class ItemFactory extends Factory
         
         return [
             'name' => fake('ar_AS')->firstName(),
-            'descripton' => 'This is A descripton',
-            'items_groups_id' => '1',
+            'description' => 'This is A description',
+            'item_group_id' => '1',
         ];
     }
 }

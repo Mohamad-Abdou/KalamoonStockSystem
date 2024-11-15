@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('items_group_user', function (Blueprint $table) {
+        Schema::create('item_groups', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('items_group_id')->constrained()->onDelete('cascade');
-            
+            $table->string("name", 50)->unique();;
         });
+        
     }
-
+    
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('items_group_user');
+        Schema::dropIfExists('item_groups');
     }
 };

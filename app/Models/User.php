@@ -5,7 +5,6 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -49,8 +48,8 @@ class User extends Authenticatable
         ];
     }
 
-    public function itemsGroups(): BelongsToMany
+    public function itemGroups(): BelongsToMany
     {
-        return $this->belongsToMany(Items_group::class, 'items_group_user');
+        return $this->belongsToMany(ItemGroup::class, 'item_group_user');
     }
 }

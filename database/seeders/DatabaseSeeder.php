@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\ItemGroup;
 use App\Models\User;
-use App\Models\Item;
-use App\Models\Items_group;
+use App\Models\ItemsGroup;
 use App\Models\RequestFlow;
 use Illuminate\Database\Seeder;
 
@@ -58,7 +58,7 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-        Items_group::factory()->createMany([
+        ItemGroup::factory()->createMany([
             ['name' => 'طبي'],
             ['name' => 'قرطاسية'],
             ['name' => 'منظفات'],

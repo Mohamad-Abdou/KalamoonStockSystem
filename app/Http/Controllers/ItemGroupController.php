@@ -2,35 +2,35 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Items_group;
+use App\Models\ItemGroup;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 
-class ItemsGroupController extends Controller
+class ItemGroupController extends Controller
 {
     use AuthorizesRequests;
     public function __construct()
     {
-        $this->authorizeResource(Items_group::class);
+        $this->authorizeResource(ItemGroup::class);
     }
     public function index()
     {
-        return view('items_groups.index');
+        return view('item_groups.index');
     }
 
     public function store(Request $request)
     {
         //التحقق من المدخلات 
         $request->validate([
-            'name' => ['required', 'string', 'max:255', 'unique:' . Items_group::class],
+            'name' => ['required', 'string', 'max:255', 'unique:' . ItemGroup::class],
         ]);
 
         // إنشاء المجموعة
-        $group = Items_group::create([
+        $group = ItemGroup::create([
             'name' => $request->name,
         ]);
-        
+
         return redirect()->back();
     }
 }
