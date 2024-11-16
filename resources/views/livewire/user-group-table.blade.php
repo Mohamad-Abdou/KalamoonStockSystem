@@ -28,7 +28,7 @@
                         <x-table.data class="border px-4 py-2 text-center">
                             <input type="checkbox" class="toggle-checkbox text-primary border-gray-300 rounded"
                                 wire:click="toggleGroupAssociation({{ $user->id }}, {{ $group->id }})"
-                                @if ($user->itemsGroups && $user->itemsGroups->contains($group->id)) checked @endif>
+                                @if ($user->itemGroups && $user->itemGroups->contains($group->id)) checked @endif>
                         </x-table.data>
                     @endforeach
                 </tr>
