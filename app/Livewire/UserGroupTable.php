@@ -16,7 +16,7 @@ class UserGroupTable extends Component
     public function mount()
     {
         // تحميل المستخدمين مع المجموعات
-        $this->users = User::with('itemsGroups')
+        $this->users = User::with('itemGroups')
             ->where('type', '>', 1) // إزالة المستخدمين المميزين
             ->get()
             ->map(function ($user) {
@@ -29,17 +29,17 @@ class UserGroupTable extends Component
     {
         $this->authorize('update', ItemGroup::class);
         $user = User::find($userId);
-        $isAssociated = $user->itemsGroups()->wherePivot('item_group_id', $groupId)->exists();
+        $isAssociated = $user->itemGroups()->wherePivot('item_group_id', $groupId)->exists();
         // فحص حالة العلاقة
         if ($isAssociated) {
             // إزالة العلااقة في حال وجودها
-            $user->itemsGroups()->detach($groupId);
+            $user->itemGroups()->detach($groupId);
         } else {
             // ربط المستخدم مع المجموعة
-            $user->itemsGroups()->attach($groupId);
+            $user->itemGroups()->attach($groupId);
         }
 
-        $this->users = User::with('itemsGroups')
+        $this->users = User::with('itemGroups')
             ->where('type', '>', 1) // إزالة المستخدمين المميزين
             ->get()
             ->map(function ($user) {
