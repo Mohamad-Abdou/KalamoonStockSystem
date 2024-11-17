@@ -20,5 +20,4 @@ class RequestFlow extends Model
     {
         return self::$requestTypes[$this->request_type] ?? 'Unknown Type';
     }
-
 }

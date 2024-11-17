@@ -52,4 +52,23 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(ItemGroup::class, 'item_group_user');
     }
+
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->type == 0; 
+    }
+
+    public static $usersTypes = [
+        0 => 'مدير النظام',
+        1 => 'أمين المستودع',
+        2 => 'أمين الجامعة',
+        3 => 'المدير المالي',
+        4 => 'مستخدم',
+    ];
+
+    // $requestFlow->request_type_text
+    public function getUserTypeTextAttribute()
+    {
+        return self::$usersTypes[$this->type] ?? 'Unknown Type';
+    }
 }
