@@ -31,6 +31,7 @@ class ItemGroupController extends Controller
             'name' => $request->name,
         ]);
 
+        
         return redirect()->back();
     }
 }
