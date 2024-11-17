@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminActionController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemGroupController;
 use App\Http\Controllers\ProfileController;
@@ -18,6 +19,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::controller(AdminActionController::class)->group(function () {
+    Route::put('/admin/annual-requests/update-period', 'updatePeriod')->name('admin.annual-requests.update-period');
+    Route::get('/admin/config', 'config');
+})->middleware('CheckAdmin');
 
 Route::resource('/items', ItemController::class)->middleware(['auth', 'verified']);
 Route::resource('/item_groups', ItemGroupController::class)->only(['store', 'index'])->middleware(['auth', 'verified']);
