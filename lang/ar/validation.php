@@ -5,6 +5,8 @@ declare(strict_types=1);
 return [
     'attributes' => [
         'password' => 'كلمة المرور',
+        'request_start_date' => 'بداية الفترة',
+        'request_end_date' => 'نهاية الفترة'
     ],
     'accepted'             => 'يجب قبول :attribute.',
     'accepted_if'          => 'يجب قبول :attribute في حالة :other يساوي :value.',
