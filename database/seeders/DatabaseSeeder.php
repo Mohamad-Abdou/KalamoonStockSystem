@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AppConfiguration;
 use App\Models\ItemGroup;
 use App\Models\User;
 use App\Models\ItemsGroup;
@@ -80,6 +81,18 @@ class DatabaseSeeder extends Seeder
                 'request_type' => 1,
                 'order' => 1,
             ],
+        ]);
+
+        AppConfiguration::factory()->CreateMany([
+            [
+                'name' => 'AnnualRequestPeriod',
+                'key' => 'start',
+                'value' => now()->toDateString(),
+            ],[
+                'name' => 'AnnualRequestPeriod',
+                'key' => 'end',
+                'value' => now()->addDays(10)->toDateString(),
+            ]
         ]);
     }
 }

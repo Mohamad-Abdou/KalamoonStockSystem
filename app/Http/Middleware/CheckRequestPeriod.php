@@ -2,24 +2,24 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\AppConfiguration;
 use Closure;
-use Illuminate\Support\Facades\Cache;
 
 class CheckRequestPeriod
 {
     public function handle($request, Closure $next)
     {
-        $today = now()->toDateString();
+        $requestPeriod = AppConfiguration::getAnnualRequestPeriod();
+        $startDate = $requestPeriod['start'];
+        $endDate = $requestPeriod['end'];
 
-        // Retrieve the request period from cache or fallback to dynamic defaults
-        $startDate = Cache::get('request_start_date', now()->toDateString());
-        $endDate = Cache::get('request_end_date', now()->addDays(10)->toDateString());
+        $today = now();
 
-        // Check if the current date is outside the allowed range
-        if ($today < $startDate || $today > $endDate) {
-            return redirect()->back()->with('error', 'Requests are not allowed at this time.');
+        // التحقق من صلاحية فترة الطلب
+        if ($today->between($startDate, $endDate)) {
+            return $next($request);
         }
 
-        return $next($request);
+        return abort(403);
     }
 }

@@ -1,20 +1,27 @@
 <x-app-layout>
-    <x-card header="موعد الطلبات السنوية">
+    <x-card header="موعد الطلبات السنوية" class="basis-1/3 justify-center">
         <form action="{{ route('admin.annual-requests.update-period') }}" method="POST" class="space-y-4">
             @csrf
             @method('PUT')
 
-            <!-- Display current request period values -->
-            <div>
-                <x-input-label for="request_start_date" :value="__('بداية الفترة')" class="text-white mb-2" />
+            <div class="flex flex-col justify-center">
+                <x-input-label for="request_start_date" :value="__('بداية الفترة')" class="text-white mb-2 rounded" />
                 <input type="date" id="request_start_date" name="request_start_date"
-                    value="{{ old('request_start_date', $startDate) }}" required>
+                    value="{{ old('request_start_date', $startDate) }}" required min="{{ date('Y-m-d') }}"
+                    class="@error('request_start_date') border-red-500 @enderror">
+                @error('request_start_date')
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                @enderror
             </div>
 
-            <div>
+            <div class="flex flex-col justify-center mt-4">
                 <x-input-label for="request_end_date" :value="__('نهاية الفترة')" class="text-white mb-2" />
                 <input type="date" id="request_end_date" name="request_end_date"
-                    value="{{ old('request_end_date', $endDate) }}" required>
+                    value="{{ old('request_end_date', $endDate) }}" required min="{{ date('Y-m-d') }}"
+                    class="@error('request_end_date') border-red-500 @enderror">
+                @error('request_end_date')
+                    <span class="text-red-500 text-sm mt-1">{{ $message }}</span>
+                @enderror
             </div>
             <x-secondary-button type="submit" class="mt-2 bg-second-color text-black">
                 {{ __('حفظ') }}
