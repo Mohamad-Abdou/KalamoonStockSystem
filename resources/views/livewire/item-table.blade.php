@@ -22,6 +22,9 @@
                     اسم المادة
                 </x-table.table-header-element>
                 <x-table.table-header-element>
+                    الوحدة
+                </x-table.table-header-element>
+                <x-table.table-header-element>
                     وصف المادة
                 </x-table.table-header-element>
                 <x-table.table-header-element>
@@ -37,6 +40,9 @@
                 <tr class="hover:bg-gray-50 transition duration-200 {{ $item->active ? '' : 'bg-red-100 font-bold' }}">
                     <x-table.data>
                         {{ $item->name }}
+                    </x-table.data>
+                    <x-table.data>
+                        {{ $item->unit }}
                     </x-table.data>
                     <x-table.data class="w-1/3">
                         {{ $item->description }}
