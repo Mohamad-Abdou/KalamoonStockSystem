@@ -21,6 +21,12 @@
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
                 </div>
                 <div>
+                    <x-input-label for="unit" :value="__('الوحدة')" class="text-white" />
+                    <x-text-input id="unit" class="block mt-3 w-full" type="text" name="unit"
+                        :value="old('unit')" required />
+                    <x-input-error :messages="$errors->get('unit')" class="mt-2" />
+                </div>
+                <div>
                     <x-input-label for="description" :value="__('وصف المادة')" class="text-white mb-2" />
                     <x-text-input id="description" class="block w-full" type="text" name="description"
                         :value="old('description')" required />
