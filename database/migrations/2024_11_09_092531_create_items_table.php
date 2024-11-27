@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("name", 50);
             $table->string("description", 300);
             $table->foreignId('item_group_id')->constrained();
+            $table->string("unit", 15);
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

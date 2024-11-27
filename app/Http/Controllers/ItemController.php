@@ -30,6 +30,7 @@ class ItemController extends RoutingController
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'unit' => ['string', 'max:100'],
             'item_group_id' => ['required'],
         ]);
 
@@ -45,6 +46,7 @@ class ItemController extends RoutingController
         Item::create([
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
+            'unit' => $validatedData['unit'],
             'item_group_id' => $validatedData['item_group_id'],
         ]);
 
