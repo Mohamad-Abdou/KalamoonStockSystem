@@ -11,7 +11,7 @@
     <!-- العمود الأيسر-->
     <div class="basis-1/3">
         <!-- قسم لإضافة مجموعة -->
-        <x-card header="إضافة مجموعة جديدة">
+        <x-card header="إضافة مجموعة جديدة" class="bg-primary">
             <form method="POST" action="{{ route('item_groups.store') }}">
                 @csrf
                 <div>

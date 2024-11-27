@@ -2,42 +2,32 @@
 
 namespace App\Policies;
 
+use App\Http\Middleware\CheckRequestPeriod;
 use App\Models\AnnualRequest;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
 class AnnualRequestPolicy
 {
-    /**
-     * Determine whether the user can view any models.
-     */
+
     public function viewAny(User $user)
     {
-        //
+        return $user->type > 1;
     }
 
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, AnnualRequest $annualRequest)
     {
-        //
+        return $annualRequest->user_id === $user->id;
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
     public function create(User $user)
     {
-        //
+        return $user->type > 1;
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, AnnualRequest $annualRequest)
     {
-        //
+        return $annualRequest->user_id === $user->id;
     }
 
     /**

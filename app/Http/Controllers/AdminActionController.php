@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\CheckAdmin;
+use App\Models\AnnualRequest;
 use App\Models\AppConfiguration;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
@@ -16,11 +17,10 @@ class AdminActionController extends Controller
         
     public function config()
     {
-        $period = AppConfiguration::getAnnualRequestPeriod();
+        $period = AnnualRequest::getPeriod();
         $startDate = $period['start'];
         $endDate = $period['end'];
-
-        return view('admin.config', compact('startDate', 'endDate'));
+        return view('admin.config', ['startDate' => $startDate, 'endDate' => $endDate]);
     }
 
     public function updatePeriod(Request $request)
@@ -43,6 +43,7 @@ class AdminActionController extends Controller
         );
 
 
-        return redirect()->back()->with('عملية ناجحة', 'تم تحديد فترة الطلب السنوي بنجاح');
+
+        return redirect()->back()->with('message', 'تم تحديد فترة الطلب السنوي بنجاح');
     }
 }

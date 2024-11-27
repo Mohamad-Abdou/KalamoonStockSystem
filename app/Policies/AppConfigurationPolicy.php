@@ -19,8 +19,9 @@ class AppConfigurationPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, AppConfiguration $appConfiguration)
+    public function view(User $user)
     {
+        return $user->type === '0'; // مدير النظام
         
     }
 
@@ -29,7 +30,7 @@ class AppConfigurationPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->type === '0'; // مدير النظام
     }
 
     /**
@@ -37,7 +38,7 @@ class AppConfigurationPolicy
      */
     public function update(User $user, AppConfiguration $appConfiguration)
     {
-        //
+        return $user->type === '0'; // مدير النظام
     }
 
     /**
@@ -45,7 +46,7 @@ class AppConfigurationPolicy
      */
     public function delete(User $user, AppConfiguration $appConfiguration)
     {
-        //
+        return $user->type === '0'; // مدير النظام
     }
 
     /**
@@ -53,7 +54,7 @@ class AppConfigurationPolicy
      */
     public function restore(User $user, AppConfiguration $appConfiguration)
     {
-        //
+        return $user->type === '0'; // مدير النظام
     }
 
     /**
@@ -61,6 +62,6 @@ class AppConfigurationPolicy
      */
     public function forceDelete(User $user, AppConfiguration $appConfiguration)
     {
-        //
+        return $user->type === '0'; // مدير النظام
     }
 }

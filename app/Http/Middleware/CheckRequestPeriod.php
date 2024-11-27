@@ -2,24 +2,18 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\AppConfiguration;
+use App\Models\AnnualRequest;
 use Closure;
 
 class CheckRequestPeriod
 {
     public function handle($request, Closure $next)
     {
-        $requestPeriod = AppConfiguration::getAnnualRequestPeriod();
-        $startDate = $requestPeriod['start'];
-        $endDate = $requestPeriod['end'];
-
-        $today = now();
-
         // التحقق من صلاحية فترة الطلب
-        if ($today->between($startDate, $endDate)) {
+        if (AnnualRequest::isActiveRequestPeriod()) {
             return $next($request);
         }
-
         return abort(403);
     }
+    
 }

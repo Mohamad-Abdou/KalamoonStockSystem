@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -15,6 +16,25 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+
+    <style>
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+
+            #printableTable,
+            #printableTable * {
+                visibility: visible;
+            }
+
+            #printableTable {
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+        }
+    </style>
 </head>
 
 <body class="font-sans antialiased">
@@ -24,8 +44,8 @@
         <!-- Page Heading -->
         @isset($header)
             <header class="bg-white shadow">
-                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    {{ $header }}
+                <div class="mx-auto py-4 bg-second-color">
+                    <h1 class="text-center font-bold">{{ $header }}</h1>
                 </div>
             </header>
         @endisset
@@ -42,3 +62,4 @@
 </body>
 
 </html>
+

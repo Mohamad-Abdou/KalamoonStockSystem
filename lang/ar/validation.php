@@ -6,7 +6,8 @@ return [
     'attributes' => [
         'password' => 'كلمة المرور',
         'request_start_date' => 'بداية الفترة',
-        'request_end_date' => 'نهاية الفترة'
+        'request_end_date' => 'نهاية الفترة',
+        'item_group_id' => 'المجموعة'
     ],
     'accepted'             => 'يجب قبول :attribute.',
     'accepted_if'          => 'يجب قبول :attribute في حالة :other يساوي :value.',
