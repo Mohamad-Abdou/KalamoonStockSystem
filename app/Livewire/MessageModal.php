@@ -11,8 +11,8 @@ class MessageModal extends Component
     public $message = '';
     public $isOpen = false;
 
-    #[On('showMessage')] 
-    public function showMessage($header = 'تنبيه', $message)
+    #[On('showMessage')]
+    public function showMessage($message, $header = 'تنبيه')
     {
         $this->header = $header;
         $this->message = $message;
@@ -23,7 +23,12 @@ class MessageModal extends Component
     {
         $this->header = $header;
         $this->message = $message;
-        if (!empty($message)) {
+
+        if (session()->has('message')) {
+            $this->message = session('message');
+            $this->header = session('header', $header); 
+            $this->isOpen = true;
+        } elseif (!empty($message)) {
             $this->isOpen = true;
         }
     }

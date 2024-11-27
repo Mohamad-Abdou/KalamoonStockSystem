@@ -27,5 +27,4 @@ class Item extends Model
     {
         return $this->belongsTo(ItemGroup::class, 'item_group_id');
     }
-    
 }

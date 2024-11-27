@@ -2,9 +2,13 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\AnnualRequestFlowController;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use App\Models\AnnualRequest;
 use App\Models\Item;          // Import your model(s)
 use App\Models\ItemGroup;
+use App\Policies\AnnualRequestFlowPolicy;
+use App\Policies\AnnualRequestPolicy;
 use App\Policies\ItemGroupPolicy;
 use App\Policies\ItemPolicy;  // Import corresponding policy/policies
 
@@ -19,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Item::class => ItemPolicy::class,
         ItemGroup::class => ItemGroupPolicy::class, 
+        AnnualRequest::class => AnnualRequestPolicy::class,
     ];
 
     /**

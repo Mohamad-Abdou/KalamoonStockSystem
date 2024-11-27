@@ -18,6 +18,11 @@ class ItemGroup extends Model
         'name',
     ];
 
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'item_group_user');
+    }
+    
     // ربط المواد بالمجموعات
     public function items()
     {
