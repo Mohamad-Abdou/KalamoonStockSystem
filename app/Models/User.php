@@ -69,6 +69,10 @@ class User extends Authenticatable
         return $this->type == 0;
     }
 
+    public function haveActiveRequest(): bool
+    {
+        return $this->annualRequests()->where('state', 2)->exists();
+    }
     public static $usersTypes = [
         0 => 'مدير النظام',
         1 => 'أمين المستودع',

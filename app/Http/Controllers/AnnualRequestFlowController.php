@@ -12,7 +12,7 @@ class AnnualRequestFlowController extends RoutingController
 {
     use WithPagination;
     public function __construct()
-    {
+    {   
         $this->middleware('AnnualFlow');
     }
 

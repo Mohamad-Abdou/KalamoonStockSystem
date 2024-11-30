@@ -15,7 +15,7 @@ class AnnualRequestController extends RoutingController
     public function __construct()
     {
         $this->authorizeResource(AnnualRequest::class);
-        $this->middleware(CheckRequestPeriod::class)->only(['create', 'edit']);
+        $this->middleware(CheckRequestPeriod::class)->only(['create']);
     }
 
     public function index()
@@ -46,6 +46,9 @@ class AnnualRequestController extends RoutingController
 
     public function edit(AnnualRequest $annualRequest)
     {
+        if(!AnnualRequest::isActiveRequestPeriod() && !$annualRequest->return_reason) {
+            abort(403);
+        }
         if ($annualRequest->state === 0) {
             $request = AnnualRequest::find($annualRequest)->first();
             return view('annual-request.edit', ['request' => $annualRequest->id]);

@@ -6,6 +6,7 @@ use App\Models\AnnualRequest;
 use App\Models\Item;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Validate;
 use Livewire\Component;
 
 class AnnualRequestEdit extends Component
@@ -42,10 +43,13 @@ class AnnualRequestEdit extends Component
         if (!$item || array_key_exists($item->id, $this->selectedItems)) {
             return;
         }
+        
+        
+
 
         $this->selectedItems[$item->id] = [
             'name' => $item->name,
-            'description' => $item->description ?? '',
+            'description' => $item->description,
             'quantity' => 1,
         ];
     }
@@ -59,7 +63,11 @@ class AnnualRequestEdit extends Component
 
     public function saveRequest()
     {
+        $this->validate([
+            'selectedItems.*.quantity' => 'required|integer|min:1',
+        ]);
         foreach ($this->selectedItems as $itemId => $details) {
+            
             if ($this->annualRequest->items->contains($itemId)) {
                 $this->annualRequest->items()->updateExistingPivot($itemId, ['quantity' => $details['quantity']]);
             } else {

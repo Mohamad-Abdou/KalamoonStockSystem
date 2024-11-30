@@ -18,7 +18,7 @@
                 </thead>
                 <tbody>
                     @foreach ($selectedItems as $id => $details)
-                        <tr>
+                        <tr class="{{ $annualRequest->items->where('id', $id)->first()?->pivot->objected ? 'bg-red-100' : '' }}">
                             <x-table.data class="text-center">{{ $details['name'] }}</x-table.data>
                             <x-table.data>{{ $details['description'] }}</x-table.data>
                             <x-table.data>
@@ -47,6 +47,7 @@
         <div class="basis-1/3 flex flex-col mx-5 justify-center space-y-2 bg-red-100 p-5 border rounded-xl shadow-xl"
             style="position: sticky; top: 1rem; height: fit-content">
             <h1 class="text-xl font-bold text-center"> سبب الإرجاع </h1>
+            <hr class="border-2 border-gray-500 rounded-lg" />
             <p>{{ $annualRequest->return_reason }}</p>
         </div>
     @endif
