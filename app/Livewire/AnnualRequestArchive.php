@@ -3,42 +3,18 @@
 namespace App\Livewire;
 
 use App\Models\AnnualRequest;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 
 class AnnualRequestArchive extends Component
 {
     use WithPagination;
-    public $annual_requests = [];
+    
     public $search = '';
     public $filterState = 'all';
     public $dateFrom = '';
     public $dateTo = '';
-
-    public function mount()
-    {
-        $this->loadAnnualRequests();
-    }
-
-    public function updatedSearch()
-    {
-        $this->loadAnnualRequests();
-    }
-
-    public function updatedFilterState()
-    {
-        $this->loadAnnualRequests();
-    }
-
-    public function updatedDateFrom()
-    {
-        $this->loadAnnualRequests();
-    }
-
-    public function updatedDateTo()
-    {
-        $this->loadAnnualRequests();
-    }
 
     private function loadAnnualRequests()
     {
@@ -66,7 +42,7 @@ class AnnualRequestArchive extends Component
             $query->whereDate('created_at', '<=', $this->dateTo);
         }
 
-        $this->annual_requests = $query->orderBy('created_at', 'DESC')->get();
+        return $query->orderBy('created_at', 'DESC')->paginate(15);
     }
 
     public function resetFilters()
@@ -75,11 +51,12 @@ class AnnualRequestArchive extends Component
         $this->search = '';
         $this->dateFrom = null;
         $this->dateTo = null;
-        $this->loadAnnualRequests();
     }
 
     public function render()
     {
-        return view('annual-request.annual-request-archive');
+        return view('annual-request.annual-request-archive', [
+            'annual_requests' => $this->loadAnnualRequests()
+        ]);
     }
 }

@@ -58,4 +58,7 @@
             </div>
         @endforeach
     </div>
+    <div class="mt-4">
+        {{ $annual_requests->links() }}
+    </div>
 </div>

@@ -56,7 +56,7 @@ class User extends Authenticatable
 
     public function annualRequests(): HasMany
     {
-        return $this->hasMany(AnnualRequest::class);
+        return $this->hasMany(AnnualRequest::class)->orderBy('created_at', 'desc');
     }
 
     public function items()
