@@ -39,7 +39,7 @@ class AnnualRequest extends Model
     // دالة للحصول على تاريخ آخر تصفير للسنة
     public static function getLastYearReset()
     {
-        return AppConfiguration::where('name', 'LastReset')->where('key', 'Date')->value('value');
+        return Carbon::parse(AppConfiguration::where('name', 'LastReset')->where('key', 'Date')->value('value'));
     }
 
     // دالة للتحقق من أن الوقت الحالي ضمن فترة التسجيل

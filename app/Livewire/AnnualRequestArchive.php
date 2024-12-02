@@ -66,7 +66,7 @@ class AnnualRequestArchive extends Component
             $query->whereDate('created_at', '<=', $this->dateTo);
         }
 
-        $this->annual_requests = $query->get();
+        $this->annual_requests = $query->orderBy('created_at', 'DESC')->get();
     }
 
     public function resetFilters()
@@ -75,7 +75,6 @@ class AnnualRequestArchive extends Component
         $this->search = '';
         $this->dateFrom = null;
         $this->dateTo = null;
-        $this->loadAnnualRequests();
         $this->loadAnnualRequests();
     }
 
