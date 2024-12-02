@@ -15,10 +15,11 @@ class AnnualRequestArchive extends Component
     public $filterState = 'all';
     public $dateFrom = '';
     public $dateTo = '';
-
     private function loadAnnualRequests()
     {
-        $query = AnnualRequest::query();
+        $query = AnnualRequest::query()
+            ->with('user'); // Eager load the user relationship
+
         switch ($this->filterState) {
             case '2':
                 $query->where('state', 2);
