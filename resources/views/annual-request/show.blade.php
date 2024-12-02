@@ -4,7 +4,7 @@
         ل{{ $request->user->role }}
     </x-slot:header>
     <div class="flex flex-col">
-        @if ($request->state != 0 && $request->state != 2)
+        @if ($request->state != 0 && $request->state != 2 && $holdWith)
             <div class="flex flex-col justify-center mb-7">
                 <div class=" space-y-5">
                     <h1 class="text-center font-bold"> الطلب قيد الدراسة لدى {{ $holdWith->role }}</h1>
