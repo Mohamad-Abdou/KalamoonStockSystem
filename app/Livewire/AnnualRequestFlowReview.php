@@ -22,10 +22,17 @@ class AnnualRequestFlowReview extends Component
         $item = $this->annual_request->items()->find($itemId);
         $item->pivot->objected = !$item->pivot->objected;
         $item->pivot->save();
+        
+        $previous_annual_request = $this->previous_annual_request;
+        $this->annual_request->items->each(function ($item) use ($previous_annual_request) {
+            $prev_item = $previous_annual_request?->items->firstWhere('id', $item->id);
+            $item->prev = ['quantity' => $prev_item ? $prev_item->pivot->quantity : 0];
+        });
     }
 
-    public function rejectRequest(){
-        if(!$this->return_reason) {
+    public function rejectRequest()
+    {
+        if (!$this->return_reason) {
             $this->dispatch('showMessage', 'يجب إدخال سبب الإرجاع', 'تنبيه');
             return;
         }
@@ -35,8 +42,9 @@ class AnnualRequestFlowReview extends Component
         return redirect()->route('annual-request-flow.index');
     }
 
-    public function passRequest(){
-        
+    public function passRequest()
+    {
+
         $this->annual_request->forwardRequest();
         session()->flash('message', 'تم تحويل الطللب بنجاح');;
         return redirect()->route('annual-request-flow.index');

@@ -17,7 +17,7 @@ class AnnualRequestPolicy
 
     public function view(User $user, AnnualRequest $annualRequest)
     {
-        return $annualRequest->user_id === $user->id;
+        return $annualRequest->user_id === $user->id || $user->getIsPartOfTheAnnualFlowAttribute();
     }
 
     public function create(User $user)

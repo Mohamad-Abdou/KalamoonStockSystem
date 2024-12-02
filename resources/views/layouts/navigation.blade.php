@@ -54,6 +54,9 @@
                                     <x-dropdown-link :href="route('annual-request-flow.index')">
                                         {{ __('الطلبات السنوية الواردة') }}
                                     </x-dropdown-link>
+                                    <x-dropdown-link :href="route('annual-requests.archive')">
+                                        {{ __('أرشيف الطلبات السنوية') }}
+                                    </x-dropdown-link>
                                 @endif
                             </x-slot>
                         </x-dropdown>

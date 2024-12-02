@@ -15,11 +15,11 @@
                         class=" {{ $request->state === 0
                             ? ($request->return_reason
                                 ? 'bg-red-600' // الطلب مرتجع
-                                : 'bg-gray-600') // الطلب مسودة
+                                : 'bg-blue-600') // الطلب مسودة
                             : ($request->state === 2
                                 ? 'bg-green-600' // الطلب فعال حالياً
                                 : ($request->state === -1
-                                    ? 'bg-blue-600' // الطلب أرشيف
+                                    ? 'bg-gray-600' // الطلب أرشيف
                                     : 'bg-yellow-600')) }} // الطلب قيد الدراسة 
                                 text-center"
                         header='{{ $request->created_at->year }} - {{ $request->created_at->month }}'>

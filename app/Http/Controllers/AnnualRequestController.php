@@ -28,8 +28,8 @@ class AnnualRequestController extends RoutingController
     public function show(AnnualRequest $annualRequest)
     {
         if ($annualRequest->state != 0) {
-            $holdWith = User::find($annualRequest->state);
-            return view('annual-request.show', ['request' => $annualRequest, 'requestItems' => $annualRequest->Items, 'state' => $holdWith]);
+            $holdWith = User::find($annualRequest->state)?? null;
+            return view('annual-request.show', ['request' => $annualRequest, 'requestItems' => $annualRequest->Items, 'holdWith' => $holdWith]);
         } else {
             return redirect()->route('annual-request.edit', ['annual_request' => $annualRequest]);
         }
@@ -56,5 +56,9 @@ class AnnualRequestController extends RoutingController
         else {
             return redirect()->route('annual-request.show', ['annual_request' => $annualRequest]);
         }
+    }
+
+    public function archive(){
+        return view('annual-request.archive');
     }
 }
