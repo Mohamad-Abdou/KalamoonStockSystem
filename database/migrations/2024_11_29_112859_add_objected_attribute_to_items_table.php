@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('annual_request_item', function (Blueprint $table) {
-            $table->boolean('objected')->default(false);
+            $table->string('objection_reason')->nullable();
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('annual_request_item', function (Blueprint $table) {
-            $table->dropColumn('objected');
+            $table->dropColumn('objection_reason');
         });
     }
 };

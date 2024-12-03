@@ -7,6 +7,7 @@
                     <option value="{{ $item->id }}">{{ $item->name }} -> {{ $item->description }}</option>
                 @endforeach
             </x-input-dropdown-list>
+
             <x-table.table>
                 <thead class="bg-gray-100 text-gray-700 text-center">
                     <tr>
@@ -14,11 +15,15 @@
                         <x-table.table-header-element>وصف المادة</x-table.table-header-element>
                         <x-table.table-header-element>الكمية المطلوبة</x-table.table-header-element>
                         <x-table.table-header-element>الحذف من الطلب</x-table.table-header-element>
+                        @if ($annualRequest->return_reason)
+                            <x-table.table-header-element>ملاحظات الإرجاع</x-table.table-header-element>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($selectedItems as $id => $details)
-                        <tr class="{{ $annualRequest->items->where('id', $id)->first()?->pivot->objected ? 'bg-red-100' : '' }}">
+                        <tr
+                            class="{{ $annualRequest->items->where('id', $id)->first()?->pivot->objection_reason ? 'bg-red-100' : '' }}">
                             <x-table.data class="text-center">{{ $details['name'] }}</x-table.data>
                             <x-table.data>{{ $details['description'] }}</x-table.data>
                             <x-table.data>
@@ -28,6 +33,11 @@
                             <x-table.data>
                                 <x-danger-button wire:click="removeItem({{ $id }})">إزالة</x-danger-button>
                             </x-table.data>
+                            @if ($annualRequest->return_reason)
+                                <x-table.data>
+                                    {{ $annualRequest->items->where('id', $id)->first()?->pivot->objection_reason ?? 'لا يوجد' }}
+                                </x-table.data>
+                            @endif
                         </tr>
                     @endforeach
                 </tbody>

@@ -32,4 +32,5 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
     </x-card>
+    @livewire('ConfigAnnualRequestFlow')
 </x-app-layout>

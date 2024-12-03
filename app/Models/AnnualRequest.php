@@ -56,7 +56,7 @@ class AnnualRequest extends Model
     public function Items()
     {
         return $this->belongsToMany(Item::class, 'annual_request_item')
-            ->withPivot('quantity', 'frozen', 'freeze_reason', 'objected')
+            ->withPivot('id', 'quantity', 'frozen', 'freeze_reason', 'objection_reason')
             ->withTimestamps();
     }
 
@@ -84,7 +84,6 @@ class AnnualRequest extends Model
         $current = $this->state;
         $order = RequestFlow::where('request_type', 0)->where('user_id', $current)->first()->order?? 0;
         $NextUserId = RequestFlow::where('request_type', 0)->where('order', '>', $order)->orderBy('order')->first()->user_id ?? 2;
-        $this->items()->updateExistingPivot($this->items->pluck('id'), ['objected' => false]);
         $this->update(['state' => $NextUserId, 'return_reason' => null]);
         if($NextUserId === $this->user_id) $this->forwardRequest();
     }
