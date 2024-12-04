@@ -1,10 +1,12 @@
 <x-app-layout>
     <div class="w-full justify-center">
         @if (App\Models\AnnualRequest::isActiveRequestPeriod())
-            <div class="mb-5 flex justify-center">
-                <h1>تنتهي فترة التسجيل على الطلب الاحتياج السنوي في {{ $periodEndAt->format('Y-m-d') }} </h1>
-                <a href={{ route('annual-request.create') }} class="font-bold text-red-500 px-2"> التحقق </a>
-            </div>
+            @can('create', App\Models\AnnualRequest::class)
+                <div class="mb-5 flex justify-center">
+                    <h1>تنتهي فترة التسجيل على الطلب الاحتياج السنوي في {{ $periodEndAt->format('Y-m-d') }} </h1>
+                    <a href={{ route('annual-request.create') }} class="font-bold text-red-500 px-2"> التحقق </a>
+                </div>
+            @endcan
         @endif
         <div class="flex justify-center flex-wrap">
             @foreach ($requests as $request)
@@ -12,12 +14,12 @@
                     <x-card
                         class=" {{ $request->state === 0
                             ? ($request->return_reason
-                                ?  'bg-red-600' // الطلب مرتجع
-                                :  'bg-gray-600') // الطلب مسودة
+                                ? 'bg-red-600' // الطلب مرتجع
+                                : 'bg-blue-600') // الطلب مسودة
                             : ($request->state === 2
                                 ? 'bg-green-600' // الطلب فعال حالياً
                                 : ($request->state === -1
-                                    ? 'bg-blue-600' // الطلب أرشيف
+                                    ? 'bg-gray-600' // الطلب أرشيف
                                     : 'bg-yellow-600')) }} // الطلب قيد الدراسة 
                                 text-center"
                         header='{{ $request->created_at->year }} - {{ $request->created_at->month }}'>

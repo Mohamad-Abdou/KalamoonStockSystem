@@ -1,18 +1,15 @@
 <x-app-layout>
-        <x-slot:header>
-            الطلب السنوي لعام {{ $request->created_at->year }} شهر {{ $request->created_at->month }}
-        </x-slot:header>
-        <div class="flex flex-col">
-        @if ($state)
+    <x-slot:header>
+        الطلب السنوي لعام {{ $request->created_at->year }} شهر {{ $request->created_at->month }}
+        ل{{ $request->user->role }}
+    </x-slot:header>
+    <div class="flex flex-col">
+        @if ($request->state != 0 && $request->state != 2 && $holdWith)
             <div class="flex flex-col justify-center mb-7">
                 <div class=" space-y-5">
-                    <h1 class="text-center font-bold">
-                        الطلب قيد الدراسة</h1>
+                    <h1 class="text-center font-bold"> الطلب قيد الدراسة لدى {{ $holdWith->role }}</h1>
                     <p class="text-center font-bold">
-                        بحال الرغبة في التعديل يرجى مراجعة {{ $state->role }}
-                    </p>
-                    <p class="text-center font-bold">
-                        الهاتف الداخلي : {{ $state->office_number }}
+                        الهاتف الداخلي : {{ $holdWith->office_number }}
                     </p>
                 </div>
             </div>
@@ -22,6 +19,9 @@
                 <tr>
                     <x-table.table-header-element>
                         المادة
+                    </x-table.table-header-element>
+                    <x-table.table-header-element>
+                        الوحدة
                     </x-table.table-header-element>
                     <x-table.table-header-element>
                         وصف المادة
@@ -44,16 +44,19 @@
                             {{ $item->name }}
                         </x-table.data>
                         <x-table.data>
+                            {{ $item->unit }}
+                        </x-table.data>
+                        <x-table.data>
                             {{ $item->description }}
                         </x-table.data>
                         <x-table.data>
                             {{ $item->pivot->quantity }}
                         </x-table.data>
                         <x-table.data>
-                            {{ $item->quantity }}
+                            {{ $item->quantity ?? 0 }}
                         </x-table.data>
                         <x-table.data>
-                            {{ $item->quantity }}
+                            {{ $item->quantity ?? 0 }}
                         </x-table.data>
                 @endforeach
                 </tr>

@@ -12,14 +12,14 @@ class AnnualRequestFlowController extends RoutingController
 {
     use WithPagination;
     public function __construct()
-    {
+    {   
         $this->middleware('AnnualFlow');
     }
 
     public function index()
     {
         $user = Auth::user();
-        $incoming_requests = AnnualRequest::where('state', $user->id)->with('user')->get();
+        $incoming_requests = AnnualRequest::where('state', $user->id)->with('user')->orderBy('created_at', 'desc')->get();
         return view('annual-request-flow.index', ['incoming_requests' => $incoming_requests]);
     }
 

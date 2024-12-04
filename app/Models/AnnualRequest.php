@@ -39,7 +39,7 @@ class AnnualRequest extends Model
     // دالة للحصول على تاريخ آخر تصفير للسنة
     public static function getLastYearReset()
     {
-        return AppConfiguration::where('name', 'LastReset')->where('key', 'Date')->value('value');
+        return Carbon::parse(AppConfiguration::where('name', 'LastReset')->where('key', 'Date')->value('value'));
     }
 
     // دالة للتحقق من أن الوقت الحالي ضمن فترة التسجيل
@@ -56,7 +56,7 @@ class AnnualRequest extends Model
     public function Items()
     {
         return $this->belongsToMany(Item::class, 'annual_request_item')
-            ->withPivot('quantity', 'frozen', 'freeze_reason')
+            ->withPivot('id', 'quantity', 'frozen', 'freeze_reason', 'objection_reason')
             ->withTimestamps();
     }
 
@@ -75,20 +75,31 @@ class AnnualRequest extends Model
     // دالة لتحويل الطلب للمستخدم التالي في سير العمل
     public function forwardRequest()
     {
+        if ($this->items->contains('pivot.objection', true)) {
+            session()->flash('message', 'لا يمكن تحويل الطلب في حال وجود اعتراضات');
+            redirect()->back();
+            return;
+        }
+
         $current = $this->state;
-        $NextUserId = RequestFlow::where('request_type', 0)->where('order', '>', $current)->orderBy('order')->first()->user_id ?? 2;
+        $order = RequestFlow::where('request_type', 0)->where('user_id', $current)->first()->order?? 0;
+        $NextUserId = RequestFlow::where('request_type', 0)->where('order', '>', $order)->orderBy('order')->first()->user_id ?? 2;
         $this->update(['state' => $NextUserId, 'return_reason' => null]);
+        if($NextUserId === $this->user_id) $this->forwardRequest();
     }
 
     // دالة لإرجاع الطلب للمستخدم السابق في سير العمل
     public function backwordRequest()
     {
         $current = $this->state;
-        $PreviosUserId = RequestFlow::where('request_type', 0)->where('order', '<', $current)->orderBy('order', 'DESC')->first()->user_id ?? 0;
+        $order = RequestFlow::where('request_type', 0)->where('user_id', $current)->first()->order;
+        $PreviosUserId = RequestFlow::where('request_type', 0)->where('order', '<', $order)->orderBy('order', 'DESC')->first()->user_id ?? 0;
         $this->update(['state' => $PreviosUserId]);
+        if($PreviosUserId === $this->user_id) $this->backwordRequest();
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 }

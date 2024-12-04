@@ -1,7 +1,7 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
+import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm';
+import sort from '@alpinejs/sort'
 
-window.Alpine = Alpine;
-
-Alpine.start();
+Alpine.plugin(sort)
+Livewire.start()

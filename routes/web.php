@@ -7,6 +7,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemGroupController;
 use App\Http\Controllers\RequestFlowController;
 use App\Http\Middleware\UserPartOfTheAnnualFlow;
+use App\Models\AnnualRequest;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -29,6 +30,6 @@ Route::resource('/annual-request', AnnualRequestController::class)->middleware([
 Route::resource('/annual-request-flow', AnnualRequestFlowController::class)
     ->middleware(['auth', 'AnnualFlow'])
     ->parameters(['annual-request-flow' => 'annual_request']);
+Route::get('/archive', [AnnualRequestController::class, 'archive'])->name('annual-requests.archive');
 
-
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

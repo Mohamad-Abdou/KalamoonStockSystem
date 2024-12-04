@@ -56,7 +56,7 @@ class User extends Authenticatable
 
     public function annualRequests(): HasMany
     {
-        return $this->hasMany(AnnualRequest::class);
+        return $this->hasMany(AnnualRequest::class)->orderBy('created_at', 'desc');
     }
 
     public function items()
@@ -69,6 +69,10 @@ class User extends Authenticatable
         return $this->type == 0;
     }
 
+    public function haveActiveRequest(): bool
+    {
+        return $this->annualRequests()->where('state', 2)->exists();
+    }
     public static $usersTypes = [
         0 => 'مدير النظام',
         1 => 'أمين المستودع',
