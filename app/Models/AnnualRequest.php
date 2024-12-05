@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use DragonCode\Support\Facades\Helpers\Boolean;
 use Illuminate\Database\Eloquent\Model;
 use PhpParser\Node\Stmt\Return_;
+use Illuminate\Support\Facades\Log;
 
 /**
  * نموذج الطلب السنوي
@@ -71,31 +72,129 @@ class AnnualRequest extends Model
             return 'السنة الحالية - فعال';
         } else return 'قيد الدراسة';
     }
-
     // دالة لتحويل الطلب للمستخدم التالي في سير العمل
     public function forwardRequest()
     {
+        Log::info('Forward Request Called', [
+            'request_id' => $this->id,
+            'caller' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2),
+            'timestamp' => now()->toDateTimeString(),
+            'session_id' => session()->getId()
+        ]);
+
+        Log::info('Starting forward request', [
+            'request_id' => $this->id,
+            'current_state' => $this->state,
+            'user_id' => $this->user_id
+        ]);
+
         if ($this->items->contains('pivot.objection', true)) {
-            session()->flash('message', 'لا يمكن تحويل الطلب في حال وجود اعتراضات');
-            redirect()->back();
-            return;
+            Log::warning('Forward request blocked - objections exist', [
+                'request_id' => $this->id
+            ]);
+            throw new \Exception('لا يمكن تحويل الطلب في حال وجود اعتراضات');
         }
 
         $current = $this->state;
-        $order = RequestFlow::where('request_type', 0)->where('user_id', $current)->first()->order?? 0;
-        $NextUserId = RequestFlow::where('request_type', 0)->where('order', '>', $order)->orderBy('order')->first()->user_id ?? 2;
-        $this->update(['state' => $NextUserId, 'return_reason' => null]);
-        if($NextUserId === $this->user_id) $this->forwardRequest();
+    
+        $currentFlow = RequestFlow::where('request_type', 0)
+            ->where('user_id', $current)
+            ->first();
+    
+        Log::info('Current flow state', [
+            'current_flow' => $currentFlow ? $currentFlow->toArray() : null
+        ]);
+
+        // Log next flow lookup
+        if (!$currentFlow) {
+            Log::info('No current flow found, getting first flow');
+            $nextFlow = RequestFlow::where('request_type', 0)
+                ->orderBy('order')
+                ->first();
+        } else {
+            Log::info('Finding next flow', [
+                'current_order' => $currentFlow->order
+            ]);
+            $nextFlow = RequestFlow::where('request_type', 0)
+                ->where('order', '>', $currentFlow->order)
+                ->orderBy('order')
+                ->first();
+        }
+
+        Log::info('Next flow determined', [
+            'next_flow' => $nextFlow ? $nextFlow->toArray() : null
+        ]);
+
+        if ($nextFlow && $nextFlow->user_id == $this->user_id) {
+            Log::info('same user requester', [
+                'next_flow' => $nextFlow ? $nextFlow->toArray() : null
+            ]);
+            $nextFlow = RequestFlow::where('request_type', 0)
+                ->where('order', '>', $nextFlow->order)
+                ->orderBy('order')
+                ->first();
+        }
+
+        if (!$nextFlow) {
+            Log::info('Request completed - setting final state', [
+                'request_id' => $this->id
+            ]);
+            $this->update(['state' => 2]);
+        } else {
+            Log::info('Updating request state', [
+                'request_id' => $this->id,
+                'new_state' => $nextFlow->user_id
+            ]);
+            $this->update([
+                'state' => $nextFlow->user_id,
+                'return_reason' => null
+            ]);
+        }
     }
 
     // دالة لإرجاع الطلب للمستخدم السابق في سير العمل
     public function backwordRequest()
     {
+        Log::info('Starting backward request', [
+            'request_id' => $this->id,
+            'current_state' => $this->state
+        ]);
+
         $current = $this->state;
-        $order = RequestFlow::where('request_type', 0)->where('user_id', $current)->first()->order;
-        $PreviosUserId = RequestFlow::where('request_type', 0)->where('order', '<', $order)->orderBy('order', 'DESC')->first()->user_id ?? 0;
-        $this->update(['state' => $PreviosUserId]);
-        if($PreviosUserId === $this->user_id) $this->backwordRequest();
+
+        $previousFlow = RequestFlow::where('request_type', 0)
+            ->where('order', '<', function ($query) use ($current) {
+                $query->select('order')
+                    ->from('request_flows')
+                    ->where('user_id', $current)
+                    ->where('request_type', 0);
+            })
+            ->orderBy('order', 'DESC')
+            ->first();
+
+        Log::info('Previous flow determined', [
+            'previous_flow' => $previousFlow ? $previousFlow->toArray() : null
+        ]);
+
+        if ($previousFlow && $previousFlow->user_id == $this->user_id) {
+            Log::info('Skipping user\'s own flow, finding earlier flow');
+            $previousFlow = RequestFlow::where('request_type', 0)
+                ->where('order', '<', $previousFlow->order)
+                ->orderBy('order', 'DESC')
+                ->first();
+        }   
+        if (!$previousFlow) {
+            Log::info('Request returned to draft state', [
+                'request_id' => $this->id
+            ]);
+            $this->update(['state' => 0]);
+        } else {
+            Log::info('Updating request state', [
+                'request_id' => $this->id,
+                'new_state' => $previousFlow->user_id
+            ]);
+            $this->update(['state' => $previousFlow->user_id]);
+        }
     }
 
     public function user()

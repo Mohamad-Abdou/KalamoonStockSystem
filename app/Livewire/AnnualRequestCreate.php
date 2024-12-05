@@ -39,6 +39,7 @@ class AnnualRequestCreate extends Component
         $this->selectedItems[$item->id] = [
             'name' => $item->name,
             'description' => $item->description ?? '',
+            'unit' => $item->unit,
             'quantity' => 1,
         ];
     }

@@ -3,7 +3,7 @@
         الطلب السنوي لعام {{ $request->created_at->year }} شهر {{ $request->created_at->month }}
         ل{{ $request->user->role }}
     </x-slot:header>
-    <div class="flex flex-col">
+    <div class="flex flex-col w-full">
         @if ($request->state != 0 && $request->state != 2 && $holdWith)
             <div class="flex flex-col justify-center mb-7">
                 <div class=" space-y-5">
@@ -14,16 +14,16 @@
                 </div>
             </div>
         @endif
-        <x-table.table>
+        <x-table.table class="w-full">
             <thead class="bg-gray-100 text-gray-700 text-center">
                 <tr>
-                    <x-table.table-header-element>
+                    <x-table.table-header-element class="w-1/6">
                         المادة
                     </x-table.table-header-element>
-                    <x-table.table-header-element>
+                    <x-table.table-header-element >
                         الوحدة
                     </x-table.table-header-element>
-                    <x-table.table-header-element>
+                    <x-table.table-header-element class="w-1/4">
                         وصف المادة
                     </x-table.table-header-element>
                     <x-table.table-header-element>
@@ -40,13 +40,13 @@
             <tbody class="divide-y divide-gray-200">
                 @foreach ($requestItems as $item)
                     <tr class="text-center">
-                        <x-table.data>
+                        <x-table.data class="w-1/6">
                             {{ $item->name }}
                         </x-table.data>
                         <x-table.data>
                             {{ $item->unit }}
                         </x-table.data>
-                        <x-table.data>
+                        <x-table.data class="w-1/4">
                             {{ $item->description }}
                         </x-table.data>
                         <x-table.data>

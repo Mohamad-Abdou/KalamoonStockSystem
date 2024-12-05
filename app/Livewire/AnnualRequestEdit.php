@@ -23,6 +23,7 @@ class AnnualRequestEdit extends Component
         foreach ($this->annualRequest->items as $item) {
             $this->selectedItems[$item->id] = [
                 'name' => $item->name,
+                'unit' => $item->unit,
                 'description' => $item->description ?? '',
                 'quantity' => $item->pivot->quantity,
             ];
