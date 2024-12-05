@@ -9,9 +9,9 @@
         </div>
     </section>
     <!-- العمود الأيسر-->
-    <div class="basis-1/3">
+    <div class="basis-1/3" style="position: sticky; top: 1rem; height: fit-content">
         <!-- قسم لإضافة مجموعة -->
-        <x-card header="إضافة مادة جديدة">
+        <x-card header="إضافة مادة جديدة" class="bg-primary">
             <form method="POST" action="{{ route('items.store') }}" class="space-y-4">
                 @csrf
                 <div>
@@ -19,6 +19,12 @@
                     <x-text-input id="name" class="block mt-3 w-full" type="text" name="name"
                         :value="old('name')" required />
                     <x-input-error :messages="$errors->get('name')" class="mt-2" />
+                </div>
+                <div>
+                    <x-input-label for="unit" :value="__('الوحدة')" class="text-white" />
+                    <x-text-input id="unit" class="block mt-3 w-full" type="text" name="unit"
+                        :value="old('unit')" required />
+                    <x-input-error :messages="$errors->get('unit')" class="mt-2" />
                 </div>
                 <div>
                     <x-input-label for="description" :value="__('وصف المادة')" class="text-white mb-2" />

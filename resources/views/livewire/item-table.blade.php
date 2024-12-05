@@ -22,12 +22,15 @@
                     اسم المادة
                 </x-table.table-header-element>
                 <x-table.table-header-element>
+                    الوحدة
+                </x-table.table-header-element>
+                <x-table.table-header-element>
                     وصف المادة
                 </x-table.table-header-element>
                 <x-table.table-header-element>
                     المجموعة
                 </x-table.table-header-element>
-                <x-table.table-header-element>
+                <x-table.table-header-element class="w-1">
                     إمكانية الطلب
                 </x-table.table-header-element>
             </tr>
@@ -38,7 +41,10 @@
                     <x-table.data>
                         {{ $item->name }}
                     </x-table.data>
-                    <x-table.data class="w-1/3">
+                    <x-table.data>
+                        {{ $item->unit }}
+                    </x-table.data>
+                    <x-table.data>
                         {{ $item->description }}
                     </x-table.data>
                     
@@ -53,7 +59,7 @@
                         </x-input-dropdown-list>
                     </x-table.data>
                     <div wire:key="item-{{ $item->id }}">
-                        <x-table.data class="text-center">
+                        <x-table.data class="text-center w-1" >
                             <input type="checkbox" class="toggle-checkbox text-primary border-gray-300 rounded"
                                 wire:click="toggleState({{ $item->id }})" @checked($item->active)>
                         </x-table.data>

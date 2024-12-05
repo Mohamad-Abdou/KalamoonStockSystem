@@ -40,6 +40,8 @@ class ItemTable extends Component
     // تحديث المجموعة الخاصة بالمادة
     public function updateItemGroup($itemId, $groupId)
     {
+        $this->authorize('update', Item::class);
+
         $item = Item::find($itemId);
         if ($item) {
             $item->item_group_id = $groupId;
@@ -55,7 +57,7 @@ class ItemTable extends Component
         // جلب العناصر مع التصفية والبحث
         $query = Item::with('item_group')
             ->when($this->selectedGroup, function ($query) {
-                return $query->where('item_group_id', $this->selectedGroup); // تعديل اسم العمود
+                return $query->where('item_group_id', $this->selectedGroup);
             })
             ->when($this->search, function ($query) {
                 return $query->where(function ($q) {

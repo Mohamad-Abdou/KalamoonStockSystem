@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\AppConfiguration;
 use App\Models\ItemGroup;
 use App\Models\User;
 use App\Models\ItemsGroup;
@@ -19,7 +20,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'administrator',
                 'email' => 'administrator@uok.edu.sy',
-                'password' => '12345678',
+                'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مدير النظام',
                 'office_number' => '1234',
                 'type' => '0'
@@ -27,7 +28,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Stock Holder',
                 'email' => 'StockHolder@uok.edu.sy',
-                'password' => '12345678',
+                'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'أمين المستودع',
                 'office_number' => '1234',
                 'type' => '1'
@@ -35,7 +36,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Ameen',
                 'email' => 'Ameen@uok.edu.sy',
-                'password' => '12345678',
+                'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'أمين الجامعة',
                 'office_number' => '1234',
                 'type' => '2'
@@ -43,7 +44,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'financualManager',
                 'email' => 'financial@uok.edu.sy',
-                'password' => '12345678',
+                'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'المدير المالي',
                 'office_number' => '1234',
                 'type' => '3'
@@ -51,7 +52,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'IT Manager',
                 'email' => 'ITmanager@uok.edu.sy',
-                'password' => '12345678',
+                'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مدير النظم',
                 'office_number' => '1234',
                 'type' => '4'
@@ -80,6 +81,22 @@ class DatabaseSeeder extends Seeder
                 'request_type' => 1,
                 'order' => 1,
             ],
+        ]);
+
+        AppConfiguration::factory()->CreateMany([
+            [
+                'name' => 'AnnualRequestPeriod',
+                'key' => 'start',
+                'value' => now()->toDateString(),
+            ],[
+                'name' => 'AnnualRequestPeriod',
+                'key' => 'end',
+                'value' => now()->addDays(10)->toDateString(),
+            ],[
+                'name' => 'LastReset',
+                'key' => 'Date',
+                'value' => now()->toDateString(),
+            ]
         ]);
     }
 }

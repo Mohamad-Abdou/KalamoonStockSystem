@@ -18,6 +18,7 @@ class Item extends Model
     protected $fillable = [
         'name',
         'description',
+        'unit',
         'item_group_id',
     ];
 
@@ -26,5 +27,4 @@ class Item extends Model
     {
         return $this->belongsTo(ItemGroup::class, 'item_group_id');
     }
-    
 }

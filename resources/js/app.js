@@ -1,7 +1,4 @@
 import './bootstrap';
+import sort from '@alpinejs/sort'
 
-import Alpine from 'alpinejs';
-
-window.Alpine = Alpine;
-
-Alpine.start();
+Alpine.plugin(sort)

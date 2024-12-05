@@ -16,13 +16,7 @@ class UserGroupTable extends Component
     public function mount()
     {
         // تحميل المستخدمين مع المجموعات
-        $this->users = User::with('itemGroups')
-            ->where('type', '>', 1) // إزالة المستخدمين المميزين
-            ->get()
-            ->map(function ($user) {
-                $user->group_ids = $user->groups ? $user->groups->pluck('id')->toArray() : [];
-                return $user;
-            });
+        $this->users = User::withAssociatedGroups();
     }
 
     public function toggleGroupAssociation($userId, $groupId)
@@ -38,14 +32,6 @@ class UserGroupTable extends Component
             // ربط المستخدم مع المجموعة
             $user->itemGroups()->attach($groupId);
         }
-
-        $this->users = User::with('itemGroups')
-            ->where('type', '>', 1) // إزالة المستخدمين المميزين
-            ->get()
-            ->map(function ($user) {
-                $user->group_ids = $user->groups ? $user->groups->pluck('id')->toArray() : [];
-                return $user;
-            });
     }
 
     public function confirmDeleteGroup($groupId)
@@ -58,18 +44,11 @@ class UserGroupTable extends Component
         }   
         
         $group->delete();
-
-        $this->users = User::with('itemGroups')
-        ->where('type', '>', 1) // Exclude premium users
-        ->get()
-        ->map(function ($user) {
-            $user->group_ids = $user->groups ? $user->groups->pluck('id')->toArray() : [];
-            return $user;
-        });
     }
 
     public function render()
     {
+        $this->users = User::withAssociatedGroups();
         return view('livewire.user-group-table', [
             'groups' => ItemGroup::all()
         ]);

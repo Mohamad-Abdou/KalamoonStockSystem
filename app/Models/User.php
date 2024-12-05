@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -53,11 +54,25 @@ class User extends Authenticatable
         return $this->belongsToMany(ItemGroup::class, 'item_group_user');
     }
 
-    public function getIsAdminAttribute(): bool
+    public function annualRequests(): HasMany
     {
-        return $this->type == 0; 
+        return $this->hasMany(AnnualRequest::class)->orderBy('created_at', 'desc');
     }
 
+    public function items()
+    {
+        return Item::whereIn('item_group_id', $this->itemGroups->pluck('id'))->where('active', 1)->get();
+    }
+
+    public function getIsAdminAttribute(): bool
+    {
+        return $this->type == 0;
+    }
+
+    public function haveActiveRequest(): bool
+    {
+        return $this->annualRequests()->where('state', 2)->exists();
+    }
     public static $usersTypes = [
         0 => 'مدير النظام',
         1 => 'أمين المستودع',
@@ -70,5 +85,25 @@ class User extends Authenticatable
     public function getUserTypeTextAttribute()
     {
         return self::$usersTypes[$this->type] ?? 'Unknown Type';
+    }
+
+    public static function withAssociatedGroups()
+    {
+        return self::with('itemGroups')
+            ->where('type', '>', 1) // إزالة مدير النظام وأمين المستودع
+            ->get()
+            ->map(function ($user) {
+                $user->group_ids = $user->groups ? $user->groups->pluck('id')->toArray() : [];
+                return $user;
+            });
+    }
+
+    public function getIsPartOfTheAnnualFlowAttribute()
+    {
+        return RequestFlow::where('request_type', 0)->where('user_id', $this->id)->exists();
+    }
+    public function getIsPartOfThePerodicFlowAttribute()
+    {
+        return RequestFlow::where('request_type', 1)->where('user_id', $this->id)->exists();
     }
 }

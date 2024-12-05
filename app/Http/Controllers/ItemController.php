@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Item;
 use App\Models\ItemGroup;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as RoutingController;
 
@@ -31,17 +30,26 @@ class ItemController extends RoutingController
         $validatedData = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'unit' => ['string', 'max:100'],
             'item_group_id' => ['required'],
         ]);
+
+        $exists = Item::where('name', $validatedData['name'])
+            ->where('description', $validatedData['description'])
+            ->exists();
+
+        if ($exists) {
+            session()->flash('message', 'يوجد مادة بنفس الاسم والوصف');
+            return redirect()->back()->withInput();
+        }
         // إنشاء المادة
-        $item = Item::create([
+        Item::create([
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
+            'unit' => $validatedData['unit'],
             'item_group_id' => $validatedData['item_group_id'],
         ]);
 
-        return redirect()->route('items.index');
+        return redirect()->back();
     }
-
-    
 }

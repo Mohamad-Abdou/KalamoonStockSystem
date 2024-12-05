@@ -20,6 +20,7 @@ class ItemFactory extends Factory
         return [
             'name' => fake('ar_AS')->firstName(),
             'description' => 'This is A description',
+            'unit' => 'وحدة',
             'item_group_id' => '1',
         ];
     }
