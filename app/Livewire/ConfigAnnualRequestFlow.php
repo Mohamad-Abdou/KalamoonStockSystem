@@ -61,7 +61,7 @@ class ConfigAnnualRequestFlow extends Component
     public function addToFlow($userId)
     {
         if ($this->TheFlow->contains('user_id', $userId)) {
-            $this->dispatch('showMessage', 'المستخدم موجود مسبقاً في التدفق', 'تنبيه');
+            $this->dispatch('showMessage', 'المستخدم موجود مسبقاً في ادفق', 'تنبيه');
             return;
         }
 
