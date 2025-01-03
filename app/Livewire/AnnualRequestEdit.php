@@ -44,12 +44,10 @@ class AnnualRequestEdit extends Component
         if (!$item || array_key_exists($item->id, $this->selectedItems)) {
             return;
         }
-        
-        
-
 
         $this->selectedItems[$item->id] = [
             'name' => $item->name,
+            'unit' => $item->unit,
             'description' => $item->description,
             'quantity' => 1,
         ];

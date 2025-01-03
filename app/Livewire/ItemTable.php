@@ -19,7 +19,12 @@ class ItemTable extends Component
     public $groups;
     public $selectedGroup = null;
 
-    // دالة لتبديل حالة المادة
+
+    public function mount()
+    {
+        $this->authorize('viewAny', Item::class);
+    }
+    // لتبديل حالة المادة
     public function toggleState($id)
     {
         $this->authorize('update', Item::class);
@@ -52,7 +57,6 @@ class ItemTable extends Component
 
     public function render()
     {
-        $this->authorize('viewAny', Item::class);
 
         // جلب العناصر مع التصفية والبحث
         $query = Item::with('item_group')
@@ -66,11 +70,11 @@ class ItemTable extends Component
                 });
             });
 
-        $items = $query->paginate(10);
+        $items = $query->paginate(20);
 
         // جلب جميع المجموعات لعرضها في القائمة المنسدلة
         $groups = ItemGroup::all();
-
+        $this->resetPage();
         return view('livewire.item-table', [
             'items' => $items,
             'groups' => $groups,

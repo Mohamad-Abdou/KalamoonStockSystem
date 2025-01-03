@@ -3,10 +3,10 @@
         <thead class="bg-gray-100 text-gray-700 text-center">
             <tr>
                 <x-table.table-header-element>
-                    المستخدم
+                    الجهة
                 </x-table.table-header-element>
                 @foreach ($groups as $group)
-                    <x-table.table-header-element>
+                    <x-table.table-header-element class="w-1">
                         {{ $group->name }}
                         <button 
                             type="button" 
@@ -25,7 +25,7 @@
                         {{ $user->role }}
                     </x-table.data>
                     @foreach ($groups as $group)
-                        <x-table.data class="border px-4 py-2 text-center">
+                        <x-table.data class="border px-4 py-2 text-center w-1">
                             <input type="checkbox" class="toggle-checkbox text-primary border-gray-300 rounded"
                                 wire:click="toggleGroupAssociation({{ $user->id }}, {{ $group->id }})"
                                 @if ($user->itemGroups && $user->itemGroups->contains($group->id)) checked @endif>

@@ -1,4 +1,4 @@
-<div class="flex justify-between gap-4 px-8 py-2.5 max-y-full">
+<div class="flex justify-center gap-4 px-8 py-2.5 max-y-full w-full">
     <section class="bg-white shadow-sm sm:rounded-lg basis-3/4 items-center">
         <div class="p-6 text-gray-900">
             <div>
@@ -45,7 +45,7 @@
                                         {{ $item->prev['quantity'] }}
                                     </x-table.data>
                                     <x-table.data>
-                                        {{ $item->prev['consumed'] ?? 'N/A' }}
+                                        {{ $item->prev['consumed'] }}
                                     </x-table.data>
                                 @endif
                                 <x-table.data class="w-1/4">

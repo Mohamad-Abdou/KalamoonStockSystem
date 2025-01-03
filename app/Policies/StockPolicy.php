@@ -13,54 +13,58 @@ class StockPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->type === '2' || $user->type === ''
+        return $user->id === 3 || $user->id === 2;
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Stock $stock): bool
+    public function view(User $user, Stock $stock)
     {
-        //
-    }
+        return false;
 
+    }
+    
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user)
     {
-        //
+        return $user->id === 2;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Stock $stock): bool
+    public function update(User $user, Stock $stock)
     {
-        //
+        return false;
+
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Stock $stock): bool
+    public function delete(User $user, Stock $stock)
     {
-        //
+        return false;
+        
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Stock $stock): bool
+    public function restore(User $user, Stock $stock)
     {
-        //
+        return false;
+
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Stock $stock): bool
+    public function forceDelete(User $user, Stock $stock)
     {
-        //
+        return false;
     }
 }
