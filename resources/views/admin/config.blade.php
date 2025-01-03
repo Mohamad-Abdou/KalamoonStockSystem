@@ -33,4 +33,5 @@
         @endif
     </x-card>
     @livewire('ConfigAnnualRequestFlow')
+    @livewire('PeriodicRequest\ConfigPeriodicRequestFlow')
 </x-app-layout>

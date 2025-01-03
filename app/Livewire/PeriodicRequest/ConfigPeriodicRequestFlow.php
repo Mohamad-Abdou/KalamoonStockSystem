@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\PeriodicRequest;
 
 use App\Models\RequestFlow;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
-class ConfigAnnualRequestFlow extends Component
+class ConfigPeriodicRequestFlow extends Component
 {
     public $TheFlow;
     public $search = '';
@@ -15,7 +15,7 @@ class ConfigAnnualRequestFlow extends Component
 
     public function mount()
     {
-        $this->TheFlow = RequestFlow::where('request_type', 0)->orderBy('order')->with('user')->get();
+        $this->TheFlow = RequestFlow::where('request_type', 1)->orderBy('order')->with('user')->get();
     }
 
     public function updatedSearch()
@@ -58,6 +58,7 @@ class ConfigAnnualRequestFlow extends Component
             ->with('user')
             ->get();
     }
+
     public function addToFlow($userId)
     {
         if ($this->TheFlow->contains('user_id', $userId)) {
@@ -69,11 +70,11 @@ class ConfigAnnualRequestFlow extends Component
 
         RequestFlow::create([
             'user_id' => $userId,
-            'request_type' => 0,
+            'request_type' => 1,
             'order' => $maxOrder + 1
         ]);
 
-        $this->TheFlow = RequestFlow::where('request_type', 0)->orderBy('order')->with('user')->get();
+        $this->TheFlow = RequestFlow::where('request_type', 1)->orderBy('order')->with('user')->get();
         $this->search = '';
         $this->searchResults = [];
     }
@@ -84,15 +85,14 @@ class ConfigAnnualRequestFlow extends Component
         $order = $NodeToDelete->order;
 
         DB::transaction(function () use ($NodeToDelete, $order) {
-            RequestFlow::where('request_type', 0)->where('order', '>', $order)->decrement('order');
+            RequestFlow::where('request_type', 1)->where('order', '>', $order)->decrement('order');
             $NodeToDelete->delete();
         });
 
-        $this->TheFlow = RequestFlow::where('request_type', 0)->orderBy('order')->with('user')->get();
+        $this->TheFlow = RequestFlow::where('request_type', 1)->orderBy('order')->with('user')->get();
     }
-
     public function render()
     {
-        return view('admin.config-annual-request-flow');
+        return view('livewire.periodic-request.config-periodic-request-flow');
     }
 }
