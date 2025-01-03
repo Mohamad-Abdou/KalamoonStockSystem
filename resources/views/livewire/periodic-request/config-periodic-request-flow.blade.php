@@ -1,4 +1,4 @@
-<x-card header="تدفق الطلبات السنوية" class="basis-1/3 justify-center bg-second-color h-fit">
+<x-card header="تدفق الطلبات الدورية" class="basis-1/3 justify-center bg-primary h-fit">
     <div class="bg-white w-full my-4 p-4 border rounded-md">
         <div class="mb-5">
             يمكن تغيير الترتيب بالسحب والإفلات
