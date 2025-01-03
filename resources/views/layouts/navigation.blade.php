@@ -37,6 +37,13 @@
                         </x-nav-link>
                     </div>
                 @endcan
+                @can('create', App\Models\Stock::class)
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('stock.insertQunatity')" :active="request()->routeIs('stock.insertQunatity')">
+                            {{ __('إدخال كميات') }}
+                        </x-nav-link>
+                    </div>
+                @endcan
                 @can('viewany', App\Models\AnnualRequest::class)
                     <div class="hidden space-x-8 sm:flex items-center sm:ms-10">
                         <x-dropdown width="48" class="">
@@ -57,9 +64,24 @@
                                     <x-dropdown-link :href="route('annual-requests.archive')">
                                         {{ __('أرشيف الطلبات السنوية') }}
                                     </x-dropdown-link>
+                                    <x-dropdown-link :href="route('reports.annual-request')">
+                                        {{ __('التقارير') }}
+                                    </x-dropdown-link>
                                 @endif
+                                @can('resetYear', App\Models\AnnualRequest::class)
+                                <x-dropdown-link :href="route('annual-request.reset')">
+                                    {{ __('تدوير السنة') }}
+                                </x-dropdown-link>
+                                @endcan
                             </x-slot>
                         </x-dropdown>
+                    </div>
+                @endcan
+                @can('viewAny', App\Models\Stock::class)
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('stocks.index')" :active="request()->routeIs('stocks.index')">
+                            {{ __('حركة المواد') }}
+                        </x-nav-link>
                     </div>
                 @endcan
             </div>
@@ -70,7 +92,7 @@
                     <x-slot name="trigger">
                         <button
                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-black bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div>{{ Auth::user()->user_type_text }}</div>
+                            <div>{{ Auth::user()->role }}</div>
 
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"

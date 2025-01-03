@@ -22,17 +22,19 @@ class AnnualRequestPolicy
 
     public function create(User $user)
     {
-        return $user->type > 1 && !$user->haveActiveRequest();
+        return $user->type > 1 && !$user->getActiveRequest();
+    }
+
+    public function resetYear(User $user)
+    {
+        return $user->id === 3;
     }
 
     public function update(User $user, AnnualRequest $annualRequest)
     {
         return $annualRequest->user_id === $user->id;
     }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
+    
     public function delete(User $user, AnnualRequest $annualRequest)
     {
         //

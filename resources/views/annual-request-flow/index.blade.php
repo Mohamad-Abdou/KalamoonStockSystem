@@ -1,5 +1,5 @@
 <x-app-layout>
-    @if($incoming_requests->count())
+    @if ($incoming_requests->count())
         <div class="flex flex-row flex-wrap w-full">
             @foreach ($incoming_requests as $annual_request)
                 <a href="{{ route('annual-request-flow.show', $annual_request) }}" class="w-1/4 p-2">
@@ -16,8 +16,11 @@
             @endforeach
         </div>
     @else
-        <div class="flex w-full justify-center h-full items-center mt-16"> 
-            <h1 class="text-center text-primary">لا يوجد طلبات واردة</h1>
+        <div class="flex flex-col w-full justify-center h-full items-center mt-16">
+            <h1 class="text-center text-4xl">لا يوجد طلبات واردة</h1>
+            <div class="w-1/3">
+                <img src="/images/empty.gif" alt="empty" class="drop-shadow-md">
+            </div>
         </div>
     @endif
 </x-app-layout>

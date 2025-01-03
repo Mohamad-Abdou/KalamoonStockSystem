@@ -5,20 +5,11 @@ namespace App\Models;
 use Carbon\Carbon;
 use DragonCode\Support\Facades\Helpers\Boolean;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use PhpParser\Node\Stmt\Return_;
 use Illuminate\Support\Facades\Log;
 
-/**
- * نموذج الطلب السنوي
- * 
- * يوفر هذا النموذج طرقًا لإدارة عملية الطلب السنوي، بما في ذلك:
- * - الحصول على تواريخ بداية ونهاية فترة الطلب السنوي
- * - الحصول على تاريخ آخر تصفير للسنة
- * - التحقق مما إذا كان الوقت الحالي ضمن فترة الطلب السنوي
- * - إدارة العلاقة بين الطلبات السنوية والمواد
- * - التعامل مع حالة وحالة الطلبات السنوية
- * - توجيه الطلبات للأمام والخلف
- */
 class AnnualRequest extends Model
 {
     // السماح بالتعبئة الجماعية لجميع الحقول
@@ -77,13 +68,6 @@ class AnnualRequest extends Model
     {
         Log::info('Forward Request Called', [
             'request_id' => $this->id,
-            'caller' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2),
-            'timestamp' => now()->toDateTimeString(),
-            'session_id' => session()->getId()
-        ]);
-
-        Log::info('Starting forward request', [
-            'request_id' => $this->id,
             'current_state' => $this->state,
             'user_id' => $this->user_id
         ]);
@@ -96,16 +80,11 @@ class AnnualRequest extends Model
         }
 
         $current = $this->state;
-    
+
         $currentFlow = RequestFlow::where('request_type', 0)
             ->where('user_id', $current)
             ->first();
-    
-        Log::info('Current flow state', [
-            'current_flow' => $currentFlow ? $currentFlow->toArray() : null
-        ]);
 
-        // Log next flow lookup
         if (!$currentFlow) {
             Log::info('No current flow found, getting first flow');
             $nextFlow = RequestFlow::where('request_type', 0)
@@ -120,10 +99,6 @@ class AnnualRequest extends Model
                 ->orderBy('order')
                 ->first();
         }
-
-        Log::info('Next flow determined', [
-            'next_flow' => $nextFlow ? $nextFlow->toArray() : null
-        ]);
 
         if ($nextFlow && $nextFlow->user_id == $this->user_id) {
             Log::info('same user requester', [
@@ -151,6 +126,70 @@ class AnnualRequest extends Model
             ]);
         }
     }
+
+    public static function resetYear()
+    {
+        $lastReset = self::getLastYearReset();
+
+        if ($lastReset->diffInHours(now()) < 24) {
+            throw new \Exception('يجب الانتظار 24 ساعة على الأقل قبل إعادة تدوير الأرصدة');
+        }
+        DB::transaction(function () {
+
+            PeriodicRequest::where('state', 0)->delete();
+            PeriodicRequest::where('state', '>', -1)->update(['state' => -1]);
+            AnnualRequest::whereNotIn('state', [-1, 2])->delete();
+            AnnualRequest::where('state', '>', -1)->update(['state' => -1]);
+
+            $moveToNextYear = Stock::where('user_id', 2)
+                ->select('item_id')
+                ->where('created_at', '>=', self::getLastYearReset())
+                ->where('created_at', '>=', AnnualRequest::getLastYearReset())
+                ->addSelect(DB::raw('SUM(in_quantity) as total_in'))
+                ->addSelect(DB::raw('SUM(out_quantity) as total_out'))
+                ->groupBy('item_id')
+                ->get()
+                ->map(function ($stock) {
+                    $difference = $stock->total_in - $stock->total_out;
+                    return [
+                        'item_id' => $stock->item_id,
+                        'total_in' => $stock->total_in,
+                        'total_out' => $stock->total_out,
+                        'difference' => $difference
+                    ];
+                });
+
+            $now = Carbon::now();
+            $stockData = $moveToNextYear
+                ->filter(fn($item) => $item['difference'] > 0)
+                ->map(fn($item) => [
+                    'item_id' => $item['item_id'],
+                    'in_quantity' => $item['difference'],
+                    'user_id' => 2,
+                    'details' => ' تدوير أرصدة الفترة من: ' . self::getLastYearReset()->format('Y-m-d') . ' إلى: ' . $now->format('Y-m-d'),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                    'approved' => 0
+                ])
+                ->toArray();
+
+            Stock::insert($stockData);
+
+            AppConfiguration::where('name', 'LastReset')
+                ->where('key', 'Date')
+                ->update(['value' => $now]);
+
+            AppConfiguration::where('name', 'AnnualRequestPeriod')
+                ->where('key', 'start')
+                ->update(['value' => $now]);
+
+            AppConfiguration::where('name', 'AnnualRequestPeriod')
+                ->where('key', 'end')
+                ->update(['value' => $now->copy()->addDays(10)]);
+        });
+    }
+
+
 
     // دالة لإرجاع الطلب للمستخدم السابق في سير العمل
     public function backwordRequest()
@@ -182,7 +221,7 @@ class AnnualRequest extends Model
                 ->where('order', '<', $previousFlow->order)
                 ->orderBy('order', 'DESC')
                 ->first();
-        }   
+        }
         if (!$previousFlow) {
             Log::info('Request returned to draft state', [
                 'request_id' => $this->id
