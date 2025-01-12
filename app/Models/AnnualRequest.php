@@ -28,6 +28,16 @@ class AnnualRequest extends Model
         ];
     }
 
+    // دالة للحصول على حالة السنة
+    public static function getYearState(): bool
+    {
+        $value = AppConfiguration::where('name', 'Year')
+            ->where('key', 'State')
+            ->value('value');
+
+        return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+    }
+
     // دالة للحصول على تاريخ آخر تصفير للسنة
     public static function getLastYearReset()
     {
@@ -45,12 +55,7 @@ class AnnualRequest extends Model
     }
 
     // علاقة مع جدول المواد
-    public function Items()
-    {
-        return $this->belongsToMany(Item::class, 'annual_request_item')
-            ->withPivot('id', 'quantity', 'frozen', 'freeze_reason', 'objection_reason')
-            ->withTimestamps();
-    }
+
 
     // دالة لعرض حالة الطلب كنص
     public function getRequestStateTextAttribute()
@@ -130,7 +135,12 @@ class AnnualRequest extends Model
     public static function resetYear()
     {
         $lastReset = self::getLastYearReset();
+        $yearState = self::getYearState();
 
+        if (!$yearState) {
+            throw new \Exception('لا يمكن إعادة تدوير السنة إذا كانت السنة الحالية غير فعالة');
+        }
+        dd("stop");
         if ($lastReset->diffInHours(now()) < 24) {
             throw new \Exception('يجب الانتظار 24 ساعة على الأقل قبل إعادة تدوير الأرصدة');
         }
@@ -189,7 +199,23 @@ class AnnualRequest extends Model
         });
     }
 
-
+    public static function startYear()
+    {
+        $usersWithNoActiveRequest = User::whereNotIn('type', [0, 1])
+        ->whereDoesntHave('annualRequests', function($query) {
+            $query->where('state', 2);
+        })
+        ->get();
+        if ($usersWithNoActiveRequest->count() > 0) {
+            if ($usersWithNoActiveRequest->count() > 0) {
+                throw new \Exception($usersWithNoActiveRequest);
+            }
+        }
+        
+        AppConfiguration::where('name', 'Year')
+                ->where('key', 'state')
+                ->update(['value' => true]);
+    }
 
     // دالة لإرجاع الطلب للمستخدم السابق في سير العمل
     public function backwordRequest()
@@ -239,5 +265,12 @@ class AnnualRequest extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function Items()
+    {
+        return $this->belongsToMany(Item::class, 'annual_request_item')
+            ->withPivot('id', 'quantity', 'frozen', 'freeze_reason', 'objection_reason')
+            ->withTimestamps();
     }
 }

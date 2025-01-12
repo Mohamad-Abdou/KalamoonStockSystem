@@ -14,13 +14,31 @@ use function Pest\Laravel\get;
 class AnnualRequestCreate extends Component
 {
     use WithPagination;
+    public $search = '';
+    public $showDropdown = false;
     public $itemsToRequest;
     public $selectedItems = [];
+
     public function mount()
     {
         $user = Auth::user();
         // اختيار المواد التي يمكن للمستخدم طلبها فقط
         $this->itemsToRequest = $user->items();
+    }
+
+    public function updatedSearch()
+    {
+        $this->showDropdown = strlen($this->search) > 0;
+    }
+
+    public function getFilteredItemsProperty()
+    {
+        if (!$this->search) {
+            return collect();
+        }
+
+        return $this->itemsToRequest
+            ->filter(fn($item) => str_contains(strtolower($item->name), strtolower($this->search)));
     }
 
     public function addItem($newItemId)
@@ -32,6 +50,8 @@ class AnnualRequestCreate extends Component
         $item = $this->itemsToRequest->find($newItemId);
 
         if (!$item || array_key_exists($item->id, $this->selectedItems)) {
+            $this->search = '';
+            $this->showDropdown = false;
             return;
         }
 
@@ -42,6 +62,8 @@ class AnnualRequestCreate extends Component
             'unit' => $item->unit,
             'quantity' => 1,
         ];
+        $this->search = '';
+        $this->showDropdown = false;
     }
 
     public function removeItem($itemId)

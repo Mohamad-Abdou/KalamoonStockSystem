@@ -5,6 +5,8 @@ use App\Http\Controllers\AnnualRequestController;
 use App\Http\Controllers\AnnualRequestFlowController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemGroupController;
+use App\Http\Controllers\PeriodicRequestController;
+use App\Http\Controllers\PeriodicRequestFlowController;
 use App\Http\Controllers\RepoertsController;
 use App\Http\Controllers\StockController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +34,12 @@ Route::resource('/annual-request', AnnualRequestController::class)->middleware([
 Route::resource('/annual-request-flow', AnnualRequestFlowController::class)
 ->middleware(['auth', 'AnnualFlow'])
 ->parameters(['annual-request-flow' => 'annual_request']);
+
+Route::resource('/periodic-request', PeriodicRequestController::class)->middleware(['auth']);
+Route::resource('/periodic-request-flow', PeriodicRequestFlowController::class)
+->middleware(['auth', 'PeriodicFlow']);
+
+Route::get('/periodic-archive', [PeriodicRequestController::class, 'archive'])->name('periodic-requests.archive')->middleware(['auth']);
 Route::get('/archive', [AnnualRequestController::class, 'archive'])->name('annual-requests.archive')->middleware(['auth']);
 
 // Annual Request Accessories 
@@ -44,6 +52,7 @@ Route::get('/reset-year', [AnnualRequestController::class, 'resetYear'])->name('
 Route::resource('/stocks', StockController::class)->middleware(['auth']);
 Route::prefix('stock')->group(function () {
     Route::get('/insert', [StockController::class, 'create'])->name('stock.insertQunatity')->middleware(['auth']);
+    Route::get('/periodic-requests', [StockController::class, 'PeriodicRequests'])->name('stock.periodic-requests')->middleware(['auth']);
 });
 
 require __DIR__ . '/auth.php';

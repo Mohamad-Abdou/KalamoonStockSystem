@@ -50,7 +50,7 @@
                                 @endif
                                 <x-table.data class="w-1/4">
                                     <x-text-input wire:model.live.debounce.1000ms="objection.{{ $item->pivot->id }}"
-                                        class="w-full" />
+                                        class="w-full font-light" />
                                 </x-table.data>
                             </tr>
                         @endforeach

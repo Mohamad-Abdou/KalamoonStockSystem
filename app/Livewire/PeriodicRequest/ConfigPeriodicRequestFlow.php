@@ -12,6 +12,7 @@ class ConfigPeriodicRequestFlow extends Component
     public $TheFlow;
     public $search = '';
     public $searchResults = [];
+    public $showQuantityModal = false;
 
     public function mount()
     {

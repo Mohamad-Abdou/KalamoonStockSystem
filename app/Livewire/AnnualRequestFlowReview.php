@@ -58,7 +58,7 @@ class AnnualRequestFlowReview extends Component
 
         $this->annual_request->update(['return_reason' => $this->return_reason]);
         $this->annual_request->backwordRequest();
-        session()->flash('message', 'تم إرجاع الطللب بنجاح');
+        session()->flash('message', 'تم إرجاع الطلب بنجاح');
         return redirect()->route('annual-request-flow.index');
     }
 

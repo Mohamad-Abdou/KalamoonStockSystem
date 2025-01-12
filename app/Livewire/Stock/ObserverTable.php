@@ -20,7 +20,7 @@ class ObserverTable extends Component
     public $sortDirection = 'desc';
     public $paginate = true;
     public $filters = [
-        'this-year' => false,
+        'this-year' => true,
         'date_from' => '',
         'date_to' => ''
     ];
