@@ -19,7 +19,6 @@ class AnnualRequestFlowReview extends Component
         $this->previous_annual_request = $previous_annual_request;
 
         if ($this->previous_annual_request) {
-            dd($this->previous_annual_request);
             $this->linkPrevious();
         }
         // Initialize objection array with existing values
