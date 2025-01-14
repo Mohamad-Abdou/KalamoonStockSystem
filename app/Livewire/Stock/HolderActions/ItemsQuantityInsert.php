@@ -49,10 +49,17 @@ class ItemsQuantityInsert extends Component
 
     public function render()
     {
+        $items = Item::when($this->search, function($query) {
+            $query->where('name', 'like', '%' . $this->search . '%');
+        })
+        ->paginate(20);
+    
+        $items->getCollection()->transform(function($item) {
+            return Stock::addStockToItem($item);
+        });
+    
         return view('livewire.stock.holder-actions.items-quantity-insert', [
-            'items' => Item::when($this->search, function($query) {
-                $query->where('name', 'like', '%' . $this->search . '%');
-            })->paginate(20)
+            'items' => $items
         ]);
     }
 }

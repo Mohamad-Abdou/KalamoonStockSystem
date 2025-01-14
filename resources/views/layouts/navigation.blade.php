@@ -60,14 +60,16 @@
                                     <x-dropdown-link :href="route('annual-requests.archive')">
                                         {{ __('أرشيف الطلبات السنوية') }}
                                     </x-dropdown-link>
-                                    <x-dropdown-link :href="route('reports.annual-request')">
-                                        {{ __('التقارير') }}
-                                    </x-dropdown-link>
                                 @endif
                                 @can('resetYear', App\Models\AnnualRequest::class)
-                                <x-dropdown-link :href="route('annual-request.reset')">
-                                    {{ __('تدوير السنة') }}
-                                </x-dropdown-link>
+                                    <x-dropdown-link :href="route('annual-request.reset')">
+                                        {{ __('تدوير السنة') }}
+                                    </x-dropdown-link>
+                                @endcan
+                                @can('balancesManager', App\Models\AnnualRequest::class)
+                                    <x-dropdown-link :href="route('annual-request.balanes')">
+                                        {{ __('إدارة الأرصدة') }}
+                                    </x-dropdown-link>
                                 @endcan
                             </x-slot>
                         </x-dropdown>
@@ -88,10 +90,7 @@
                                 </x-dropdown-link>
                                 @if (Auth::user()->is_part_of_the_periodic_flow)
                                     <x-dropdown-link :href="route('periodic-request-flow.index')">
-                                        {{ __('طلبات المواد الواردة') }}
-                                    </x-dropdown-link>
-                                    <x-dropdown-link :href="route('periodic-requests.archive')">
-                                        {{ __('أرشيف طلبات الاحتياج') }}
+                                        {{ __('طلبات الاحتياج الواردة') }}
                                     </x-dropdown-link>
                                 @endif
                             </x-slot>

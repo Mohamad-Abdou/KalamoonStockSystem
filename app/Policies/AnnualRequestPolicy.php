@@ -25,10 +25,7 @@ class AnnualRequestPolicy
         return $user->type > 1 && !$user->getActiveRequest();
     }
 
-    public function resetYear(User $user)
-    {
-        return $user->id === 3;
-    }
+    
 
     public function update(User $user, AnnualRequest $annualRequest)
     {
@@ -54,5 +51,20 @@ class AnnualRequestPolicy
     public function forceDelete(User $user, AnnualRequest $annualRequest)
     {
         //
+    }
+
+    public function archive(User $user)
+    {
+        return $user->getIsPartOfTheAnnualFlowAttribute();
+    }
+
+    public function resetYear(User $user)
+    {
+        return $user->type == 2;
+    }
+
+    public function balancesManager(User $user)
+    {
+        return $user->type == 2;
     }
 }

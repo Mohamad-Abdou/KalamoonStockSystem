@@ -21,6 +21,10 @@ class Stock extends Model
 
     public static function outStock(Item $item, int $quantity, string $details)
     {
+        $item = self::addStockToItem($item);
+        if($item->inSotckAvalible < $quantity) {
+            new \Exception('لا يوجد كمية متاحة في المستودع');
+        }
         Stock::create([
             'item_id' => $item->id,
             'user_id' => 2,
@@ -41,11 +45,27 @@ class Stock extends Model
         Stock::create([
             'item_id' => $item->id,
             'user_id' => $user->id,
-            'annual_request_id' => $user->getActiveRequest()->id,
             'in_quantity' => $quantity,
+            'annual_request_id' => $user->getActiveRequest()->id,
             'details' => $details,
             'approved' => true,
         ]);
+    }
+
+    public static function MoveBalance(Item $item, int $quantity, User $fromUser, User $toUser)
+    {
+        if (Stock::getUserBalance($fromUser, $item) < $quantity) {
+            throw new \Exception('لا يوجد رصيد كافي للنقل');
+        }
+        Stock::create([
+            'item_id' => $item->id,
+            'user_id' => $fromUser->id,
+            'out_quantity' => $quantity,
+            'annual_request_id' => $fromUser->getActiveRequest()->id,
+            'details' => 'نقل رصيد إلى ' . $toUser->role,
+            'approved' => true,
+        ]);
+        self::addBalance($item, $quantity, 'نقل رصيد من ' . $fromUser->role, $toUser);
     }
 
     public static function removeBalance(Item $item, int $quantity, string $details, User $user)
@@ -181,6 +201,7 @@ class Stock extends Model
 
         return $totalRequested;
     }
+
     public static function addAllowedQuantityToRequest(Item $item, User $user) : Item
     {
         $item = Stock::addStockToItem($item);

@@ -39,7 +39,6 @@ Route::resource('/periodic-request', PeriodicRequestController::class)->middlewa
 Route::resource('/periodic-request-flow', PeriodicRequestFlowController::class)
 ->middleware(['auth', 'PeriodicFlow']);
 
-Route::get('/periodic-archive', [PeriodicRequestController::class, 'archive'])->name('periodic-requests.archive')->middleware(['auth']);
 Route::get('/archive', [AnnualRequestController::class, 'archive'])->name('annual-requests.archive')->middleware(['auth']);
 
 // Annual Request Accessories 
@@ -47,6 +46,7 @@ Route::prefix('reports')->group(function () {
     Route::get('/annual-request', [RepoertsController::class, 'annualRequest'])->name('reports.annual-request')->middleware(['auth']);
 });
 Route::get('/reset-year', [AnnualRequestController::class, 'resetYear'])->name('annual-request.reset')->middleware(['auth']);
+Route::get('/balance-manager', [AnnualRequestController::class, 'manageBalances'])->name('annual-request.balanes')->middleware(['auth']);
 
 // Stock Routes
 Route::resource('/stocks', StockController::class)->middleware(['auth']);

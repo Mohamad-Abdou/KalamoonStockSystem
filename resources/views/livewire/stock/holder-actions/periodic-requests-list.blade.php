@@ -1,12 +1,11 @@
 <section class="bg-white shadow-sm sm:rounded-lg w-full">
-    <div class="p-6 text-gray-900">
-
+    <div class="p-6 text-gray-900"> 
         <x-table.table>
             <thead class="bg-gray-100  font-fit text-gray-700 text-center">
                 <tr>
                     <x-table.table-header-element>
                         الجهة
-                    </x-table.table-header-element>
+                    </x-table.table-header-element> 
                     <x-table.table-header-element>
                         <p class="text-xs">
                             الهاتف الداخلي للجهة

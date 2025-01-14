@@ -63,7 +63,6 @@ class ItemRequest extends Component
             return;
         }
 
-
         $request = PeriodicRequest::create([
             'user_id' => $user->id,
             'item_id' => $this->selectedItem->id,

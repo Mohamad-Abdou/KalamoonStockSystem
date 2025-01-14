@@ -1,4 +1,4 @@
-<div class="flex flex-col w-3/4"  wire:loading.class="pointer-events-none opacity-100">
+<div class="flex flex-col w-3/4" wire:loading.class="pointer-events-none opacity-100">
     @if ($request->state != 0 && $request->state != 2 && $holdWith)
         <div class="flex flex-col justify-center mb-7">
             <div class=" space-y-5">
@@ -38,11 +38,11 @@
                     <x-table.table-header-element>
                         الرصيد المتبقي
                     </x-table.table-header-element>
-                @endif
-                @if (Auth::user()->type == 2)
-                    <x-table.table-header-element>
-                        تجميد الرصيد
-                    </x-table.table-header-element>
+                    @if (Auth::user()->type == 2)
+                        <x-table.table-header-element>
+                            تجميد الرصيد
+                        </x-table.table-header-element>
+                    @endif
                 @endif
             </tr>
         </thead>
@@ -76,15 +76,16 @@
                         <x-table.data class="{{ $item->balance <= 0 ? 'bg-red-500' : '' }}">
                             {{ $item->balance ?? 0 }}
                         </x-table.data>
-                    @endif
-                    @if (Auth::user()->type == 2)
-                    <div wire:key="item-{{ $item->id }}">
-                        <x-table.data class="text-center w-1" >
-                            <input type="checkbox" class="toggle-checkbox text-primary border-gray-500 rounded"
-                               @cody i want to pass request id and item id 
-                               wire:click="toggleFrozen({{ $request->id }}, {{ $item->id }})" @checked($item->pivot->frozen)>
-                        </x-table.data>
-                    </div>
+                        @if (Auth::user()->type == 2)
+                            <div wire:key="item-{{ $item->id }}">
+                                <x-table.data class="text-center w-1">
+                                    <input type="checkbox" class="toggle-checkbox text-primary border-gray-500 rounded"
+                                        @cody i want to pass request id and item id
+                                        wire:click="toggleFrozen({{ $request->id }}, {{ $item->id }})"
+                                        @checked($item->pivot->frozen)>
+                                </x-table.data>
+                            </div>
+                        @endif
                     @endif
                 </tr>
             @endforeach
