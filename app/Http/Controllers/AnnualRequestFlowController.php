@@ -35,14 +35,16 @@ class AnnualRequestFlowController extends RoutingController
             ->orderBy('id', 'DESC')
             ->first();
 
-        $previous_annual_request = Stock::addUserYearConsumed($previous_annual_request);
-        $annualRequest->items->each(function ($item) use ($previous_annual_request) {
-            $prev_item = $previous_annual_request?->items->firstWhere('id', $item->id);
-            $item->prev = [
-                'consumed' => $prev_item ? (int)$prev_item->consumed : 0,
-                'quantity' => $prev_item ? $prev_item->pivot->quantity : 0
-            ];
-        });
+        if ($$previous_annual_request) {
+            $previous_annual_request = Stock::addUserYearConsumed($previous_annual_request);
+            $annualRequest->items->each(function ($item) use ($previous_annual_request) {
+                $prev_item = $previous_annual_request?->items->firstWhere('id', $item->id);
+                $item->prev = [
+                    'consumed' => $prev_item ? (int)$prev_item->consumed : 0,
+                    'quantity' => $prev_item ? $prev_item->pivot->quantity : 0
+                ];
+            });
+        }
 
 
         return view('annual-request-flow.show', [

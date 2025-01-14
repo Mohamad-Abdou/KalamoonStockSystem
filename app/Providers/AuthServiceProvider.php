@@ -8,11 +8,13 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 use App\Models\AnnualRequest;
 use App\Models\Item;          // Import your model(s)
 use App\Models\ItemGroup;
+use App\Models\PeriodicRequest;
 use App\Models\Stock;
 use App\Policies\AnnualRequestFlowPolicy;
 use App\Policies\AnnualRequestPolicy;
 use App\Policies\ItemGroupPolicy;
 use App\Policies\ItemPolicy;  // Import corresponding policy/policies
+use App\Policies\PeriodicRequestPolicy;
 use App\Policies\StockPolicy;
 
 class AuthServiceProvider extends ServiceProvider
@@ -27,6 +29,8 @@ class AuthServiceProvider extends ServiceProvider
         ItemGroup::class => ItemGroupPolicy::class, 
         AnnualRequest::class => AnnualRequestPolicy::class,
         Stock::class => StockPolicy::class,
+        Stock::class => StockPolicy::class,
+        PeriodicRequest::class => PeriodicRequestPolicy::class,
     ];
 
     /**

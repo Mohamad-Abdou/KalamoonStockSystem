@@ -18,6 +18,11 @@ class StockController extends RoutingController
 
     }
 
+    public function PeriodicRequests()
+    {
+        return view('stock.holderActions.periodicRequests');
+    }
+
     public function index()
     {
         return view('stock.index');

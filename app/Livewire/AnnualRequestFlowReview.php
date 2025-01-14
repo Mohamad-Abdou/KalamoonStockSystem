@@ -18,25 +18,31 @@ class AnnualRequestFlowReview extends Component
         $this->return_reason = $annual_request->return_reason;
         $this->previous_annual_request = $previous_annual_request;
 
-        $this->linkPrevious();
+        if ($this->previous_annual_request) {
+            $this->linkPrevious();
+        }
         // Initialize objection array with existing values
         foreach ($this->annual_request->items as $item) {
             $this->objection[$item->pivot->id] = $item->pivot->objection_reason;
         }
     }
-    
+
     public function updatedObjection($newValue, $itemId)
     {
         $item = $this->annual_request->items()
-        ->wherePivot('id', $itemId)
-        ->firstOrFail();
-        
+            ->wherePivot('id', $itemId)
+            ->firstOrFail();
+
         $item->pivot->objection_reason = $newValue;
         $item->pivot->save();
-        $this->linkPrevious();
+        if ($this->previous_annual_request) {
+            $this->linkPrevious();
+        }
         $this->objection[$itemId] = $newValue;
     }
-    private function linkPrevious(){
+    private function linkPrevious()
+    {
+
         $previous_annual_request = Stock::addUserYearConsumed($this->previous_annual_request);
         $this->annual_request->items->each(function ($item) use ($previous_annual_request) {
             $prev_item = $previous_annual_request?->items->firstWhere('id', $item->id);
@@ -58,7 +64,7 @@ class AnnualRequestFlowReview extends Component
 
         $this->annual_request->update(['return_reason' => $this->return_reason]);
         $this->annual_request->backwordRequest();
-        session()->flash('message', 'تم إرجاع الطللب بنجاح');
+        session()->flash('message', 'تم إرجاع الطلب بنجاح');
         return redirect()->route('annual-request-flow.index');
     }
 
@@ -67,7 +73,7 @@ class AnnualRequestFlowReview extends Component
         try {
             // Move request forward in workflow
             $this->annual_request->forwardRequest();
-            
+
             // Show success message and redirect
             session()->flash('message', 'تم تحويل الطلب بنجاح');
             return redirect()->route('annual-request-flow.index');
@@ -76,12 +82,13 @@ class AnnualRequestFlowReview extends Component
             $this->dispatch('showMessage', $e->getMessage(), 'خطأ');
         }
     }
-    
+
 
     public function render()
     {
-        $this->linkPrevious();
-
+        if ($this->previous_annual_request) {
+            $this->linkPrevious();
+        }
         return view('livewire.annual-request-flow-review');
     }
 }

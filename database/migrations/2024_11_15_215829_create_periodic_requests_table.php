@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreignId('item_id')->constrained();
             $table->integer('state')->default(0);
             $table->integer('quantity');
-            $table->string('rejection_reason', 300);
+            $table->string('rejection_reason', 300)->nullable();
             $table->timestamps();
         });
     }

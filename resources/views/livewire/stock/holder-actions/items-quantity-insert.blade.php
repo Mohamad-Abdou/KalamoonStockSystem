@@ -10,15 +10,18 @@
         @foreach ($items as $key => $item)
             <div class="basis-1/5 p-4">
                 <x-card wire:click="selectItem({{ $item->id }})"
-                    class="flex flex-col h-full items-center cursor-pointer transform transition-transform duration-200 hover:scale-105 {{ $key % 2 === 0 ? 'bg-primary' : 'bg-gray-500' }}">
-                    <div class="mb-2">
+                    class="flex flex-col h-full items-center border-4 border-second-color rounded cursor-pointer transition-transform duration-200 hover:scale-105 bg-primary }}">
+                    <div class="flex flex-col justify-between h-full w-full items-center mb-2">
                         <x-slot:header class="mb-5 text-black">
                             {{ $item->name }} ( {{ $item->unit }} )
                         </x-slot:header>
+                        <p class="w-full text-gray-100 border-t-2 rounded border-white pt-2">
+                            {{ $item->description }}
+                        </p>
+                        <p class="w-full text-center text-gray-100 border-t-2 rounded border-white pt-2">
+                            الكمية الحالية : {{ $item->inStockAvalible }}
+                        </p>
                     </div>
-                    <p class="w-full text-gray-100 border-t-2 rounded border-white pt-2">
-                        {{ $item->description }}
-                    </p>
                 </x-card>
             </div>
         @endforeach

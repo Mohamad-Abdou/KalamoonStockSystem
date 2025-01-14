@@ -85,11 +85,20 @@ class AnnualRequestController extends RoutingController
 
     public function resetYear()
     {
+        $this->authorize('resetYear', AnnualRequest::class);
         return view('annual-request.year-reset');
     }
 
     public function archive()
     {
+        $this->authorize('archive', AnnualRequest::class);
         return view('annual-request.archive');
+    }
+
+    public function manageBalances ()
+    {
+        $this->authorize('balancesManager', AnnualRequest::class);
+        $activeYear = AnnualRequest::getYearState();
+        return view('annual-request.balanes', ['activeYear' => $activeYear]);   
     }
 }

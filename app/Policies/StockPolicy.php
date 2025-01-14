@@ -13,7 +13,7 @@ class StockPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->id === 3 || $user->id === 2;
+        return $user->type == 2;
     }
 
     /**
