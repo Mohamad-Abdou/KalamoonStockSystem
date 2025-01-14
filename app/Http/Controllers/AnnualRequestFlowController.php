@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\AnnualRequest;
+use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller as RoutingController;
@@ -12,7 +13,7 @@ class AnnualRequestFlowController extends RoutingController
 {
     use WithPagination;
     public function __construct()
-    {   
+    {
         $this->middleware('AnnualFlow');
     }
 
@@ -34,10 +35,17 @@ class AnnualRequestFlowController extends RoutingController
             ->orderBy('id', 'DESC')
             ->first();
 
-        $annualRequest->items->each(function ($item) use ($previous_annual_request) {
-            $prev_item = $previous_annual_request?->items->firstWhere('id', $item->id);
-            $item->prev = ['quantity' => $prev_item ? $prev_item->pivot->quantity : 0];
-        });
+        if ($$previous_annual_request) {
+            $previous_annual_request = Stock::addUserYearConsumed($previous_annual_request);
+            $annualRequest->items->each(function ($item) use ($previous_annual_request) {
+                $prev_item = $previous_annual_request?->items->firstWhere('id', $item->id);
+                $item->prev = [
+                    'consumed' => $prev_item ? (int)$prev_item->consumed : 0,
+                    'quantity' => $prev_item ? $prev_item->pivot->quantity : 0
+                ];
+            });
+        }
+
 
         return view('annual-request-flow.show', [
             'annual_request' => $annualRequest,

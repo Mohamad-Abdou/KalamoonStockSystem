@@ -27,41 +27,41 @@ class ConfigAnnualRequestFlow extends Component
         }
     }
 
-    public function updateSort($flowId, $newOrder){
-
+    public function updateSort($flowId, $newOrder)
+    {
         $flow = RequestFlow::find($flowId);
         $currentOrder = $flow->order;
+        $requestType = $flow->request_type;
 
         $newOrder += 1;
 
         if ($currentOrder === $newOrder) return;
 
-        $flow->update([
-            'order' => -1,
-        ]);
+        DB::transaction(function () use ($flow, $currentOrder, $newOrder, $requestType) {
+            $flow->update(['order' => 0]);
 
-        $OrderToShif = RequestFlow::whereBetween('order', [
-            min($currentOrder, $newOrder),
-            max($currentOrder, $newOrder),
-        ]);
-        
-        if ($currentOrder < $newOrder) {
-            $OrderToShif->decrement('order');
-        } else {
-            $OrderToShif->increment('order');
-            
-        }
+            $query = RequestFlow::where('request_type', $requestType);
 
-        $flow->update([
-            'order' => $newOrder,
-        ]);
-        $this->TheFlow = RequestFlow::where('request_type', 0)->orderBy('order')->with('user')->get();
-        
+            if ($currentOrder < $newOrder) {
+                $query->whereBetween('order', [$currentOrder + 1, $newOrder])
+                    ->decrement('order');
+            } else {
+                $query->whereBetween('order', [$newOrder, $currentOrder - 1])
+                    ->increment('order');
+            }
+
+            $flow->update(['order' => $newOrder]);
+        });
+
+        $this->TheFlow = RequestFlow::where('request_type', $requestType)
+            ->orderBy('order')
+            ->with('user')
+            ->get();
     }
     public function addToFlow($userId)
     {
         if ($this->TheFlow->contains('user_id', $userId)) {
-            $this->dispatch('showMessage', 'المستخدم موجود مسبقاً في ادفق', 'تنبيه');
+            $this->dispatch('showMessage', 'المستخدم موجود مسبقاً في التدفق', 'تنبيه');
             return;
         }
 
@@ -82,8 +82,8 @@ class ConfigAnnualRequestFlow extends Component
     {
         $NodeToDelete = RequestFlow::find($id);
         $order = $NodeToDelete->order;
-        
-        DB::transaction(function () use($NodeToDelete, $order){
+
+        DB::transaction(function () use ($NodeToDelete, $order) {
             RequestFlow::where('request_type', 0)->where('order', '>', $order)->decrement('order');
             $NodeToDelete->delete();
         });

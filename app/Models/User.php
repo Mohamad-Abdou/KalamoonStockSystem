@@ -54,24 +54,15 @@ class User extends Authenticatable
         return $this->belongsToMany(ItemGroup::class, 'item_group_user');
     }
 
-    public function annualRequests(): HasMany
-    {
-        return $this->hasMany(AnnualRequest::class)->orderBy('created_at', 'desc');
-    }
-
-    public function items()
-    {
-        return Item::whereIn('item_group_id', $this->itemGroups->pluck('id'))->where('active', 1)->get();
-    }
 
     public function getIsAdminAttribute(): bool
     {
         return $this->type == 0;
     }
 
-    public function haveActiveRequest(): bool
+    public function getActiveRequest()
     {
-        return $this->annualRequests()->where('state', 2)->exists();
+        return $this->annualRequests()->where('state', 2)->first() ?? null;
     }
     public static $usersTypes = [
         0 => 'مدير النظام',
@@ -102,8 +93,26 @@ class User extends Authenticatable
     {
         return RequestFlow::where('request_type', 0)->where('user_id', $this->id)->exists();
     }
-    public function getIsPartOfThePerodicFlowAttribute()
+    
+    public function getIsPartOfThePeriodicFlowAttribute()
     {
         return RequestFlow::where('request_type', 1)->where('user_id', $this->id)->exists();
+    }
+    
+    
+    // Relations
+    public function annualRequests(): HasMany
+    {
+        return $this->hasMany(AnnualRequest::class)->orderBy('created_at', 'desc');
+    }
+
+    public function periodicRequests(): HasMany
+    {
+        return $this->hasMany(PeriodicRequest::class)->orderBy('created_at', 'desc');
+    }
+
+    public function items()
+    {
+        return Item::whereIn('item_group_id', $this->itemGroups->pluck('id'))->where('active', 1)->get();
     }
 }

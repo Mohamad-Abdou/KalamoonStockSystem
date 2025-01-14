@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\UserPartOfTheAnnualFlow;
+use App\Http\Middleware\UserPartOfThePeriodicFlow;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -13,7 +14,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'AnnualFlow' => UserPartOfTheAnnualFlow::class
+            'AnnualFlow' => UserPartOfTheAnnualFlow::class,
+            'PeriodicFlow' => UserPartOfThePeriodicFlow::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

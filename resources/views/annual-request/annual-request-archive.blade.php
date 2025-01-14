@@ -23,21 +23,20 @@
             </div>
         </div>
         <div class="flex flex-col gap-2">
-            
+
             <div class="flex items-center gap-2">
                 <span>بين</span>
                 <input type="date" wire:model.live="dateFrom"
-                class="rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                    class="rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
                 <span>و</span>
                 <input type="date" wire:model.live="dateTo"
-                class="rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                    class="rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
             </div>
             <input type="text" wire:model.live="search" placeholder="البحث باسم المستخدم"
                 class="rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
         </div>
         <div class="flex justify-end">
-            <button wire:click="resetFilters" 
-                class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
+            <button wire:click="resetFilters" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-md">
                 إعادة التعيين
             </button>
         </div>
@@ -52,7 +51,11 @@
                         <x-slot:header>
                             {{ $request->user->role }}
                         </x-slot:header>
-                        {{ $request->getRequestStateTextAttribute() }}
+                        <div class="text-center">
+                            {{ $request->getRequestStateTextAttribute() }}
+                            <br>
+                            {{ $request->created_at->format('m-Y') }}
+                        </div>
                     </x-card>
                 </a>
             </div>

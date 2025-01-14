@@ -27,7 +27,7 @@
                 <x-table.table-header-element>
                     وصف المادة
                 </x-table.table-header-element>
-                <x-table.table-header-element>
+                <x-table.table-header-element class="w-fit">
                     المجموعة
                 </x-table.table-header-element>
                 <x-table.table-header-element class="w-1">
@@ -48,8 +48,8 @@
                         {{ $item->description }}
                     </x-table.data>
                     
-                    <x-table.data>
-                        <x-input-dropdown-list class="border rounded w-full"
+                    <x-table.data class="w-fit">
+                        <x-input-dropdown-list class="border rounded w-fit"
                             wire:change="updateItemGroup({{ $item->id }}, $event.target.value)">
                             @foreach ($groups as $group)
                                 <option value="{{ $group->id }}" @if ($group->id === $item->item_group_id) selected @endif>

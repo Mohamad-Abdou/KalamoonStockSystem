@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-card header="فترة الطلب السنوي القادم" class="basis-1/3 justify-center bg-primary">
+    <x-card header="فترة الطلب السنوي القادم" class="basis-1/3 justify-center bg-primary h-fit">
         <form action="{{ route('admin.annual-requests.update-period') }}" method="POST" class="space-y-4">
             @csrf
             @method('PUT')
@@ -33,4 +33,5 @@
         @endif
     </x-card>
     @livewire('ConfigAnnualRequestFlow')
+    @livewire('PeriodicRequest\ConfigPeriodicRequestFlow')
 </x-app-layout>

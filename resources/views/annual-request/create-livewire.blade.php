@@ -1,13 +1,31 @@
 <div class="flex items-center justify-center w-full">
     <div class="basis-3/4 space-y-4">
         <div>
-            <x-input-dropdown-list wire:change="addItem($event.target.value)" class="w-full" name="item_id"
-                placeholder="">
-                <option value="" disabled selected hidden>اختر مادة</option>
-                @foreach ($itemsToRequest as $item)
-                    <option value="{{ $item->id }}">{{ $item->name }}</option>
-                @endforeach
-            </x-input-dropdown-list>
+            <div class="relative">
+                <x-text-input 
+                    wire:model.live="search"
+                    type="text" 
+                    class="w-full"
+                    placeholder="البحث عن مادة..."
+                />
+                
+                @if($showDropdown)
+                    <div class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg">
+                        <ul class="py-1 max-h-60 overflow-y-auto">
+                            @foreach($this->filteredItems as $item)
+                                <li>
+                                    <button
+                                        wire:click="addItem({{ $item->id }})"
+                                        class="w-full px-4 py-2 text-right hover:bg-gray-100"
+                                    >
+                                        {{ $item->name }} ({{ $item->unit }}) الوصف:  {{ $item->description }}
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </div>
         </div>
         <x-table.table>
             <thead class="bg-gray-100 text-gray-700 text-center">

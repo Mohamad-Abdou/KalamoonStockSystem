@@ -23,6 +23,10 @@
                 visibility: hidden;
             }
 
+            #dontPrint * {
+                visibility: hidden;
+            }
+
             #printableTable,
             #printableTable * {
                 visibility: visible;
@@ -52,7 +56,7 @@
         <main>
 
             <div class="py-6">
-                <div class="flex justify-between gap-4 px-8 py-2.5 max-y-full">
+                <div class="flex justify-center gap-4 px-8 py-2.5 max-y-full">
                     {{ $slot }}
                 </div>
             </div>

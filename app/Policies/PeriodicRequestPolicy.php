@@ -13,7 +13,7 @@ class PeriodicRequestPolicy
      */
     public function viewAny(User $user)
     {
-        //
+        return $user->id > 2;
     }
 
     public function view(User $user, PeriodicRequest $periodicRequest)

@@ -14,6 +14,8 @@ class AnnualRequestEdit extends Component
     public $annualRequest;
     public $itemsToRequest;
     public $selectedItems = [];
+    public $search = '';
+    public $showDropdown = false;
 
     public function mount($annualRequestId)
     {
@@ -33,6 +35,20 @@ class AnnualRequestEdit extends Component
         $this->itemsToRequest = $user->items();
     }
 
+    public function updatedSearch()
+    {
+        $this->showDropdown = strlen($this->search) > 0;
+    }
+
+    public function getFilteredItemsProperty()
+    {
+        if (!$this->search) {
+            return collect();
+        }
+
+        return $this->itemsToRequest
+            ->filter(fn($item) => str_contains(strtolower($item->name), strtolower($this->search)));
+    }
     public function addItem($newItemId)
     {
         if (!$newItemId) {
@@ -42,17 +58,19 @@ class AnnualRequestEdit extends Component
         $item = $this->itemsToRequest->find($newItemId);
 
         if (!$item || array_key_exists($item->id, $this->selectedItems)) {
+            $this->search = '';
+            $this->showDropdown = false;
             return;
         }
-        
-        
-
 
         $this->selectedItems[$item->id] = [
             'name' => $item->name,
+            'unit' => $item->unit,
             'description' => $item->description,
             'quantity' => 1,
         ];
+        $this->search = '';
+        $this->showDropdown = false;
     }
 
     public function removeItem($itemId)
@@ -68,7 +86,7 @@ class AnnualRequestEdit extends Component
             'selectedItems.*.quantity' => 'required|integer|min:1',
         ]);
         foreach ($this->selectedItems as $itemId => $details) {
-            
+
             if ($this->annualRequest->items->contains($itemId)) {
                 $this->annualRequest->items()->updateExistingPivot($itemId, ['quantity' => $details['quantity']]);
             } else {
@@ -80,7 +98,8 @@ class AnnualRequestEdit extends Component
         // return redirect()->route('annual-request.index');
     }
 
-    public function passRequest(){
+    public function passRequest()
+    {
         $this->saveRequest();
         $this->annualRequest->forwardRequest();
         session()->flash('message', 'تم إرسال طلبك بنجاح');

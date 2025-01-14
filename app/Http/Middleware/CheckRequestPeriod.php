@@ -15,5 +15,4 @@ class CheckRequestPeriod
         }
         return abort(403);
     }
-    
 }

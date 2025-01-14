@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // المستخدمين الرئيسيين
         User::factory()->createMany([
             [
                 'name' => 'administrator',
@@ -29,7 +30,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Stock Holder',
                 'email' => 'StockHolder@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'أمين المستودع',
+                'role' => 'المستودع',
                 'office_number' => '1234',
                 'type' => '1'
             ],
@@ -37,7 +38,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'Ameen',
                 'email' => 'Ameen@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'أمين الجامعة',
+                'role' => 'أمانة الجامعة',
                 'office_number' => '1234',
                 'type' => '2'
             ],
@@ -45,7 +46,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'financualManager',
                 'email' => 'financial@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'المدير المالي',
+                'role' => 'مديرية المالية',
                 'office_number' => '1234',
                 'type' => '3'
             ],
@@ -53,7 +54,7 @@ class DatabaseSeeder extends Seeder
                 'name' => 'IT Manager',
                 'email' => 'ITmanager@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'مدير النظم',
+                'role' => 'مديرية النظم',
                 'office_number' => '1234',
                 'type' => '4'
             ],
