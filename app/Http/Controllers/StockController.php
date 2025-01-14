@@ -34,4 +34,10 @@ class StockController extends RoutingController
     {
         return view('stock.holderActions.itemsQuantityinsert');
     }
+
+    public function InsertionConfirmation()
+    {
+        $this->authorize('InsertionConfirmation', Stock::class);
+        return view('stock.InsertionConfirmation');
+    }
 }

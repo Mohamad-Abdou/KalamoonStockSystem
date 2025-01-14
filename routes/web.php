@@ -9,6 +9,7 @@ use App\Http\Controllers\PeriodicRequestController;
 use App\Http\Controllers\PeriodicRequestFlowController;
 use App\Http\Controllers\RepoertsController;
 use App\Http\Controllers\StockController;
+use App\Models\Stock;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -54,5 +55,7 @@ Route::prefix('stock')->group(function () {
     Route::get('/insert', [StockController::class, 'create'])->name('stock.insertQunatity')->middleware(['auth']);
     Route::get('/periodic-requests', [StockController::class, 'PeriodicRequests'])->name('stock.periodic-requests')->middleware(['auth']);
 });
+Route::get('/stock/insertion-confirmation', [StockController::class, 'InsertionConfirmation'])->name('stock.insertionConfirmation')->middleware(['auth']);
+
 
 require __DIR__ . '/auth.php';

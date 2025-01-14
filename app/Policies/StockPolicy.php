@@ -67,4 +67,9 @@ class StockPolicy
     {
         return false;
     }
+
+    public function InsertionConfirmation(User $user)
+    {
+        return $user->type == 3;
+    }
 }
