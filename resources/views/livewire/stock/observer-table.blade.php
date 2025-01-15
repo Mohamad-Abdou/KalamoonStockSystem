@@ -3,7 +3,12 @@
         <div class="flex flex-col gap-2">
             <label for="searchItem">بحث بالمادة</label>
             <x-text-input name="searchItem" wire:model.live.debounce.300ms="searchItem" type="search"
-                placeholder="بحث بالاسم والتفاصيل ..." />
+                placeholder="بحث باسم المادة  ..." />
+        </div>
+        <div class="flex flex-col gap-2">
+            <label for="searchItemDetails">بحث بتفاصيل المادة</label>
+            <x-text-input name="searchItemDetails" wire:model.live.debounce.300ms="searchItemDetails" type="search"
+                placeholder="بحث بتفاصيل المادة ..." />
         </div>
         <div class="flex flex-col gap-2">
             <label for="searchDep">بحث بالجهة</label>
@@ -26,7 +31,7 @@
             </div>
         </div>
         <div class="flex flex-col justify-start">
-            <div class="flex flex-row gap-2 justify-center items-center"> 
+            <div class="flex flex-row gap-2 justify-center items-center">
                 <input name="thisYearCheckBox" type="checkbox"
                     class="toggle-checkbox text-primary border-gray-300 rounded" wire:click="toggleThisYear"
                     @checked($filters['this-year']) />
@@ -90,8 +95,8 @@
         </tbody>
     </x-table.table>
     @if ($paginate)
-        <div class="mt-4 justify-center">
-            {{ $stocks->links() }}
+        <div class="mt-4">
+            {{ $stocks->onEachSide(1)->links() }}
         </div>
     @endif
     <x-primary-button wire:click="togglePagination">

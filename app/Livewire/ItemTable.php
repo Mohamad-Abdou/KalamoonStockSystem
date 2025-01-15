@@ -57,7 +57,7 @@ class ItemTable extends Component
 
     public function render()
     {
-
+        // $this->resetPage();
         // جلب العناصر مع التصفية والبحث
         $query = Item::with('item_group')
             ->when($this->selectedGroup, function ($query) {
@@ -72,9 +72,13 @@ class ItemTable extends Component
 
         $items = $query->paginate(20);
 
+        if ($items->currentPage() > $items->lastPage()) {
+            $this->resetPage();
+            $items = $query->paginate(20);
+        }
         // جلب جميع المجموعات لعرضها في القائمة المنسدلة
         $groups = ItemGroup::all();
-        $this->resetPage();
+        
         return view('livewire.item-table', [
             'items' => $items,
             'groups' => $groups,

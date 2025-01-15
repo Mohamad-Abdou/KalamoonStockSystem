@@ -15,7 +15,7 @@ class ObserverTable extends Component
 
     public $searchDetails = '';
     public $searchItem = '';
-    public $searchIteme = '';
+    public $searchItemDetails = '';
     public $searchDep = '';
     public $sortField = 'created_at';
     public $sortDirection = 'desc';
@@ -52,6 +52,9 @@ class ObserverTable extends Component
             ->when($this->searchItem, fn($q) => $q->whereHas('item', function($query) {
                 $query->where('name', 'like', '%' . $this->searchItem . '%');
             }))
+            ->when($this->searchItemDetails, fn($q) => $q->whereHas('item', function($query) {
+                $query->where('description', 'like', '%' . $this->searchItemDetails . '%');
+            }))
             ->when($this->searchDep, fn($q) => $q->whereHas('user', function($query) {
                 $query->where('role', 'like', '%' . $this->searchDep . '%');
             }))
@@ -59,9 +62,13 @@ class ObserverTable extends Component
             ->when($this->filters['date_from'], fn($q) => $q->where('created_at', '>=', $this->filters['date_from']))
             ->when($this->filters['date_to'], fn($q) => $q->where('created_at', '<=', $this->filters['date_to']))
             ->orderBy($this->sortField, $this->sortDirection);
-    
+            $stocks = $this->paginate ? $query->paginate(20) : $query->get();
+            if ($stocks->currentPage() > $stocks->lastPage()) {
+                $this->resetPage();
+                $stocks = $query->paginate(20);
+            }
         return view('livewire.stock.observer-table', [
-            'stocks' => $this->paginate ? $query->paginate(20) : $query->get()
+            'stocks' => $stocks
         ]);
     }
 }
