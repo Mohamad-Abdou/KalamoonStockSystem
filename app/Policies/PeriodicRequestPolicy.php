@@ -32,7 +32,7 @@ class PeriodicRequestPolicy
      */
     public function update(User $user, PeriodicRequest $periodicRequest)
     {
-        return true;
+        return $user->type == 2;
     }
 
     /**

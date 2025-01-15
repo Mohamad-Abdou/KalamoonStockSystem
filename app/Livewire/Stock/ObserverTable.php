@@ -15,6 +15,7 @@ class ObserverTable extends Component
 
     public $searchDetails = '';
     public $searchItem = '';
+    public $searchIteme = '';
     public $searchDep = '';
     public $sortField = 'created_at';
     public $sortDirection = 'desc';

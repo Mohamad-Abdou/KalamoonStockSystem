@@ -16,25 +16,46 @@ class FlowList extends Component
     public $rejcetedRequestId;
     public $rejection_reason;
 
+    public $showEditModal;
+    public $editRequest;
+    public $oldQuantity;
+    public $newQuantity;
+
     public $selectedItem;
     public $selectedItemDetails = [
         'stock' => 0,
         'requestQuantity' => 0,
         'userConsumed'  => 0,
-        'userRequested' => 0, 
+        'userRequested' => 0,
     ];
 
-    public function showRejectionMoadl($id)
+    public function showRejectionModalButton($id)
     {
         $this->rejcetedRequestId = $id;
         $this->showRejectionModal = true;
     }
 
-    public function closeReqjectionMoadl()
+    public function showEditModalButton($id)
     {
-        $this->showRejectionModal = false;
-        $this->reset();
+        $this->editRequest = PeriodicRequest::find($id);
+        $this->newQuantity = $this->editRequest->quantity;
+        $this->showEditModal = true;
     }
+
+    public function editAndPass()
+    {
+
+        $this->validate([
+            'newQuantity' => ['required', 'numeric', 'min:1', 'max:' . $this->editRequest->quantity],
+        ],[
+            'newQuantity.max' => 'يسمح بتقليل الكمية فقط'
+        ]);
+        $this->editRequest->quantity = $this->newQuantity;
+        $this->editRequest->save();
+        $this->acceptRequest($this->editRequest->id);
+        $this->closeModal();
+    }
+
 
     public function rejectRequest()
     {
@@ -75,8 +96,8 @@ class FlowList extends Component
 
     public function closeModal()
     {
-        $this->showDetailsModal = false;
         $this->reset();
+        $this->resetValidation();
     }
 
     public function render()
