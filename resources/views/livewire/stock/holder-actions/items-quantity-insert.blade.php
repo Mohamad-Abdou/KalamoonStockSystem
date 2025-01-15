@@ -30,8 +30,7 @@
     <!-- Quantity Modal -->
     @if ($showQuantityModal)
         <div class="fixed inset-0 flex items-center justify-center z-100 bg-black bg-opacity-50 ">
-            <div
-                class="flex flex-col gap-3 justify-center items-center bg-white p-6 rounded shadow-lg w-1/3 border-second-color">
+            <div class="flex flex-col gap-3 justify-center items-center bg-white p-6 rounded shadow-lg border-second-color">
                 <h2 class="text-lg font-semibold mb-4 text-center"> ({{ $selectedItem->unit }})
                     {{ $selectedItem->name }}
                 </h2>
