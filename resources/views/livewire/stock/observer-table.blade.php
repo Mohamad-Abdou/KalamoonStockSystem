@@ -38,6 +38,14 @@
                 <label for="thisYearCheckBox">السنة الحالية فقط</label>
             </div>
         </div>
+        <div class="flex flex-col justify-start">
+            <div class="flex flex-row gap-2 justify-center items-center">
+                <x-primary-button wire:click="printWithTotals" target="_blank">
+                    طباعة مع المجموع
+                </x-primary-button>
+            </div>
+        </div>
+        
     </div>
     <x-table.table>
         <thead class="bg-gray-100 text-gray-700 text-center">
