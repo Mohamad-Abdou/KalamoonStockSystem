@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Models\AnnualRequest;
 use App\Models\Stock;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -14,6 +15,11 @@ class StockPolicy
     public function viewAny(User $user): bool
     {
         return $user->type == 2;
+    }
+
+    public function report(User $user)
+    {
+        return $user->type == 2 || $user->type == 3 || $user->type == 1;
     }
 
     /**

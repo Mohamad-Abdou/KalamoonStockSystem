@@ -18,6 +18,7 @@ class AnnualRequestCreate extends Component
     public $showDropdown = false;
     public $itemsToRequest;
     public $selectedItems = [];
+    public $isProcessing = false;
 
     public function mount()
     {
@@ -71,18 +72,27 @@ class AnnualRequestCreate extends Component
         unset($this->selectedItems[$itemId]);
     }
 
-    public function saveRequest()
-    {
-        $request = AnnualRequest::create([
-            'user_id' => Auth::user()->id,
-        ]);
 
-        foreach ($this->selectedItems as $itemId => $details) {
-            $request->items()->attach($itemId, ['quantity' => $details['quantity']]);
-        }
-        session()->flash('message', 'تم حفظ الطلب بنجاح');
-        redirect(route('annual-request.index'));
+    public function saveRequest()
+{
+    if ($this->isProcessing) {
+        return;
     }
+    
+    $this->isProcessing = true;
+
+    $request = AnnualRequest::create([
+        'user_id' => Auth::user()->id,
+    ]);
+
+    foreach ($this->selectedItems as $itemId => $details) {
+        $request->items()->attach($itemId, ['quantity' => $details['quantity']]);
+    }
+
+    session()->flash('message', 'تم حفظ الطلب بنجاح');
+    $this->isProcessing = false;
+    redirect(route('annual-request.index'));
+}
 
     public function render()
     {
