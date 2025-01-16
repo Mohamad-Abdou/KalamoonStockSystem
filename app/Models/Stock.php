@@ -189,16 +189,32 @@ class Stock extends Model
         return $item;
     }
 
+    public static function totalOut(Item $item)
+    {
+        $lastReset = AnnualRequest::getLastYearReset();
+        return (int)Stock::where('created_at', '>=', $lastReset)->where('item_id', $item->id)->where('user_id', 2)->sum('out_quantity');
+    }
+
     public static function mainInStock(Item $item): int
     {
         return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->sum('in_quantity');
     }
 
+    public static function extras(Item $item)
+    {
+        $lastReset = AnnualRequest::getLastYearReset();
+        return Stock::where('created_at', '>=', $lastReset)->whereNot('user_id', 2)->where('item_id', $item->id)->where('details', 'إضافي حر')->sum('in_quantity');
+    } 
+
     public static function NeededStock(Item $item): int
     {
         $lastReset = AnnualRequest::getLastYearReset();
-        $totalRequested = AnnualRequestItem::where('created_at', '>=' ,$lastReset)->where('item_id', $item->id)->where('frozen', false)->sum('quantity');
-
+        $totalRequested = AnnualRequestItem::whereHas('annualRequest', function($query) {
+            $query->where('state', 2);
+        })
+        ->where('created_at', '>=', $lastReset)
+        ->where('item_id', $item->id)
+        ->sum('quantity');
         return $totalRequested;
     }
 

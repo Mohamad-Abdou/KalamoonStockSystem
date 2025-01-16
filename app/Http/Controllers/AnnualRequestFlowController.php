@@ -35,7 +35,7 @@ class AnnualRequestFlowController extends RoutingController
             ->orderBy('id', 'DESC')
             ->first();
 
-        if ($$previous_annual_request) {
+        if ($previous_annual_request) {
             $previous_annual_request = Stock::addUserYearConsumed($previous_annual_request);
             $annualRequest->items->each(function ($item) use ($previous_annual_request) {
                 $prev_item = $previous_annual_request?->items->firstWhere('id', $item->id);

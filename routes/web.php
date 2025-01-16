@@ -57,6 +57,9 @@ Route::prefix('stock')->group(function () {
     Route::get('/periodic-requests', [StockController::class, 'PeriodicRequests'])->name('stock.periodic-requests')->middleware(['auth']);
 });
 Route::get('/stock/insertion-confirmation', [StockController::class, 'InsertionConfirmation'])->name('stock.insertionConfirmation')->middleware(['auth']);
+Route::get('/stock/NeededReport', [StockController::class, 'NeededReport'])->name('stock.NeededReport')
+->middleware(['auth'])->can('report', Stock::class);
+
 
 Route::get('/print-stocks', function () {
     $stocks = session('print_stocks');
