@@ -27,8 +27,12 @@
                             </div>
                         </div>
                         <div class="flex justify-between w-full">
-                            <button wire:click="showRejectionMoadl({{ $request->id }})"
+                            <button wire:click="showRejectionModalButton({{ $request->id }})"
                                 class="mt-4 bg-red-500 text-white px-4 py-2 rounded-full">رفض</button>
+                            @can('update', $request)
+                                <button wire:click="showEditModalButton({{ $request->id }})"
+                                    class="mt-4 bg-orange-500 text-white px-4 py-2 rounded-full">تعديل</button>
+                            @endcan
                             <button wire:click="acceptRequest({{ $request->id }})"
                                 class="mt-4 bg-green-500 text-white px-4 py-2 rounded-full">قبول</button>
                         </div>
@@ -102,6 +106,31 @@
                             class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">إغلاق</button>
                         <button wire:click="rejectRequest"
                             class="mt-4 bg-red-500 text-white px-4 py-2 rounded">رفض</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    @if ($showEditModal)
+        <div class="fixed inset-0 flex items-center justify-center z-40 bg-black bg-opacity-50">
+            <div
+                class="flex flex-col gap-3 justify-center items-center bg-white p-6 rounded shadow-lg border-second-color ">
+                <div class="w-full ">
+                    <div>
+                        <label for="quantity">الكمية</label>
+                        <x-text-input wire:model.live="newQuantity" wire:keydown.enter="submitQuantity" min="0"
+                            max="{{ $editRequest->quantity }}" type="number" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" />
+                        @error('newQuantity')
+                            <div class="font-medium text-red-500">
+                                {{ $message }}
+                            </div>
+                        @enderror
+                    </div>
+                    <div class="flex flex-row justify-between gap-4 w-full align-middle">
+                        <button wire:click="closeModal"
+                            class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">إغلاق</button>
+                        <button wire:click="editAndPass" class="mt-4 bg-green-500 text-white px-4 py-2 rounded">حفظ
+                            وقبول</button>
                     </div>
                 </div>
             </div>

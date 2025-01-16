@@ -140,7 +140,6 @@ class AnnualRequest extends Model
         if (!$yearState) {
             throw new \Exception('لا يمكن إعادة تدوير السنة إذا كانت السنة الحالية غير فعالة');
         }
-        dd("stop");
         if ($lastReset->diffInHours(now()) < 24) {
             throw new \Exception('يجب الانتظار 24 ساعة على الأقل قبل إعادة تدوير الأرصدة');
         }
@@ -189,6 +188,10 @@ class AnnualRequest extends Model
                 ->where('key', 'Date')
                 ->update(['value' => $now]);
 
+            AppConfiguration::where('name', 'Year')
+                ->where('key', 'state')
+                ->update(['value' => 0]);
+
             AppConfiguration::where('name', 'AnnualRequestPeriod')
                 ->where('key', 'start')
                 ->update(['value' => $now]);
@@ -202,19 +205,19 @@ class AnnualRequest extends Model
     public static function startYear()
     {
         $usersWithNoActiveRequest = User::whereNotIn('type', [0, 1])
-        ->whereDoesntHave('annualRequests', function($query) {
-            $query->where('state', 2);
-        })
-        ->get();
+            ->whereDoesntHave('annualRequests', function ($query) {
+                $query->where('state', 2);
+            })
+            ->get();
         if ($usersWithNoActiveRequest->count() > 0) {
             if ($usersWithNoActiveRequest->count() > 0) {
                 throw new \Exception($usersWithNoActiveRequest);
             }
         }
-        
+
         AppConfiguration::where('name', 'Year')
-                ->where('key', 'state')
-                ->update(['value' => true]);
+            ->where('key', 'state')
+            ->update(['value' => true]);
     }
 
     // دالة لإرجاع الطلب للمستخدم السابق في سير العمل

@@ -10,6 +10,7 @@ use App\Http\Controllers\PeriodicRequestFlowController;
 use App\Http\Controllers\RepoertsController;
 use App\Http\Controllers\StockController;
 use App\Models\Stock;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -33,12 +34,12 @@ Route::resource('/item_groups', ItemGroupController::class)->only(['store', 'ind
 // Annual Request Routes
 Route::resource('/annual-request', AnnualRequestController::class)->middleware(['auth']);
 Route::resource('/annual-request-flow', AnnualRequestFlowController::class)
-->middleware(['auth', 'AnnualFlow'])
-->parameters(['annual-request-flow' => 'annual_request']);
+    ->middleware(['auth', 'AnnualFlow'])
+    ->parameters(['annual-request-flow' => 'annual_request']);
 
 Route::resource('/periodic-request', PeriodicRequestController::class)->middleware(['auth']);
 Route::resource('/periodic-request-flow', PeriodicRequestFlowController::class)
-->middleware(['auth', 'PeriodicFlow']);
+    ->middleware(['auth', 'PeriodicFlow']);
 
 Route::get('/archive', [AnnualRequestController::class, 'archive'])->name('annual-requests.archive')->middleware(['auth']);
 
@@ -56,6 +57,17 @@ Route::prefix('stock')->group(function () {
     Route::get('/periodic-requests', [StockController::class, 'PeriodicRequests'])->name('stock.periodic-requests')->middleware(['auth']);
 });
 Route::get('/stock/insertion-confirmation', [StockController::class, 'InsertionConfirmation'])->name('stock.insertionConfirmation')->middleware(['auth']);
+Route::get('/stock/NeededReport', [StockController::class, 'NeededReport'])->name('stock.NeededReport')
+->middleware(['auth'])->can('report', Stock::class);
 
+
+Route::get('/print-stocks', function () {
+    $stocks = session('print_stocks');
+    $totals = session('print_totals');
+
+    session()->forget(['print_stocks', 'print_totals']);
+
+    return view('print.stocks', compact('stocks', 'totals'));
+})->middleware(['auth'])->can('viewAny', Stock::class)->name('print.stocks');
 
 require __DIR__ . '/auth.php';

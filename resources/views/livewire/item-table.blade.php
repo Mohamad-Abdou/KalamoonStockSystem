@@ -69,6 +69,6 @@
         </tbody>
     </x-table.table>
     <div class="mt-4">
-        {{ $items->links() }}
+        {{ $items->onEachSide(1)->links() }}
     </div>
 </div>
