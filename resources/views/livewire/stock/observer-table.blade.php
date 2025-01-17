@@ -45,6 +45,13 @@
                 </x-primary-button>
             </div>
         </div>
+        <div class="flex flex-col justify-start">
+            <div class="flex flex-row gap-2 justify-center items-center">
+                <x-primary-button wire:click="exportToExcel" target="_blank">
+                    تصدير ملف excel
+                </x-primary-button>
+            </div>
+        </div>
         
     </div>
     <x-table.table>
@@ -59,7 +66,7 @@
                     </div>
                 </x-table.table-header-element>
                 <x-table.table-header-element>
-                    المادة
+                    المادة (الوحدة)
                 </x-table.table-header-element>
                 <x-table.table-header-element>
                     تفاصيل المادة
@@ -86,7 +93,7 @@
                 <tr>
                     <x-table.data
                         class="w-1 whitespace-nowrap">{{ $stock->created_at->format('Y-m-d (h:m) ') }}</x-table.data>
-                    <x-table.data>{{ $stock->item->name }}</x-table.data>
+                    <x-table.data>{{ $stock->item->name }} ({{ $stock->item->unit }})</x-table.data>
                     <x-table.data class="w-1/4">{{ $stock->item->description }}</x-table.data>
                     <x-table.data>{{ $stock->user->role }}</x-table.data>
                     <x-table.data class="w-1 whitespace-nowrap">{{ $stock->in_quantity }}</x-table.data>

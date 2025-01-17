@@ -6,7 +6,7 @@ use App\Models\Stock;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as RoutingController;
-
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class StockController extends RoutingController
 {
