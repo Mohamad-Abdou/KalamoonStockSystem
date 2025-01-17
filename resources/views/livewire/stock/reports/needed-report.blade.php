@@ -99,4 +99,11 @@
             @endforeach
         </tbody>
     </x-table.table>
+    <div class="flex flex-col justify-start mt-5">
+        <div class="flex flex-row gap-2 justify-center items-center">
+            <x-primary-button wire:click="exportToExcel" target="_blank">
+                تصدير ملف excel
+            </x-primary-button>
+        </div>
+    </div>
 </div>
