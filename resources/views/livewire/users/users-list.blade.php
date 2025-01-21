@@ -50,12 +50,6 @@
                                 class="bg-orange-500 text-white font-bold px-4 py-2 rounded hover:bg-orange-700">
                                 تعديل
                             </button>
-                            @if ($user->type > 3)
-                                <button wire:click="deleteUser({{ $user->id }})"
-                                    class="bg-red-500 text-white font-bold px-4 py-2 rounded hover:bg-red-700">
-                                    حذف
-                                </button>
-                            @endif
                         </div>
                     </x-table.data>
                 </tr>
@@ -99,4 +93,39 @@
     <div class="mt-4">
         {{ $users->onEachSide(1)->links() }}
     </div>
+
+    @if ($isEditModalOpen)
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center">
+            <div class="bg-white p-6 rounded-lg w-1/3">
+                <h2 class="text-lg font-bold mb-4">تعديل المستخدم</h2>
+
+                <div class="mb-4">
+                    <label class="block mb-2">اسم المستخدم</label>
+                    <input wire:model="editingUser.name" type="text" class="border px-4 py-2 rounded w-full">
+                    @error('editingUser.name')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="block mb-2">الهاتف الداخلي</label>
+                    <input wire:model="editingUser.office_number" type="text"
+                        class="border px-4 py-2 rounded w-full">
+                    @error('editingUser.office_number')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
+
+                <div class="flex justify-end gap-2">
+                    <button wire:click="updateUser" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                        حفظ
+                    </button>
+                    <button wire:click="closeEditModal"
+                        class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">
+                        إلغاء
+                    </button>
+                </div>
+            </div>
+        </div>
+    @endif
 </div>

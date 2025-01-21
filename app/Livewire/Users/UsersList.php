@@ -42,6 +42,19 @@ class UsersList extends Component
         'office_number' => ''
     ];
 
+    public $isEditModalOpen = false;
+
+    public $editingUser = [
+        'id' => '',
+        'name' => '',
+        'office_number' => ''
+    ];
+
+    protected $editRules = [
+        'editingUser.name' => 'required|min:3|unique:users,name',
+        'editingUser.office_number' => 'required|numeric'
+    ];
+
     public function mount()
     {
         $this->authorize('create', User::class);
@@ -50,6 +63,38 @@ class UsersList extends Component
     public function updatedSearchByRole()
     {
         $this->resetPage();
+    }
+
+    public function editUser($userId)
+    {
+        $user = User::find($userId);
+        $this->editingUser = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'office_number' => $user->office_number
+        ];
+        $this->isEditModalOpen = true;
+    }
+
+    public function updateUser()
+    {
+        $this->authorize('update', User::class);
+        $this->validate($this->editRules);
+        $user = User::find($this->editingUser['id']);
+        $user->update([
+            'name' => $this->editingUser['name'],
+            'email' => $this->editingUser['name'] . '@uok.edu.sy',
+            'office_number' => $this->editingUser['office_number']
+        ]);
+        $this->isEditModalOpen = false;
+        $this->reset('editingUser');
+        $this->dispatch('showMessage', 'عملية ناجحة','تم تعديل المستخدم بنجاح');
+    }
+
+    public function closeEditModal()
+    {
+        $this->isEditModalOpen = false;
+        $this->reset('editingUser');
     }
 
     public function saveNewUser()
@@ -69,7 +114,7 @@ class UsersList extends Component
 
     public function render()
     {
-        
+
         return view('livewire.users.users-list', ['users' => User::where('role', 'like', '%' . $this->searchByRole . '%')->paginate(10)]);
     }
 }

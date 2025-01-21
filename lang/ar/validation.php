@@ -12,6 +12,8 @@ return [
         'quantity' => 'الكمية',
         'details' => 'التفاصيل',
         'password_confirmation' => 'تأكيد كلمة المرور',
+        'editingUser.name' => 'اسم المستخدم',
+        'editingUser.office_number' => 'رقم الهاتف الداخلي',
     ],
     'accepted'             => 'يجب قبول :attribute.',
     'accepted_if'          => 'يجب قبول :attribute في حالة :other يساوي :value.',
