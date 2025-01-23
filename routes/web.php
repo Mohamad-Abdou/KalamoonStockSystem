@@ -70,4 +70,8 @@ Route::get('/print-stocks', function () {
     return view('print.stocks', compact('stocks', 'totals'));
 })->middleware(['auth'])->can('viewAny', Stock::class)->name('print.stocks');
 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('users', App\Http\Controllers\UserController::class);
+});
+
 require __DIR__ . '/auth.php';

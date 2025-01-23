@@ -25,9 +25,14 @@ class AdminActionController extends Controller
 
     public function updatePeriod(Request $request)
     {
+        if(AnnualRequest::isActiveRequestPeriod()) {
+            session()->flash('message', 'لا يمكن تعديل الفترة الزمنية إن كانت السنة فعالة');
+            return redirect()->back();
+        }
+
         $validated = $request->validate([
-            'request_start_date' => 'required|date|after_or_equal:today',
-            'request_end_date' => 'required|date|after_or_equal:request_start_date',
+            'request_start_date' => 'required|date',
+            'request_end_date' => 'required|date|after_or_equal:request_start_date|after_or_equal:today',
         ]);
 
         // تخديث تاريخ البداية

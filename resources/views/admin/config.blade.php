@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-card header="فترة الطلب السنوي القادم" class="basis-1/3 justify-center bg-primary h-fit">
+    <x-card header="فترة الطلب السنوي" class="basis-1/3 justify-center bg-primary h-fit">
         <form action="{{ route('admin.annual-requests.update-period') }}" method="POST" class="space-y-4">
             @csrf
             @method('PUT')
@@ -7,7 +7,7 @@
             <div class="flex flex-col justify-center">
                 <x-input-label for="request_start_date" :value="__('بداية الفترة')" class="text-white mb-2 rounded" />
                 <input type="date" id="request_start_date" name="request_start_date"
-                    value="{{ old('request_start_date', $startDate->format('Y-m-d')) }}" required min="{{ date('Y-m-d') }}"
+                    value="{{ old('request_start_date', $startDate->format('Y-m-d')) }}"
                     class="@error('request_start_date') border-red-500 @enderror">
                 @error('request_start_date')
                     <span class="text-red-500 text-sm mt-1">{{ $message }}</span>

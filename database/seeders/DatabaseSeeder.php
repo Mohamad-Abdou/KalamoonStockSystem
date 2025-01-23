@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
                 'type' => '0'
             ],
             [
-                'name' => 'Stock Holder',
+                'name' => 'mohamad.abdou',
                 'email' => 'StockHolder@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'المستودع',
@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
                 'type' => '1'
             ],
             [
-                'name' => 'Ameen',
+                'name' => 'maher.nouh',
                 'email' => 'Ameen@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'أمانة الجامعة',
@@ -43,7 +43,7 @@ class DatabaseSeeder extends Seeder
                 'type' => '2'
             ],
             [
-                'name' => 'financualManager',
+                'name' => 'finance',
                 'email' => 'financial@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مديرية المالية',
@@ -51,7 +51,7 @@ class DatabaseSeeder extends Seeder
                 'type' => '3'
             ],
             [
-                'name' => 'IT Manager',
+                'name' => 'anas',
                 'email' => 'ITmanager@uok.edu.sy',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مديرية النظم',

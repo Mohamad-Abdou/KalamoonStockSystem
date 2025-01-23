@@ -8,6 +8,7 @@ use App\Models\Stock;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Rap2hpoutre\FastExcel\FastExcel;
 
 class ObserverTable extends Component
 {
@@ -25,6 +26,40 @@ class ObserverTable extends Component
         'date_from' => '',
         'date_to' => ''
     ];
+
+    public function exportToExcel()
+    {
+        $stocks = Stock::query()
+            ->with(['item', 'user'])
+            ->when($this->searchDetails, fn($q) => $q->where('details', 'like', '%' . $this->searchDetails . '%'))
+            ->when($this->searchItem, fn($q) => $q->whereHas('item', function ($query) {
+                $query->where('name', 'like', '%' . $this->searchItem . '%');
+            }))
+            ->when($this->searchItemDetails, fn($q) => $q->whereHas('item', function ($query) {
+                $query->where('description', 'like', '%' . $this->searchItemDetails . '%');
+            }))
+            ->when($this->searchDep, fn($q) => $q->whereHas('user', function ($query) {
+                $query->where('role', 'like', '%' . $this->searchDep . '%');
+            }))
+            ->when($this->filters['this-year'], fn($q) => $q->where('created_at', '>=', AnnualRequest::getLastYearReset()))
+            ->when($this->filters['date_from'], fn($q) => $q->where('created_at', '>=', $this->filters['date_from']))
+            ->when($this->filters['date_to'], fn($q) => $q->where('created_at', '<=', $this->filters['date_to']))
+            ->orderBy($this->sortField, $this->sortDirection)
+            ->get()->map(function($stock) {
+                return [
+                    'اسم المادة' => $stock->item->name,
+                    'الوحدة' => $stock->item->unit,
+                    'وصف المادة' => $stock->item->description,
+                    'إخراج' => $stock->user->role,
+                    'إدخال' => $stock->in_quantity,
+                    'إخارج' => $stock->out_quantity,
+                    'تفاصيل' => $stock->details,
+                    'التاريخ' => $stock->created_at->format('Y-m-d H:i:s'),
+                ];
+            });
+            
+            return (new FastExcel($stocks))->download('حركة.xlsx');
+    }
 
     public function sortBy($field)
     {
