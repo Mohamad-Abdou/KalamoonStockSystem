@@ -4,7 +4,7 @@
             @can('create', App\Models\AnnualRequest::class)
                 <div class="mb-5 flex justify-center">
                     <h1>تنتهي فترة التسجيل على الطلب الاحتياج السنوي في {{ $periodEndAt->format('Y-m-d') }} </h1>
-                    <a href={{ route('annual-request.create') }} class="font-bold text-red-500 px-2"> التحقق </a>
+                    <a href={{ route('annual-request.create') }} class="font-bold text-red-500 px-2"> عرض الطلب </a>
                 </div>
             @endcan
         @endif
