@@ -2,6 +2,7 @@
 
 namespace App\Livewire\AnnualRequest;
 
+use App\Helpers\adLDAP;
 use App\Models\AnnualRequest;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -40,22 +41,24 @@ class YearReset extends Component
 
     public function startYear()
     {
+        
         $this->validate();
 
-        if (!Hash::check($this->password, Auth::user()->password)) {
+        $adldap = new adLDAP();
+        if (!$adldap->authenticate(Auth::user()->name, $this->password)) {
             $this->addError('password', 'كلمة المرور غير صحيحة');
             $this->reset('password', 'password_confirmation');
             return;
         }
+
         try {
             AnnualRequest::startYear();
-            $this->dispatch('showMessage', 'تم بنجاح تفعيل السنة الجديدة', 'عملية ناجحة'); 
+            $this->dispatch('showMessage', 'تم بنجاح تفعيل السنة الجديدة', 'عملية ناجحة');
         } catch (\Exception $e) {
             $users = json_decode($e->getMessage());
             $userNames = collect($users)->pluck('role')->implode(', ');
             $this->dispatch('showMessage', "الجهات التالية ليس لديها طلب سنوي فعال: " . $userNames, 'عملية غير ناجحة');
-        }
-        finally {
+        } finally {
             $this->reset(['showStartYearModal', 'password', 'password_confirmation']);
         }
     }
@@ -64,11 +67,13 @@ class YearReset extends Component
     {
         $this->validate();
 
-        if (!Hash::check($this->password, Auth::user()->password)) {
+        $adldap = new adLDAP();
+        if (!$adldap->authenticate(Auth::user()->name, $this->password)) {
             $this->addError('password', 'كلمة المرور غير صحيحة');
             $this->reset('password', 'password_confirmation');
             return;
         }
+        
         try {
             AnnualRequest::resetYear();
             $this->dispatch('showMessage', 'تم تدوير السنة وتصفير الأرصدة', 'عملية ناجحة');
