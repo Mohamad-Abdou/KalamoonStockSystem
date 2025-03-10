@@ -18,6 +18,12 @@ class ItemTable extends Component
     public $search = '';
     public $groups;
     public $selectedGroup = null;
+    public $isEditModalOpen = false;
+public $editingItem = [
+    'id' => '',
+    'name' => '',
+    'description' => ''
+];
 
 
     public function mount()
@@ -35,6 +41,35 @@ class ItemTable extends Component
         }
     }
 
+    public function openEditModal($itemId)
+{
+    $item = Item::find($itemId);
+    $this->editingItem = [
+        'id' => $item->id,
+        'name' => $item->name,
+        'description' => $item->description
+    ];
+    $this->isEditModalOpen = true;
+}
+
+public function saveItem()
+{
+    $this->authorize('update', Item::class);
+    
+    $item = Item::find($this->editingItem['id']);
+    $item->update([
+        'name' => $this->editingItem['name'],
+        'description' => $this->editingItem['description']
+    ]);
+    
+    $this->isEditModalOpen = false;
+    session()->flash('message', 'تم تحديث المادة بنجاح');
+}
+
+public function closeModal()
+{
+    $this->isEditModalOpen = false;
+}
     // تعيين المجموعة المختارة للتصفية
     public function filterByGroup($groupId)
     {

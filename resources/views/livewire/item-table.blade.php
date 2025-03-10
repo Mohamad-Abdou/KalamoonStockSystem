@@ -37,7 +37,7 @@
         </thead>
         <tbody class="divide-y divide-gray-200">
             @foreach ($items as $item)
-                <tr class="hover:bg-gray-50 transition duration-200 {{ $item->active ? '' : 'bg-red-100 font-bold' }}">
+                <tr wire:click="openEditModal({{ $item->id }})" class="hover:bg-gray-50 transition duration-200 {{ $item->active ? '' : 'bg-red-100 font-bold' }}">
                     <x-table.data>
                         {{ $item->name }}
                     </x-table.data>
@@ -70,5 +70,29 @@
     </x-table.table>
     <div class="mt-4">
         {{ $items->onEachSide(1)->links() }}
+    </div>
+    <div x-show="$wire.isEditModalOpen" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="fixed inset-0 bg-gray-500 opacity-75"></div>
+            
+            <div class="relative bg-white rounded-lg p-8 max-w-md w-full mx-4">
+                <h2 class="text-lg font-bold mb-4">تعديل المادة</h2>
+                
+                <div class="mb-4">
+                    <label class="block mb-2">الاسم</label>
+                    <input type="text" wire:model="editingItem.name" class="w-full border rounded p-2">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block mb-2">الوصف</label>
+                    <textarea wire:model="editingItem.description" class="w-full border rounded p-2"></textarea>
+                </div>
+                
+                <div class="flex justify-end space-x-2">
+                    <button wire:click="saveItem" class="bg-blue-500 text-white px-4 py-2 rounded">حفظ</button>
+                    <button wire:click="closeModal" class="bg-gray-300 px-4 py-2 rounded">إلغاء</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
