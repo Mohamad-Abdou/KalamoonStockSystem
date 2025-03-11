@@ -43,6 +43,7 @@ class YearReset extends Component
     {
         
         $this->validate();
+      /* if (!Hash::check($this->password, Auth::user()->password)) { */
 
         $adldap = new adLDAP();
         if (!$adldap->authenticate(Auth::user()->name, $this->password)) {
