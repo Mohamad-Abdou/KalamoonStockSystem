@@ -22,7 +22,8 @@ class ItemTable extends Component
 public $editingItem = [
     'id' => '',
     'name' => '',
-    'description' => ''
+    'description' => '',
+    'unit' => '',
 ];
 
 
@@ -47,7 +48,8 @@ public $editingItem = [
     $this->editingItem = [
         'id' => $item->id,
         'name' => $item->name,
-        'description' => $item->description
+        'description' => $item->description,
+        'unit' => $item->unit,
     ];
     $this->isEditModalOpen = true;
 }
@@ -59,7 +61,8 @@ public function saveItem()
     $item = Item::find($this->editingItem['id']);
     $item->update([
         'name' => $this->editingItem['name'],
-        'description' => $this->editingItem['description']
+        'description' => $this->editingItem['description'],
+        'unit' => $this->editingItem['unit'],
     ]);
     
     $this->isEditModalOpen = false;
