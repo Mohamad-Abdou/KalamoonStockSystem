@@ -42,6 +42,7 @@ class YearReset extends Component
     {
         $this->validate();
 
+        
         if (!Hash::check($this->password, Auth::user()->password)) {
             $this->addError('password', 'كلمة المرور غير صحيحة');
             $this->reset('password', 'password_confirmation');
