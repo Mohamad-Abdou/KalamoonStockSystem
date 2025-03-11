@@ -20,7 +20,7 @@ class InsertionConfirmationTable extends Component
 
     public function render()
     {
-        $inStocks = Stock::where('user_id', 2)->where('in_quantity', '>', 0)->with('item')->paginate(20);
+        $inStocks = Stock::where('user_id', 2)->where('in_quantity', '>', 0)->with('item')->orderBy('created_at', 'DESC')->paginate(20);
 
         return view('livewire.stock.insertion-confirmation-table', ['inStocks' => $inStocks]);
     }
