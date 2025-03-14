@@ -14,11 +14,13 @@ class NeededReport extends Component
     public $lastReset;
     public $filterOption = 'all';
     public $yearState;
+    public $semester;
 
     public function mount()
     {
         $this->yearState = AnnualRequest::getYearState();
         $this->lastReset = AnnualRequest::getLastYearReset();
+        $this->semester = AnnualRequest::getCurrentSemester();
     }
 
     public function exportToExcel()
@@ -82,10 +84,14 @@ class NeededReport extends Component
             ->map(function ($item) {
                 $item = Stock::addStockToItem($item);
                 $item->needed = Stock::NeededStock($item);
+                $item->firstSemesterNeeded = Stock::getFirstSemesterNeeded($item);
+                $item->secondSemesterNeeded = Stock::getSecondSemesterNeeded($item);
+                $item->thirdSemesterNeeded = Stock::getThirdSemesterNeeded($item);
                 $item->totalOut = Stock::totalOut($item);
                 $item->mainInStock = Stock::mainInStock($item);
                 $item->extras = $item->mainInStock - $item->needed < 0 ? 0 : $item->mainInStock - $item->needed;
                 $item->remainQuantity = $item->needed - $item->mainInStock + $item->extras < 0 ? 0 : $item->needed - $item->mainInStock + $item->extras;
+                
                 return $item;
             })
             ->when($this->filterOption === 'stock', function ($collection) {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Middleware\CheckYearState;
+use App\Models\AnnualRequest;
 use App\Models\Item;
 use App\Models\PeriodicRequest;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class PeriodicRequestController extends RoutingController
 
     public function index()
     {
-        return view('periodic-request.index');
+        $currentSemester = AnnualRequest::getCurrentSemester();
+        return view('periodic-request.index', compact('currentSemester'));
     }
 }

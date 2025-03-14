@@ -1,30 +1,39 @@
-<div class="flex justify-center gap-4 px-8 py-2.5 max-y-full w-full">
-    <section class="bg-white shadow-sm sm:rounded-lg basis-3/4 items-center">
+<div class="flex flex-col justify-center items-center gap-10 px-8 py-2.5 max-y-full w-full">
+    <section class="bg-white shadow-sm sm:rounded-lg  items-center">
         <div class="p-6 text-gray-900">
             <div>
                 <x-table.table>
                     <thead class="bg-gray-100 text-gray-700 text-center">
                         <tr>
-                            <x-table.table-header-element class="w-1/5">
+                            <x-table.table-header-element class="w-1/5" rowspan='2'>
                                 اسم المادة
                             </x-table.table-header-element>
-                            <x-table.table-header-element class="w-1/4">
+                            <x-table.table-header-element  rowspan='2'>
+                                الوحدة
+                            </x-table.table-header-element>
+                            <x-table.table-header-element class="w-1/4" rowspan='2'>
                                 وصف المادة
                             </x-table.table-header-element>
-                            <x-table.table-header-element>
+                            <x-table.table-header-element colspan='4'>
                                 الكمية المطلوبة
                             </x-table.table-header-element>
                             @if ($previous_annual_request)
-                                <x-table.table-header-element>
+                                <x-table.table-header-element  rowspan='2'>
                                     الكمية المطلوبة في الطلب السابق
                                 </x-table.table-header-element>
-                                <x-table.table-header-element>
+                                <x-table.table-header-element  rowspan='2'>
                                     الكمية المستهلكة من الطلب السابق
                                 </x-table.table-header-element>
                             @endif
-                            <x-table.table-header-element class="w-1/4">
+                            <x-table.table-header-element class="w-1/4"  rowspan='2'>
                                 ملاحظات الإرجاع
                             </x-table.table-header-element>
+                        </tr>
+                        <tr>
+                            <x-table.table-header-element>الفصل الأول</x-table.table-header-element>
+                            <x-table.table-header-element>الفصل الثاني</x-table.table-header-element>
+                            <x-table.table-header-element>الفصل الصيفي</x-table.table-header-element>
+                            <x-table.table-header-element>الكلي</x-table.table-header-element>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-200">
@@ -34,8 +43,20 @@
                                 <x-table.data class="w-1/5">
                                     {{ $item->name }}
                                 </x-table.data>
+                                <x-table.data class="w-1">
+                                    {{ $item->unit }}
+                                </x-table.data>
                                 <x-table.data class="w-1/4">
                                     {{ $item->description }}
+                                </x-table.data>
+                                <x-table.data>
+                                    {{ $item->pivot->first_semester_quantity }}
+                                </x-table.data>
+                                <x-table.data>
+                                    {{ $item->pivot->second_semester_quantity }}
+                                </x-table.data>
+                                <x-table.data>
+                                    {{ $item->pivot->third_semester_quantity }}
                                 </x-table.data>
                                 <x-table.data>
                                     {{ $item->pivot->quantity }}
@@ -59,7 +80,7 @@
             </div>
         </div>
     </section>
-    <section class="basis-1/4" style="position: sticky; top: 1rem; height: fit-content">
+    <section class="w-1/3">
         <x-card header="القرار"
             class="bg-primary space-y-5 border-2 {{ !$annual_request->items->contains('pivot.objection_reason', true) ? 'border-green-500' : 'border-red-500' }}">
             <div class="flex justify-center ">

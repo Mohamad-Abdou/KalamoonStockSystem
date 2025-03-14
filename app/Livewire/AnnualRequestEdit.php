@@ -21,16 +21,17 @@ class AnnualRequestEdit extends Component
     {
 
         $this->annualRequest = AnnualRequest::with('items')->findOrFail($annualRequestId);
-
         foreach ($this->annualRequest->items as $item) {
             $this->selectedItems[$item->id] = [
                 'name' => $item->name,
                 'unit' => $item->unit,
                 'description' => $item->description ?? '',
-                'quantity' => $item->pivot->quantity,
+                'first_semester_quantity' => $item->pivot->first_semester_quantity,
+                'second_semester_quantity' => $item->pivot->second_semester_quantity,
+                'third_semester_quantity' => $item->pivot->third_semester_quantity,
+                'total_quantity' => $item->pivot->first_semester_quantity + $item->pivot->second_semester_quantity + $item->pivot->third_semester_quantity,
             ];
         }
-
         $user = Auth::user();
         $this->itemsToRequest = $user->items();
     }
@@ -67,7 +68,10 @@ class AnnualRequestEdit extends Component
             'name' => $item->name,
             'unit' => $item->unit,
             'description' => $item->description,
-            'quantity' => 1,
+            'first_semester_quantity' => 0,
+            'second_semester_quantity' => 0,
+            'third_semester_quantity' => 0,
+            'total_quantity' => 0,
         ];
         $this->search = '';
         $this->showDropdown = false;
@@ -80,22 +84,45 @@ class AnnualRequestEdit extends Component
         unset($this->selectedItems[$itemId]);
     }
 
+    public function updatedSelectedItems($value, $key)
+    {
+        $matches = [];
+        preg_match('/(\d+)\.(first|second|third)_semester_quantity/', $key, $matches);
+
+
+        if (count($matches) === 3) {
+            $itemId = $matches[1];
+            $this->selectedItems[$itemId]['total_quantity'] =
+                (int)($this->selectedItems[$itemId]['first_semester_quantity'] ?? 0) +
+                (int)($this->selectedItems[$itemId]['second_semester_quantity'] ?? 0) +
+                (int)($this->selectedItems[$itemId]['third_semester_quantity'] ?? 0);
+        }
+    }
+
     public function saveRequest()
     {
         $this->validate([
-            'selectedItems.*.quantity' => 'required|integer|min:1',
+            'selectedItems.*.total_quantity' => 'required|integer|min:1',
         ]);
         foreach ($this->selectedItems as $itemId => $details) {
-
             if ($this->annualRequest->items->contains($itemId)) {
-                $this->annualRequest->items()->updateExistingPivot($itemId, ['quantity' => $details['quantity']]);
+                $this->annualRequest->items()->updateExistingPivot($itemId, [
+                    'first_semester_quantity' => (int)$details['first_semester_quantity'] ?? 0,
+                    'second_semester_quantity' => (int)$details['second_semester_quantity'] ?? 0,
+                    'third_semester_quantity' => (int)$details['third_semester_quantity'] ?? 0,
+                    'quantity' => $details['total_quantity']
+                ]);
             } else {
-                $this->annualRequest->items()->attach($itemId, ['quantity' => $details['quantity']]);
+                $this->annualRequest->items()->attach($itemId, [
+                    'first_semester_quantity' => $details['first_semester_quantity']?? 0,
+                    'second_semester_quantity' => $details['second_semester_quantity']?? 0,
+                    'third_semester_quantity' => $details['third_semester_quantity']?? 0,
+                    'quantity' => $details['total_quantity']
+                ]);
             }
         }
-
         session()->flash('message', 'تم تحديث الطلب بنجاح');
-        // return redirect()->route('annual-request.index');
+        return redirect()->back();
     }
 
     public function passRequest()

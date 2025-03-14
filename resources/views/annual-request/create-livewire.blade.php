@@ -1,9 +1,10 @@
 <div class="flex items-center justify-center w-full">
-    <div class="basis-3/4 space-y-4">
+    <div class="w-full space-y-4">
         <div>
             <div class="relative">
                 <x-text-input 
                     wire:model.live="search"
+                    wire:focus="$set('showDropdown', true)"
                     type="text" 
                     class="w-full"
                     placeholder="البحث عن مادة..."
@@ -30,11 +31,17 @@
         <x-table.table>
             <thead class="bg-gray-100 text-gray-700 text-center">
                 <tr>
-                    <x-table.table-header-element>اسم المادة</x-table.table-header-element>
-                    <x-table.table-header-element class="w-1">الوحدة</x-table.table-header-element>
-                    <x-table.table-header-element>وصف المادة</x-table.table-header-element>
-                    <x-table.table-header-element class="w-1/6" >الكمية المطلوبة</x-table.table-header-element>
-                    <x-table.table-header-element class="w-1">الحذف من الطلب</x-table.table-header-element>
+                    <x-table.table-header-element rowspan="2">اسم المادة</x-table.table-header-element>
+                    <x-table.table-header-element rowspan="2" class="w-1">الوحدة</x-table.table-header-element>
+                    <x-table.table-header-element rowspan="2" class="w-1/3">وصف المادة</x-table.table-header-element>
+                    <x-table.table-header-element colspan="4">الكمية المطلوبة</x-table.table-header-element>
+                    <x-table.table-header-element rowspan="2" class="w-1">الحذف من الطلب</x-table.table-header-element>
+                </tr>
+                <tr>
+                    <x-table.table-header-element>الفصل الأول</x-table.table-header-element>
+                    <x-table.table-header-element>الفصل الثاني</x-table.table-header-element>
+                    <x-table.table-header-element>الفصل الصيفي</x-table.table-header-element>
+                    <x-table.table-header-element>الكلي</x-table.table-header-element>
                 </tr>
             </thead>
             <tbody>
@@ -44,9 +51,19 @@
                         <x-table.data class="w-1" >{{ $details['unit'] }}</x-table.data>
                         <x-table.data>{{ $details['description'] }}</x-table.data>
 
-                        <x-table.data class="w-1/6">
-                            <x-text-input type="number" wire:model="selectedItems.{{ $id }}.quantity"  class="w-full"/>
+                        <x-table.data >
+                            <x-text-input type="number" wire:model.live.debounce.500ms="selectedItems.{{ $id }}.first_semester_quantity" class="w-full"/>
                         </x-table.data>
+                        <x-table.data >
+                            <x-text-input type="number" wire:model.live.debounce.500ms="selectedItems.{{ $id }}.second_semester_quantity" class="w-full"/>
+                        </x-table.data>
+                        <x-table.data >
+                            <x-text-input type="number" wire:model.live.debounce.500ms="selectedItems.{{ $id }}.third_semester_quantity" class="w-full"/>
+                        </x-table.data>
+                        <x-table.data >
+                            {{ $details['total_quantity'] }}
+                        </x-table.data>
+
                         <x-table.data class="w-1">
                             <x-danger-button wire:click="removeItem({{ $id }})">إزالة</x-danger-button>
                         </x-table.data>

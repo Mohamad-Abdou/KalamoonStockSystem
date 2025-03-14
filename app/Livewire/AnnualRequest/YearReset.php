@@ -41,15 +41,23 @@ class YearReset extends Component
 
     public function startYear()
     {
-        
-        $this->validate();
-      /* if (!Hash::check($this->password, Auth::user()->password)) { */
 
-        $adldap = new adLDAP();
-        if (!$adldap->authenticate(Auth::user()->name, $this->password)) {
-            $this->addError('password', 'كلمة المرور غير صحيحة');
-            $this->reset('password', 'password_confirmation');
-            return;
+        $this->validate();
+        /* if (!Hash::check($this->password, Auth::user()->password)) { */
+
+        if (env('APP_ENV') === 'local') {
+            if (!Hash::check($this->password, Auth::user()->password)) {
+                $this->addError('password', 'كلمة المرور غير صحيحة');
+                $this->reset('password', 'password_confirmation');
+                return;
+            }
+        } else {
+            $adldap = new adLDAP();
+            if (!$adldap->authenticate(Auth::user()->name, $this->password)) {
+                $this->addError('password', 'كلمة المرور غير صحيحة');
+                $this->reset('password', 'password_confirmation');
+                return;
+            }
         }
 
         try {
@@ -68,13 +76,20 @@ class YearReset extends Component
     {
         $this->validate();
 
-        $adldap = new adLDAP();
-        if (!$adldap->authenticate(Auth::user()->name, $this->password)) {
-            $this->addError('password', 'كلمة المرور غير صحيحة');
-            $this->reset('password', 'password_confirmation');
-            return;
+        if (env('APP_ENV') === 'local') {
+            if (!Hash::check($this->password, Auth::user()->password)) {
+                $this->addError('password', 'كلمة المرور غير صحيحة');
+                $this->reset('password', 'password_confirmation');
+                return;
+            }
+        } else {
+            $adldap = new adLDAP();
+            if (!$adldap->authenticate(Auth::user()->name, $this->password)) {
+                $this->addError('password', 'كلمة المرور غير صحيحة');
+                $this->reset('password', 'password_confirmation');
+                return;
+            }
         }
-        
         try {
             AnnualRequest::resetYear();
             $this->dispatch('showMessage', 'تم تدوير السنة وتصفير الأرصدة', 'عملية ناجحة');

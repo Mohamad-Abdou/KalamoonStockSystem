@@ -25,21 +25,36 @@ class AnnualRequestCreate extends Component
         $user = Auth::user();
         // اختيار المواد التي يمكن للمستخدم طلبها فقط
         $this->itemsToRequest = $user->items();
+        $this->filterdItems = $this->itemsToRequest;
     }
 
     public function updatedSearch()
     {
-        $this->showDropdown = strlen($this->search) > 0;
+        $this->showDropdown = true;
     }
 
     public function getFilteredItemsProperty()
     {
         if (!$this->search) {
-            return collect();
+            return $this->itemsToRequest;
         }
-
         return $this->itemsToRequest
             ->filter(fn($item) => str_contains(strtolower($item->name), strtolower($this->search)));
+    }
+
+    public function updatedSelectedItems($value, $key)
+    {
+        $matches = [];
+        preg_match('/(\d+)\.(first|second|third)_semester_quantity/', $key, $matches);
+
+
+        if (count($matches) === 3) {
+            $itemId = $matches[1];
+            $this->selectedItems[$itemId]['total_quantity'] =
+                (int)($this->selectedItems[$itemId]['first_semester_quantity'] ?? 0) +
+                (int)($this->selectedItems[$itemId]['second_semester_quantity'] ?? 0) +
+                (int)($this->selectedItems[$itemId]['third_semester_quantity'] ?? 0);
+        }
     }
 
     public function addItem($newItemId)
@@ -61,7 +76,10 @@ class AnnualRequestCreate extends Component
             'name' => $item->name,
             'description' => $item->description ?? '',
             'unit' => $item->unit,
-            'quantity' => 1,
+            'first_semester_quantity' => 0,
+            'second_semester_quantity' => 0,
+            'third_semester_quantity' => 0,
+            'total_quantity' => 0,
         ];
         $this->search = '';
         $this->showDropdown = false;
@@ -86,7 +104,13 @@ class AnnualRequestCreate extends Component
     ]);
 
     foreach ($this->selectedItems as $itemId => $details) {
-        $request->items()->attach($itemId, ['quantity' => $details['quantity']]);
+            $request->items()->attach($itemId,
+            [
+                'quantity' => $details['first_semester_quantity'] + $details['second_semester_quantity'] + $details['third_semester_quantity'],
+                'first_semester_quantity' => $details['first_semester_quantity'],
+                'second_semester_quantity' => $details['second_semester_quantity'],
+                'third_semester_quantity' => $details['third_semester_quantity'],
+            ]);;
     }
 
     session()->flash('message', 'تم حفظ الطلب بنجاح');
