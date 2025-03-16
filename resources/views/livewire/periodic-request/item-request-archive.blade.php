@@ -11,6 +11,9 @@
                             تاريخ الطلب
                         </x-table.table-header-element>
                         <x-table.table-header-element>
+                            الفصل
+                        </x-table.table-header-element>
+                        <x-table.table-header-element>
                             الكمية المطلوبة
                         </x-table.table-header-element>
                         <x-table.table-header-element>
@@ -24,6 +27,9 @@
                             class="text-center {{ $request->state === 0 ? 'bg-red-200' : ($request->state === -1 ? 'bg-green-200' : 'bg-orange-200') }} ">
                             <x-table.data>
                                 {{ $request->created_at }}
+                            </x-table.data>
+                            <x-table.data>
+                                {{ $request->semester_text }}
                             </x-table.data>
                             <x-table.data>
                                 {{ $request->quantity }}

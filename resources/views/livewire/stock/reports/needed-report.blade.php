@@ -60,7 +60,7 @@
                     الكمية الكلية المطلوبة
                 </x-table.table-header-element>
                 <x-table.table-header-element class="w-fit" rowspan='2'>
-                    إضافي حر
+                    فائض حر
                 </x-table.table-header-element>
                 <x-table.table-header-element class="w-1/12" rowspan='2'>
                     الكمية المطلوبة المتبقية لنهاية السنة

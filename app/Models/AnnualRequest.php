@@ -199,6 +199,10 @@ class AnnualRequest extends Model
             AppConfiguration::where('name', 'AnnualRequestPeriod')
                 ->where('key', 'end')
                 ->update(['value' => $now->copy()->addDays(10)]);
+
+            AppConfiguration::where('name', 'Year')
+                ->where('key', 'semester')
+                ->update(['value' => 1]);
         });
     }
 
@@ -287,7 +291,7 @@ class AnnualRequest extends Model
     public function Items()
     {
         return $this->belongsToMany(Item::class, 'annual_request_item')
-            ->withPivot('id', 'quantity', 'first_semester_quantity', 'second_semester_quantity' ,'third_semester_quantity', 'frozen', 'freeze_reason', 'objection_reason')
+            ->withPivot('id', 'quantity', 'first_semester_quantity', 'second_semester_quantity', 'third_semester_quantity', 'frozen', 'freeze_reason', 'objection_reason')
             ->withTimestamps();
     }
 }

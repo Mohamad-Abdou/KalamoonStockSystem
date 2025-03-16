@@ -84,6 +84,9 @@
                     التفاصيل
                 </x-table.table-header-element>
                 <x-table.table-header-element class="w-1 whitespace-nowrap">
+                    الفصل
+                </x-table.table-header-element>
+                <x-table.table-header-element class="w-1 whitespace-nowrap">
                     الحالة
                 </x-table.table-header-element>
             </tr>
@@ -99,6 +102,7 @@
                     <x-table.data class="w-1 whitespace-nowrap">{{ $stock->in_quantity }}</x-table.data>
                     <x-table.data class="w-1 whitespace-nowrap">{{ $stock->out_quantity }}</x-table.data>
                     <x-table.data class="w-1/4">{{ $stock->details }}</x-table.data>
+                    <x-table.data>{{ $stock->semester_text }}</x-table.data>
                     <x-table.data
                         class="w-1 whitespace-nowrap {{ $stock->approved ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                         <span>

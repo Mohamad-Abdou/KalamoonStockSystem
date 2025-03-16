@@ -44,7 +44,7 @@
                                 </p>
                                 @if ($item->pivot->frozen)
                                     <p class="w-full text-red-500 border-t-2 text-center border-white pt-2">
-                                        تم تجميد رصيد المادة من قبل أمانة الجامعة
+                                        تم تجميد رصيد المادة
                                     </p>
                                 @elseif ($item->balance <= 0)
                                     <p class="w-full text-red-500 border-t-2 text-center border-white pt-2">

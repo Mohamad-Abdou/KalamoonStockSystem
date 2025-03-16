@@ -36,7 +36,7 @@
                 @endif
                 @if ($request->state == 2)
                     <x-table.table-header-element rowspan='2'>
-                        الرصيد المتبقي
+                        الرصيد المتبقي للفصل الحالي
                     </x-table.table-header-element>
                     @if (Auth::user()->type == 2)
                         <x-table.table-header-element rowspan='2'>
