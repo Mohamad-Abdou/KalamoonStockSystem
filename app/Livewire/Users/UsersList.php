@@ -107,7 +107,7 @@ class UsersList extends Component
             'password' => env('DEFAULT_PASSWORD'),
             'role' => $this->newUser['role'],
             'office_number' => $this->newUser['office_number'],
-            'type' => 4
+            'type' => 4 
         ]);
         $this->reset();
     }

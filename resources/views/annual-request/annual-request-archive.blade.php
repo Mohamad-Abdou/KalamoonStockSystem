@@ -9,7 +9,7 @@
             <div class="flex items-center gap-2">
                 <input type="radio" wire:model.live="filterState" value="2" name="requestState"
                     class="border-gray-300 text-indigo-600 shadow-sm focus:ring-indigo-500">
-                <label>في المستودع</label>
+                <label>فعال</label>
             </div>
             <div class="flex items-center gap-2">
                 <input type="radio" wire:model.live="filterState" value="-1" name="requestState"
@@ -54,7 +54,7 @@
                         <div class="text-center">
                             {{ $request->getRequestStateTextAttribute() }}
                             <br>
-                            {{ $request->created_at->format('m-Y') }}
+                            {{ $request->created_at->year }} / {{ $request->created_at->year + 1 }}
                         </div>
                     </x-card>
                 </a>

@@ -37,7 +37,7 @@
         </thead>
         <tbody class="divide-y divide-gray-200">
             @foreach ($items as $item)
-                <tr wire:click="openEditModal({{ $item->id }})"
+                <tr 
                     class="hover:bg-gray-50 transition duration-200 {{ $item->active ? '' : 'bg-red-100 font-bold' }}">
                     <x-table.data>
                         {{ $item->name }}
@@ -45,7 +45,7 @@
                     <x-table.data>
                         {{ $item->unit }}
                     </x-table.data>
-                    <x-table.data>
+                    <x-table.data wire:click="openEditModal({{ $item->id }})"> 
                         {{ $item->description }}
                     </x-table.data>
 

@@ -15,6 +15,7 @@ class Stock extends Model
             'user_id' => 2,
             'in_quantity' => $quantity,
             'details' => $details,
+            'semester' => AnnualRequest::getCurrentSemester(),
             'approved' => false,
         ]);
     }
@@ -22,7 +23,7 @@ class Stock extends Model
     public static function outStock(Item $item, int $quantity, string $details)
     {
         $item = self::addStockToItem($item);
-        if($item->inSotckAvalible < $quantity) {
+        if ($item->inSotckAvalible < $quantity) {
             new \Exception('لا يوجد كمية متاحة في المستودع');
         }
         Stock::create([
@@ -30,6 +31,7 @@ class Stock extends Model
             'user_id' => 2,
             'out_quantity' => $quantity,
             'details' => $details,
+            'semester' => AnnualRequest::getCurrentSemester(),
             'approved' => true,
         ]);
     }
@@ -48,13 +50,14 @@ class Stock extends Model
             'in_quantity' => $quantity,
             'annual_request_id' => $user->getActiveRequest()->id,
             'details' => $details,
+            'semester' => AnnualRequest::getCurrentSemester(),
             'approved' => true,
         ]);
     }
 
     public static function MoveBalance(Item $item, int $quantity, User $fromUser, User $toUser)
     {
-        if (Stock::getUserBalance($fromUser, $item) < $quantity) {
+        if (Stock::getUserBalanceForSemester($fromUser, $item) < $quantity) {
             throw new \Exception('لا يوجد رصيد كافي للنقل');
         }
         Stock::create([
@@ -63,6 +66,7 @@ class Stock extends Model
             'out_quantity' => $quantity,
             'annual_request_id' => $fromUser->getActiveRequest()->id,
             'details' => 'نقل رصيد إلى ' . $toUser->role,
+            'semester' => AnnualRequest::getCurrentSemester(),
             'approved' => true,
         ]);
         self::addBalance($item, $quantity, 'نقل رصيد من ' . $fromUser->role, $toUser);
@@ -77,6 +81,7 @@ class Stock extends Model
             'out_quantity' => $quantity,
             'details' => $details,
             'approved' => true,
+            'semester' => AnnualRequest::getCurrentSemester(),
         ]);
     }
 
@@ -86,13 +91,15 @@ class Stock extends Model
         $added = Stock::where('user_id', $user->id)
             ->where('created_at', '>=', $lastReset)
             ->where('item_id', $item->id)
+            ->where('semester', AnnualRequest::getCurrentSemester())
             ->sum('in_quantity');
-        
+
         $removed = Stock::where('user_id', $user->id)
-        ->where('created_at', '>=', $lastReset)
-        ->where('annual_request_id', null)
-        ->where('item_id', $item->id)
-        ->sum('out_quantity');
+            ->where('created_at', '>=', $lastReset)
+            ->where('annual_request_id', null)
+            ->where('item_id', $item->id)
+            ->where('semester', AnnualRequest::getCurrentSemester())
+            ->sum('out_quantity');
 
         return $added - $removed;
     }
@@ -101,6 +108,7 @@ class Stock extends Model
     {
         $extraBalances = Stock::where('user_id', $annualRequest->user->id)
             ->where('annual_request_id', $annualRequest->id)
+            ->where('semester', AnnualRequest::getCurrentSemester())
             ->whereIn('item_id', $annualRequest->items->pluck('id'))
             ->groupBy('item_id')
             ->selectRaw('item_id, SUM(in_quantity) as total_extra')
@@ -117,14 +125,68 @@ class Stock extends Model
 
     public static function getUserBalance(User $user, Item $item): int
     {
-        $requestdBalance = $user->getActiveRequest()->items->find($item->id)->pivot->quantity;
+
+        $currentSemester = AnnualRequest::getCurrentSemester();
+
+        $semesterColumns = [
+            1 => 'first_semester_quantity',
+            2 => 'second_semester_quantity',
+            3 => 'third_semester_quantity'
+        ];
+
+        $semesterColumn = $semesterColumns[$currentSemester] ?? 'first_semester_quantity';
+        $requestdBalance = $user->getActiveRequest()->items->find($item->id)->pivot->{$semesterColumn};
+
         $extraBalance = self::getExtraBalance($item, $user);
         $lastReset = AnnualRequest::getLastYearReset();
         $consumed = Stock::where('user_id', $user->id)
             ->where('created_at', '>', $lastReset)
             ->where('item_id', $item->id)
+            ->where('semester', $currentSemester)
             ->sum('out_quantity');
         return $requestdBalance + $extraBalance - $consumed;
+    }
+
+    public static function getUserBalanceForSemester(User $user, Item $item): int
+    {
+        $currentSemester = AnnualRequest::getCurrentSemester();
+
+        $semesterColumns = [
+            1 => 'first_semester_quantity',
+            2 => 'second_semester_quantity',
+            3 => 'third_semester_quantity'
+        ];
+
+        $semesterColumn = $semesterColumns[$currentSemester] ?? 'first_semester_quantity';
+        $requestdBalance = $user->getActiveRequest()->items->find($item->id)->pivot->{$semesterColumn};
+
+
+        $extraBalance = self::getExtraBalance($item, $user);
+        $lastReset = AnnualRequest::getLastYearReset();
+        $consumed = Stock::where('user_id', $user->id)
+            ->where('created_at', '>', $lastReset)
+            ->where('semester', $currentSemester)
+            ->where('item_id', $item->id)
+            ->sum('out_quantity');
+
+        return $requestdBalance + $extraBalance - $consumed;
+    }
+
+    public static function addUserCurrentSemesterConsumed(AnnualRequest $annualRequest): AnnualRequest
+    {
+        $currentSemester = AnnualRequest::getCurrentSemester();
+        $consumed = Stock::where('user_id', $annualRequest->user_id)
+            ->where('annual_request_id', $annualRequest->id)
+            ->where('semester', $currentSemester)
+            ->groupBy('item_id')
+            ->selectRaw('item_id, SUM(out_quantity) as total_consumed')
+            ->pluck('total_consumed', 'item_id');
+
+        $annualRequest->items->each(function ($item) use ($consumed) {
+            $item->consumed = $consumed[$item->id] ?? 0;
+        });
+
+        return $annualRequest;
     }
 
     public static function addUserYearConsumed(AnnualRequest $annualRequest): AnnualRequest
@@ -144,8 +206,10 @@ class Stock extends Model
 
     public static function addUserBalances(AnnualRequest $annualRequest): AnnualRequest
     {
+        $currentSemester = AnnualRequest::getCurrentSemester();
         $consumed = Stock::where('user_id', $annualRequest->user->id)
             ->where('annual_request_id', $annualRequest->id)
+            ->where('semester', $currentSemester)
             ->whereIn('item_id', $annualRequest->items->pluck('id'))
             ->groupBy('item_id')
             ->selectRaw('item_id, SUM(out_quantity) as total_consumed')
@@ -153,8 +217,12 @@ class Stock extends Model
 
         $annualRequest = self::addExtraBalances($annualRequest);
 
+
         $annualRequest->items->each(function ($item) use ($consumed) {
-            $item->balance = ($item->pivot->quantity + ($item->extra_balance ?? 0)) - ($consumed[$item->id] ?? 0);
+            $currentSemester = AnnualRequest::getCurrentSemester();
+            if ($currentSemester == 1) $item->balance = ($item->pivot->first_semester_quantity + ($item->extra_balance ?? 0)) - ($consumed[$item->id] ?? 0);
+            elseif ($currentSemester == 2) $item->balance = ($item->pivot->second_semester_quantity + ($item->extra_balance ?? 0)) - ($consumed[$item->id] ?? 0);
+            elseif ($currentSemester == 3) $item->balance = ($item->pivot->third_semester_quantity + ($item->extra_balance ?? 0)) - ($consumed[$item->id] ?? 0);
         });
 
         return $annualRequest;
@@ -195,51 +263,161 @@ class Stock extends Model
         return (int)Stock::where('created_at', '>=', $lastReset)->where('item_id', $item->id)->where('user_id', 2)->sum('out_quantity');
     }
 
+    public static function totalOutFirstSemester(Item $item)
+    {
+        return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('semester', 1)->where('item_id', $item->id)->sum('out_quantity');
+    }
+    public static function totalOutSecondSemester(Item $item)
+    {
+        return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->where('semester', 2)->sum('out_quantity');
+    }
     public static function mainInStock(Item $item): int
     {
-        return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->sum('in_quantity');
+        $currentSemester = AnnualRequest::getCurrentSemester();
+        $betweenSemesters = 0;
+        if ($currentSemester == 2) {
+            $betweenSemesters = Stock::totalOutFirstSemester($item);
+        } elseif ($currentSemester == 3) {
+            $betweenSemesters = Stock::totalOutFirstSemester($item) + Stock::totalOutSecondSemester($item);
+        }
+        return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->sum('in_quantity') - $betweenSemesters;
     }
 
     public static function extras(Item $item)
     {
         $lastReset = AnnualRequest::getLastYearReset();
         return Stock::where('created_at', '>=', $lastReset)->whereNot('user_id', 2)->where('item_id', $item->id)->where('details', 'إضافي حر')->sum('in_quantity');
-    } 
+    }
 
     public static function NeededStock(Item $item): int
     {
         $lastReset = AnnualRequest::getLastYearReset();
-        $totalRequested = AnnualRequestItem::whereHas('annualRequest', function($query) {
+        $currentSemester = AnnualRequest::getCurrentSemester();
+        $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
             $query->where('state', 2);
         })
-        ->where('created_at', '>=', $lastReset)
-        ->where('item_id', $item->id)
-        ->sum('quantity');
+            ->where('created_at', '>=', $lastReset)
+            ->where('item_id', $item->id)
+            ->sum('quantity');
+        if ($currentSemester >= 2) {
+            $totalRequested -= AnnualRequestItem::whereHas('annualRequest', function ($query) {
+                $query->where('state', 2);
+            })
+                ->where('created_at', '>=', $lastReset)
+                ->where('item_id', $item->id)
+                ->sum('first_semester_quantity');
+        }
+        if ($currentSemester >= 3) {
+            $totalRequested -= AnnualRequestItem::whereHas('annualRequest', function ($query) {
+                $query->where('state', 2);
+            })
+                ->where('created_at', '>=', $lastReset)
+                ->where('item_id', $item->id)
+                ->sum('second_semester_quantity');
+        }
         return $totalRequested;
     }
 
-    public static function addAllowedQuantityToRequest(Item $item, User $user) : Item
+
+
+    public static function SemesterNeededStock(Item $item): int
+    {
+        $currentSemester = AnnualRequest::getCurrentSemester();
+        $lastReset = AnnualRequest::getLastYearReset();
+        $semesterColumn = match ($currentSemester) {
+            '1' => 'first_semester_quantity',
+            '2' => 'second_semester_quantity',
+            '3' => 'third_semester_quantity',
+            default => 'quantity' // Fallback
+        };
+        $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
+            $query->where('state', 2);
+        })
+            ->where('created_at', '>=', $lastReset)
+            ->where('item_id', $item->id)
+            ->sum($semesterColumn);
+
+        return $totalRequested;
+    }
+
+    public static function getFirstSemesterNeeded(Item $item)
+    {
+        $lastReset = AnnualRequest::getLastYearReset();
+        $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
+            $query->where('state', 2);
+        })
+            ->where('created_at', '>=', $lastReset)
+            ->where('item_id', $item->id)
+            ->sum('first_semester_quantity');
+        return $totalRequested;
+    }
+
+    public static function getSecondSemesterNeeded(Item $item)
+    {
+        $lastReset = AnnualRequest::getLastYearReset();
+        $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
+            $query->where('state', 2);
+        })
+            ->where('created_at', '>=', $lastReset)
+            ->where('item_id', $item->id)
+            ->sum('second_semester_quantity');
+        return $totalRequested;
+    }
+
+    public static function getThirdSemesterNeeded(Item $item)
+    {
+        $lastReset = AnnualRequest::getLastYearReset();
+        $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
+            $query->where('state', 2);
+        })
+            ->where('created_at', '>=', $lastReset)
+            ->where('item_id', $item->id)
+            ->sum('third_semester_quantity');
+        return $totalRequested;
+    }
+
+    public static function addAllowedQuantityToRequest(Item $item, User $user): Item
     {
         $item = Stock::addStockToItem($item);
-        $totalRequested = self::NeededStock($item);
-        $userRequestedQuantity = $user->getActiveRequest()->items->find($item->id)->pivot->quantity + Stock::getExtraBalance($item, $user);
-        $userBalance = Stock::getUserBalance($user, $item);
-        $avalible = $item->inStockAvalible;
+        $currentSemester = AnnualRequest::getCurrentSemester();
+        $totalRequested = self::SemesterNeededStock($item);
+        $semesterColumns = [
+            1 => 'first_semester_quantity',
+            2 => 'second_semester_quantity',
+            3 => 'third_semester_quantity'
+        ];
+
+        $semesterColumn = $semesterColumns[$currentSemester] ?? 'first_semester_quantity';
+
+        $semesterUserRequestedQuantity = $user->getActiveRequest()->items->find($item->id)->pivot->{$semesterColumn};
+        // $userRequestedQuantity = $user->getActiveRequest()->items->find($item->id)->pivot->quantity + Stock::getExtraBalance($item, $user);
+        $userBalance = Stock::getUserBalanceForSemester($user, $item);
         $consumed = Stock::where('user_id', $user->id)
             ->where('annual_request_id', $user->getActiveRequest()->id)
+            ->where('semester', $currentSemester)
             ->where('item_id', $item->id)
             ->sum('out_quantity');
-        $mainInStock = Stock::mainInStock($item);   
-        
+        $mainInStock = Stock::mainInStock($item);
+
         if ($mainInStock >= $totalRequested) {
-            $item->AllowedQuantityToRequest = $userBalance;    
+            $item->AllowedQuantityToRequest = $userBalance;
+        } else {
+            $item->AllowedQuantityToRequest = round(($semesterUserRequestedQuantity / $totalRequested) * $mainInStock) - $consumed;
         }
-        else
-        {
-            $item->AllowedQuantityToRequest = round(($userRequestedQuantity / $totalRequested) * $mainInStock) - $consumed; 
-        }
-        
+
         return $item;
+    }
+
+    public static $semesterText = [
+        1 => 'الفصل الدراسي الأول',
+        2 => 'الفصل الدراسي الثاني',
+        3 => 'الفصل الدراسي الصيفي',
+    ];
+
+    // $requestFlow->request_type_text
+    public function getSemesterTextAttribute()
+    {
+        return self::$semesterText[$this->semester] ?? 'فصل غير موجود';
     }
 
     public function item()
