@@ -397,7 +397,8 @@ class Stock extends Model
             ->where('semester', $currentSemester)
             ->where('item_id', $item->id)
             ->sum('out_quantity');
-        $mainInStock = Stock::mainInStock($item);
+        $bufferToRemove = BufferStock::where('item_id', $item->id)->sum('quantity');
+        $mainInStock = Stock::mainInStock($item) - $bufferToRemove;
 
         if ($mainInStock >= $totalRequested) {
             $item->AllowedQuantityToRequest = $userBalance;

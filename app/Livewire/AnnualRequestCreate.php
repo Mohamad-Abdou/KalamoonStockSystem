@@ -92,31 +92,33 @@ class AnnualRequestCreate extends Component
 
 
     public function saveRequest()
-{
-    if ($this->isProcessing) {
-        return;
+    {
+        if ($this->isProcessing) {
+            return;
+        }
+
+        $this->isProcessing = true;
+
+        $request = AnnualRequest::create([
+            'user_id' => Auth::user()->id,
+        ]);
+
+        foreach ($this->selectedItems as $itemId => $details) {
+            $request->items()->attach(
+                $itemId,
+                [
+                    'quantity' => $details['first_semester_quantity'] + $details['second_semester_quantity'] + $details['third_semester_quantity'],
+                    'first_semester_quantity' => $details['first_semester_quantity'],
+                    'second_semester_quantity' => $details['second_semester_quantity'],
+                    'third_semester_quantity' => $details['third_semester_quantity'],
+                ]
+            );;
+        }
+
+        session()->flash('message', 'تم حفظ الطلب بنجاح');
+        $this->isProcessing = false;
+        redirect(route('annual-request.index'));
     }
-    
-    $this->isProcessing = true;
-
-    $request = AnnualRequest::create([
-        'user_id' => Auth::user()->id,
-    ]);
-
-    foreach ($this->selectedItems as $itemId => $details) {
-            $request->items()->attach($itemId,
-            [
-                'quantity' => $details['first_semester_quantity'] + $details['second_semester_quantity'] + $details['third_semester_quantity'],
-                'first_semester_quantity' => $details['first_semester_quantity'],
-                'second_semester_quantity' => $details['second_semester_quantity'],
-                'third_semester_quantity' => $details['third_semester_quantity'],
-            ]);;
-    }
-
-    session()->flash('message', 'تم حفظ الطلب بنجاح');
-    $this->isProcessing = false;
-    redirect(route('annual-request.index'));
-}
 
     public function render()
     {

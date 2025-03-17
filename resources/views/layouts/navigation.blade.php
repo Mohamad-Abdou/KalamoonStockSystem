@@ -118,6 +118,13 @@
                         </x-nav-link>
                     </div>
                 @endcan
+                @can('viewAny', App\Models\BufferStock::class)
+                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                        <x-nav-link :href="route('buffer-stock.index')" :active="request()->routeIs('buffer-stock.index')">
+                            {{ __('المخزون الاحتياطي') }}
+                        </x-nav-link>
+                    </div>
+                @endcan
                 @can('InsertionConfirmation', App\Models\Stock::class)
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('stock.insertionConfirmation')" :active="request()->routeIs('stock.insertionConfirmation')">
