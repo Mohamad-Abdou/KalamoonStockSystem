@@ -1,6 +1,6 @@
-<x-card header="إضافة رصيد" class="justify-center bg-primary h-fit w-full flex flex-col space-y-4">
+<x-card header="صرف احتياطي" class="justify-center bg-primary h-fit w-full flex flex-col space-y-4">
     <p class="text-center text-white">
-        لا يمكن إضافة رصيد لجهة إلا في حال وجود كمية إضافية على الاحتياج السنوي لكل الجهات في المستودع
+        يمكن صرف كمية من المادة دون طلب في حال وجود كمية احتياطية للمادة وكمية كافية من رصيد المادة في المستودع فقط
     </p>
     <div class="relative">
         <div class="flex flex-col space-y-2 mb-2">
