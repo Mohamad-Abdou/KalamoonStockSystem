@@ -224,7 +224,7 @@ class Stock extends Model
             elseif ($currentSemester == 2) $item->balance = ($item->pivot->second_semester_quantity + ($item->extra_balance ?? 0)) - ($consumed[$item->id] ?? 0);
             elseif ($currentSemester == 3) $item->balance = ($item->pivot->third_semester_quantity + ($item->extra_balance ?? 0)) - ($consumed[$item->id] ?? 0);
         });
-
+        
         return $annualRequest;
     }
 
