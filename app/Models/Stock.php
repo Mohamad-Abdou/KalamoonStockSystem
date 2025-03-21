@@ -67,7 +67,7 @@ class Stock extends Model
             'annual_request_id' => $fromUser->getActiveRequest()->id,
             'details' => 'نقل رصيد إلى ' . $toUser->role,
             'semester' => AnnualRequest::getCurrentSemester(),
-            'approved' => true,
+            'approved' => false,
         ]);
         self::addBalance($item, $quantity, 'نقل رصيد من ' . $fromUser->role, $toUser);
     }
@@ -407,6 +407,11 @@ class Stock extends Model
         }
 
         return $item;
+    }
+
+    public static function getUnverfirdBalanceRemovedList(User $user)
+    {
+        return Stock::where('user_id', $user->id)->where('annual_request_id', $user->getActiveRequest()->id)->where('approved', 0)->with('item')->get();
     }
 
     public static $semesterText = [
