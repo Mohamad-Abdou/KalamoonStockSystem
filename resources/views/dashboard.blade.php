@@ -9,7 +9,9 @@
             <div class="w-full">
                 <section class="bg-white shadow-sm sm:rounded-lg basis-2/3">
                     <div class="p-6 text-gray-900 flex flex-col justify-center items-center">
+                        @if (Auth::user()->type > 1)
                             @livewire('NotifyList')
+                        @endif
                     </div>
                 </section>
             </div>

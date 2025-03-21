@@ -4,6 +4,7 @@ namespace App\Livewire\Stock;
 
 use App\Models\BufferStock;
 use App\Models\Stock;
+use Illuminate\Validation\Rules\Exists;
 use Livewire\Component;
 
 class BufferManager extends Component
@@ -28,6 +29,9 @@ class BufferManager extends Component
 
     public function updatedQuantities($value, $key)
     {
+        if (!$value || $value < 0) {
+            $value = 0;
+        }
         $bufferId = $key;
         $bufferStock = BufferStock::find($bufferId);
         

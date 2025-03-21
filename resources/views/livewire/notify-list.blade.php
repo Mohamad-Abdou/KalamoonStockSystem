@@ -31,10 +31,10 @@
                         <x-table.data>
                             {{ $item->item->unit }}
                         </x-table.data>
-                        <x-table.data wire:click="openEditModal({{ $item->id }})">
+                        <x-table.data>
                             {{ $item->item->description }}
                         </x-table.data>
-                        <x-table.data wire:click="openEditModal({{ $item->id }})">
+                        <x-table.data>
                             {{ $item->out_quantity }}
                         </x-table.data>
                         <x-table.data>
