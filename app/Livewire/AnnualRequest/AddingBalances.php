@@ -4,9 +4,11 @@ namespace App\Livewire\AnnualRequest;
 
 use App\Models\AnnualRequest;
 use App\Models\BufferStock;
+use App\Models\Item;
 use App\Models\PeriodicRequest;
 use App\Models\Stock;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class AddingBalances extends Component
@@ -45,7 +47,7 @@ class AddingBalances extends Component
             $this->ItemsSearchResault = [];
             return;
         }
-        $this->ItemsSearchResault = collect($this->UserItems)->filter(function ($item) {
+        $this->ItemsSearchResault = Item::all()->filter(function ($item) {
             return str_contains(strtolower($item->name), strtolower($this->itemsSearch));
         });
     }
@@ -102,6 +104,7 @@ class AddingBalances extends Component
         ]);
 
         try {
+            Stock::addBalance($this->selectedItem, $this->quantity, 'تصريف من المخزون الاحتياطي من قبل ' . Auth::user()->role, $this->SelectedUser);
             PeriodicRequest::create([
                 'user_id' => $this->SelectedUser->id,
                 'item_id' => $this->selectedItem->id,

@@ -40,7 +40,7 @@ class BufferManager extends Component
     public function showItemDetails($itemId)
     {
         $this->selectedItem = BufferStock::with('item.item_group')->find($itemId);
-        $inStockAvailble = Stock::mainInStock($this->selectedItem->item);
+        $inStockAvailble = Stock::addStockToItem($this->selectedItem->item)->inStockAvalible;
         $this->selectedItem->inStockAvailble = $inStockAvailble?? 0;
         $this->selectedItem->first_semester_needed = Stock::getFirstSemesterNeeded($this->selectedItem->item);
         $this->selectedItem->second_semester_needed = Stock::getSecondSemesterNeeded($this->selectedItem->item);
