@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         // المستخدمين الرئيسيين
         User::factory()->createMany([
             [
-                'name' => 'admin.uo',
+                'name' => 'admin.uok',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مدير النظام',
                 'office_number' => '1234',
@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'presViesAdmin.uok',
                 'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'نائب الجامعة الإداري',
+                'role' => 'نائب الرئاسة للشؤون الإدارية',
                 'office_number' => '1234',
                 'type' => '2'
             ],

@@ -1,5 +1,5 @@
 <div  class="flex flex-col w-3/4 justify-center items-center gap-3">
-    @if (!$itemBalanceRemovedList->isEmpty())
+    @if(!$itemBalanceRemovedList->isEmpty())
         <h1 class=" text-2xl font-bold">تنبيه</h1>
         <p>تم اقتطاع كمية من رصيدك للمواد التالية</p>
         <x-table.table>
@@ -31,10 +31,10 @@
                         <x-table.data>
                             {{ $item->item->unit }}
                         </x-table.data>
-                        <x-table.data wire:click="openEditModal({{ $item->id }})">
+                        <x-table.data>
                             {{ $item->item->description }}
                         </x-table.data>
-                        <x-table.data wire:click="openEditModal({{ $item->id }})">
+                        <x-table.data>
                             {{ $item->out_quantity }}
                         </x-table.data>
                         <x-table.data>
