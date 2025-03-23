@@ -65,13 +65,15 @@
     @if ($showRequestModal)
         <div class="fixed inset-0 flex items-center justify-center z-40 bg-black bg-opacity-50">
             <div
-                class="flex flex-col gap-3 justify-center items-center bg-white p-6 rounded shadow-lg w-1/3 border-second-color ">
+                class="flex flex-col gap-3 justify-center items-center bg-white p-6 rounded shadow-lg w-1/3 border-second-color">
                 <div class="w-full">
-                    <h2 class="text-lg font-semibold mb-4 text-center"> {{ $selectedItem->name }}
-                        ({{ $selectedItem->unit }}) </h2>
-                    <p>
-                        {{ $selectedItem->description }}
-                    </p>
+                    <div wire:ignore>
+                        <h2 class="text-lg font-semibold mb-4 text-center"> {{ $selectedItem->name }}
+                            ({{ $selectedItem->unit }}) </h2>
+                        <p>
+                            {{ $selectedItem->description }}
+                        </p>
+                    </div>
                     <div class="flex flex-row border-t-2 gap-4 border-primary pt-4 justify-center">
                         @if ($allowedQuantity > 0)
                             <div class="flex flex-col justify-center">

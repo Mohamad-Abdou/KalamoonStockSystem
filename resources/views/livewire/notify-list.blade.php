@@ -1,5 +1,5 @@
 <div  class="flex flex-col w-3/4 justify-center items-center gap-3">
-    @if (!$itemBalanceRemovedList->isEmpty())
+    @if(!$itemBalanceRemovedList->isEmpty())
         <h1 class=" text-2xl font-bold">تنبيه</h1>
         <p>تم اقتطاع كمية من رصيدك للمواد التالية</p>
         <x-table.table>
