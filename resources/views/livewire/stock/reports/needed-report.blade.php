@@ -5,7 +5,6 @@
                 placeholder="البحث بالاسم والوصف" />
         </div>
         @if ($filterOption === 'needed' && !$yearState)
-        
             <div class="w-1/4 text-center text-red-400 font-semibold ">
                 <p>
                     يرجى الانتباه إلى أن السنة غير فعالة والجهات لا زالت تقدم طلبات سنوية
@@ -32,7 +31,7 @@
     <x-table.table>
         <thead class="bg-gray-100 text-gray-700 text-center">
             <tr>
-                <th colspan="8" class="px-4 py-2 border-2 border-gray-300 text-center bg-gray-100">
+                <th colspan="11" class="px-4 py-2 border-2 border-gray-300 text-center bg-gray-100">
                     <div class="text-black text-center font-extrabold flex flex-col justify-center align-middle">
                         <label for="date"
                             class="block text-xl mb-2 font-extrabold w-full border-b-2 border-black">تاريخ بداية
@@ -41,31 +40,37 @@
                     </div>
                 </th>
             </tr>
-            <tr>
-                <x-table.table-header-element>
+            <tr class=" text-center">
+                <x-table.table-header-element rowspan='2'>
                     اسم المادة (الوحدة)
                 </x-table.table-header-element>
-                <x-table.table-header-element>
+                <x-table.table-header-element class="w-1/6 text-center" rowspan='2'>
                     وصف المادة
                 </x-table.table-header-element>
-                <x-table.table-header-element class="w-fit">
-                    الكمية الأساسية المدخلة
+                <x-table.table-header-element class="w-1/12" rowspan='2'>
+                    الكمية الأساسية المدخلة للفصل الحالي
                 </x-table.table-header-element>
-                <x-table.table-header-element class="w-fit">
-                    الكمية الخارجة
+                <x-table.table-header-element class="w-1/12" rowspan='2'>
+                    الكمية الخارجة من بداية السنة
                 </x-table.table-header-element>
-                <x-table.table-header-element class="w-fit">
+                <x-table.table-header-element class="w-fit" rowspan='2'>
                     الكمية الحالية
                 </x-table.table-header-element>
-                <x-table.table-header-element class="w-fit">
+                <x-table.table-header-element class="w-fit" colspan='4'>
                     الكمية الكلية المطلوبة
                 </x-table.table-header-element>
-                <x-table.table-header-element class="w-fit">
-                    إضافي حر
+                <x-table.table-header-element class="w-fit" rowspan='2'>
+                    فائض حر
                 </x-table.table-header-element>
-                <x-table.table-header-element class="w-fit">
-                    الكمية المطلوبة المتبقية
+                <x-table.table-header-element class="w-1/12" rowspan='2'>
+                    الكمية المطلوبة المتبقية لنهاية السنة
                 </x-table.table-header-element>
+            </tr>
+            <tr>
+                <x-table.table-header-element>الفصل الأول</x-table.table-header-element>
+                <x-table.table-header-element>الفصل الثاني</x-table.table-header-element>
+                <x-table.table-header-element>الفصل الصيفي</x-table.table-header-element>
+                <x-table.table-header-element>الكلي</x-table.table-header-element>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -85,6 +90,16 @@
                     </x-table.data>
                     <x-table.data>
                         {{ $item->inStockAvalible }}
+                    </x-table.data>
+                    <x-table.data class="{{ $semester == 1 ? 'bg-green-100' : 'bg-red-100' }}">
+                        {{ $item->firstSemesterNeeded }}
+                    </x-table.data>
+                    <x-table.data
+                        class="{{ $semester == 2 ? 'bg-green-100' : '' }} {{ $semester == 3 ? 'bg-red-100' : '' }}">
+                        {{ $item->secondSemesterNeeded }}
+                    </x-table.data>
+                    <x-table.data class="{{ $semester == 3 ? 'bg-green-100' : '' }}">
+                        {{ $item->thirdSemesterNeeded }}
                     </x-table.data>
                     <x-table.data>
                         {{ $item->needed }}

@@ -19,40 +19,42 @@ class DatabaseSeeder extends Seeder
         // المستخدمين الرئيسيين
         User::factory()->createMany([
             [
-                'name' => 'administrator',
-                'email' => 'administrator@uok.edu.sy',
+                'name' => 'admin.uok',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مدير النظام',
                 'office_number' => '1234',
                 'type' => '0'
             ],
             [
-                'name' => 'mohamad.abdou',
-                'email' => 'StockHolder@uok.edu.sy',
+                'name' => 'stock.uok',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'المستودع',
                 'office_number' => '1234',
                 'type' => '1'
             ],
             [
-                'name' => 'maher.nouh',
-                'email' => 'Ameen@uok.edu.sy',
+                'name' => 'ameen.uok',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'أمانة الجامعة',
                 'office_number' => '1234',
                 'type' => '2'
             ],
             [
-                'name' => 'finance',
-                'email' => 'financial@uok.edu.sy',
+                'name' => 'presViesAdmin.uok',
+                'password' => env('DEFAULT_PASSWORD'),
+                'role' => 'نائب الرئاسة للشؤون الإدارية',
+                'office_number' => '1234',
+                'type' => '2'
+            ],
+            [
+                'name' => 'fin.uok',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مديرية المالية',
                 'office_number' => '1234',
                 'type' => '3'
             ],
             [
-                'name' => 'anas',
-                'email' => 'ITmanager@uok.edu.sy',
+                'name' => 'it.uok',
                 'password' => env('DEFAULT_PASSWORD'),
                 'role' => 'مديرية النظم',
                 'office_number' => '1234',
@@ -68,12 +70,12 @@ class DatabaseSeeder extends Seeder
 
         RequestFlow::factory()->createMany([
             [
-                'user_id' => 3,
+                'user_id' => 4,
                 'request_type' => 0,
                 'order' => 1,
             ],
             [
-                'user_id' => 4,
+                'user_id' => 3,
                 'request_type' => 0,
                 'order' => 2,
             ],
@@ -97,6 +99,14 @@ class DatabaseSeeder extends Seeder
                 'name' => 'LastReset',
                 'key' => 'Date',
                 'value' => now()->toDateString(),
+            ],[
+                'name' => 'Year',
+                'key' => 'state',
+                'value' => false,
+            ],[
+                'name' => 'Year',
+                'key' => 'semester',
+                'value' => 1,
             ]
         ]);
     }

@@ -15,7 +15,8 @@
                 <div class="basis-1/5 p-4">
                     <x-card
                         class="flex flex-col h-full justify-between cursor-pointer transition-transform duration-200 {{ $item->pivot->frozen || $item->balance <= 0 ? 'border-red-500' : 'hover:scale-105 border-second-color' }} border-4  bg-primary max-w-1/3">
-                        <div wire:click="{{ !$item->pivot->frozen && !$item->balance <= 0 ? 'selectItem(' . $item->id . ')' : '' }}">
+                        <div
+                            wire:click="{{ !$item->pivot->frozen && !$item->balance <= 0 ? 'selectItem(' . $item->id . ')' : '' }}">
                             <div class="mb-2">
                                 <x-slot:header class="mb-5 text-black">
                                     {{ $item->name }} ( {{ $item->unit }} )
@@ -26,7 +27,14 @@
                             </p>
                             <div class="flex flex-col w-full justify-between">
                                 <p class="w-full text-gray-100 border-t-2 border-white pt-2">
-                                    الكمية المطلوبة : {{ $item->pivot->quantity }}
+                                    الكمية المطلوبة :
+                                    @if ($currentSemester == 1)
+                                        {{ $item->pivot->first_semester_quantity }}
+                                    @elseif ($currentSemester == 2)
+                                        {{ $item->pivot->second_semester_quantity }}
+                                    @elseif ($currentSemester == 3)
+                                        {{ $item->pivot->third_semester_quantity }}
+                                    @endif
                                 </p>
                                 <p class="w-full text-gray-100 border-t-2 border-white pt-2">
                                     إضافي : {{ $item->extra_balance }}
@@ -36,7 +44,7 @@
                                 </p>
                                 @if ($item->pivot->frozen)
                                     <p class="w-full text-red-500 border-t-2 text-center border-white pt-2">
-                                        تم تجميد رصيد المادة من قبل أمانة الجامعة
+                                        تم تجميد رصيد المادة
                                     </p>
                                 @elseif ($item->balance <= 0)
                                     <p class="w-full text-red-500 border-t-2 text-center border-white pt-2">
@@ -57,13 +65,15 @@
     @if ($showRequestModal)
         <div class="fixed inset-0 flex items-center justify-center z-40 bg-black bg-opacity-50">
             <div
-                class="flex flex-col gap-3 justify-center items-center bg-white p-6 rounded shadow-lg w-1/3 border-second-color ">
+                class="flex flex-col gap-3 justify-center items-center bg-white p-6 rounded shadow-lg w-1/3 border-second-color">
                 <div class="w-full">
-                    <h2 class="text-lg font-semibold mb-4 text-center"> {{ $selectedItem->name }}
-                        ({{ $selectedItem->unit }}) </h2>
-                    <p>
-                        {{ $selectedItem->description }}
-                    </p>
+                    <div wire:ignore>
+                        <h2 class="text-lg font-semibold mb-4 text-center"> {{ $selectedItem->name }}
+                            ({{ $selectedItem->unit }}) </h2>
+                        <p>
+                            {{ $selectedItem->description }}
+                        </p>
+                    </div>
                     <div class="flex flex-row border-t-2 gap-4 border-primary pt-4 justify-center">
                         @if ($allowedQuantity > 0)
                             <div class="flex flex-col justify-center">

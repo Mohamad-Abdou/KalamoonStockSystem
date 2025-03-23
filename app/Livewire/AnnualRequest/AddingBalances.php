@@ -3,8 +3,12 @@
 namespace App\Livewire\AnnualRequest;
 
 use App\Models\AnnualRequest;
+use App\Models\BufferStock;
+use App\Models\Item;
+use App\Models\PeriodicRequest;
 use App\Models\Stock;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class AddingBalances extends Component
@@ -43,7 +47,7 @@ class AddingBalances extends Component
             $this->ItemsSearchResault = [];
             return;
         }
-        $this->ItemsSearchResault = collect($this->UserItems)->filter(function ($item) {
+        $this->ItemsSearchResault = Item::all()->filter(function ($item) {
             return str_contains(strtolower($item->name), strtolower($this->itemsSearch));
         });
     }
@@ -53,12 +57,23 @@ class AddingBalances extends Component
         $this->resetValidation();
         $this->showApplyButton = false;
         $this->selectedItem = $this->ItemsSearchResault->firstWhere('id', $id);
+        $this->selectedItem = Stock::addStockToItem($this->selectedItem);
         $lastReset = AnnualRequest::getLastYearReset();
-        
-        $this->maxQuantity = Stock::mainInStock($this->selectedItem) - Stock::NeededStock($this->selectedItem) - Stock::where('created_at', '>=', $lastReset)->whereNot('user_id', 2)->where('item_id', $this->selectedItem->id)->where('details', 'إضافي حر')->sum('in_quantity');
-    
-        if ($this->maxQuantity <= 0) {
-            $this->addError('maxQuantity', 'لا يوجد كمية كافية في المستودع');
+        $inStockAvailble = $this->selectedItem->inStockAvalible;
+        $buffer_quantity = BufferStock::where('item_id', $this->selectedItem->id)->get()->first();
+        if ($inStockAvailble < $buffer_quantity->quantity) {
+            $this->maxQuantity = $inStockAvailble;
+        } else {
+            $this->maxQuantity = $buffer_quantity->quantity;
+        }
+
+        if ($inStockAvailble == 0) {
+            $this->addError('maxQuantity', 'لا يوجد كمية في المستودع');
+            $this->reset(['selectedItem', 'maxQuantity', 'ItemsSearchResault', 'itemsSearch', 'quantity']);
+            return;
+        }
+        if ($buffer_quantity->quantity == 0) {
+            $this->addError('maxQuantity', 'لا يوجد مخزون احتياطي');
             $this->reset(['selectedItem', 'maxQuantity', 'ItemsSearchResault', 'itemsSearch', 'quantity']);
             return;
         }
@@ -87,10 +102,22 @@ class AddingBalances extends Component
         $this->validate([
             'quantity' => 'required|numeric|min:1|max:' . $this->maxQuantity,
         ]);
+
         try {
-            Stock::addBalance($this->selectedItem, $this->quantity, 'إضافي حر', $this->SelectedUser);
+            Stock::addBalance($this->selectedItem, $this->quantity, 'تصريف من المخزون الاحتياطي من قبل ' . Auth::user()->role, $this->SelectedUser);
+            PeriodicRequest::create([
+                'user_id' => $this->SelectedUser->id,
+                'item_id' => $this->selectedItem->id,
+                'quantity' => $this->quantity,
+                'state' => 2,
+            ]);
+            $buffer = BufferStock::where('item_id', $this->selectedItem->id)->get()->first();
+            
+            $buffer->quantity -= $this->quantity;
+            $buffer->save();
+
             $this->reset(['SelectedUser', 'UserItems', 'itemsSearch', 'ItemsSearchResault', 'selectedItem', 'maxQuantity', 'quantity', 'showApplyButton']);
-            $this->dispatch('showMessage', 'عملية ناجحة', 'تم إضافة الرصيد بنجاح');
+            $this->dispatch('showMessage', 'عملية ناجحة', 'تم الصرف بنجاح');
         } catch (\Throwable $th) {
             $this->dispatch('showMessage', 'خطأ', $th->getMessage());
         }

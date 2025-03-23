@@ -12,38 +12,44 @@
     <x-table.table class="w-full">
         <thead class="bg-gray-100 text-gray-700 text-center">
             <tr>
-                <x-table.table-header-element class="w-1/3">
+                <x-table.table-header-element class="w-1/3" rowspan='2'>
                     المادة
                 </x-table.table-header-element>
-                <x-table.table-header-element>
+                <x-table.table-header-element rowspan='2'>
                     الوحدة
                 </x-table.table-header-element>
-                <x-table.table-header-element class="w-1/3">
+                <x-table.table-header-element rowspan='2' class="w-1/3">
                     وصف المادة
                 </x-table.table-header-element>
-                <x-table.table-header-element>
+                <x-table.table-header-element colspan='4'> 
                     الكمية المطلوبة
                 </x-table.table-header-element>
                 @if ($request->state == -1 || $request->state == 2)
-                    <x-table.table-header-element>
+                    <x-table.table-header-element rowspan='2'> 
                         نقل إضافي
                     </x-table.table-header-element>
                 @endif
                 @if ($request->state == -1)
-                    <x-table.table-header-element>
+                    <x-table.table-header-element rowspan='2'>
                         الاستهلاك الكلي
                     </x-table.table-header-element>
                 @endif
                 @if ($request->state == 2)
-                    <x-table.table-header-element>
-                        الرصيد المتبقي
+                    <x-table.table-header-element rowspan='2'>
+                        الرصيد المتبقي للفصل الحالي
                     </x-table.table-header-element>
                     @if (Auth::user()->type == 2)
-                        <x-table.table-header-element>
+                        <x-table.table-header-element rowspan='2'>
                             تجميد الرصيد
                         </x-table.table-header-element>
                     @endif
                 @endif
+            </tr>
+            <tr>
+                <x-table.table-header-element>الفصل الأول</x-table.table-header-element>
+                <x-table.table-header-element>الفصل الثاني</x-table.table-header-element>
+                <x-table.table-header-element>الفصل الصيفي</x-table.table-header-element>
+                <x-table.table-header-element>الكلي</x-table.table-header-element>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
@@ -58,9 +64,20 @@
                     <x-table.data class="w-1/3">
                         {{ $item->description }}
                     </x-table.data>
+                    
+                    <x-table.data>
+                        {{ $item->pivot->first_semester_quantity }}
+                    </x-table.data>
+                    <x-table.data>
+                        {{ $item->pivot->second_semester_quantity }}
+                    </x-table.data>
+                    <x-table.data>
+                        {{ $item->pivot->third_semester_quantity }}
+                    </x-table.data>
                     <x-table.data>
                         {{ $item->pivot->quantity }}
                     </x-table.data>
+                    
                     @if ($request->state == -1 || $request->state == 2)
                         <x-table.data>
                             {{ $item->extra_balance ?? 0 }}

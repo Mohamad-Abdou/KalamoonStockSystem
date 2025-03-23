@@ -199,6 +199,10 @@ class AnnualRequest extends Model
             AppConfiguration::where('name', 'AnnualRequestPeriod')
                 ->where('key', 'end')
                 ->update(['value' => $now->copy()->addDays(10)]);
+
+            AppConfiguration::where('name', 'Year')
+                ->where('key', 'semester')
+                ->update(['value' => 1]);
         });
     }
 
@@ -219,6 +223,8 @@ class AnnualRequest extends Model
             ->where('key', 'state')
             ->update(['value' => true]);
     }
+
+
 
     // دالة لإرجاع الطلب للمستخدم السابق في سير العمل
     public function backwordRequest()
@@ -265,6 +271,18 @@ class AnnualRequest extends Model
         }
     }
 
+    public static function getCurrentSemester()
+    {
+        return AppConfiguration::where('name', 'Year')->where('key', 'semester')->value('value');
+    }
+
+    public static function NextSemester()
+    {
+        $currentSemester = self::getCurrentSemester();
+        $nextSemester = $currentSemester + 1;
+        AppConfiguration::where('name', 'Year')->where('key', 'semester')->update(['value' => $nextSemester]);
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -273,7 +291,7 @@ class AnnualRequest extends Model
     public function Items()
     {
         return $this->belongsToMany(Item::class, 'annual_request_item')
-            ->withPivot('id', 'quantity', 'frozen', 'freeze_reason', 'objection_reason')
+            ->withPivot('id', 'quantity', 'first_semester_quantity', 'second_semester_quantity', 'third_semester_quantity', 'frozen', 'freeze_reason', 'objection_reason')
             ->withTimestamps();
     }
 }

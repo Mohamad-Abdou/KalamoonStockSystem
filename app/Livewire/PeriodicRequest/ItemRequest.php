@@ -2,6 +2,7 @@
 
 namespace App\Livewire\PeriodicRequest;
 
+use App\Models\AnnualRequest;
 use App\Models\Item;
 use App\Models\PeriodicRequest;
 use App\Models\Stock;
@@ -21,10 +22,17 @@ class ItemRequest extends Component
     public $selectedItem;
     public $allowedQuantity;
     public $quantity;
+    public $currentSemester;
+
     protected $messages = [
         'quantity.max' => 'الكمية العلبا المسموحة للطلب هي  :max'
     ];
     
+    public function mount()
+    {
+        $this->currentSemester = AnnualRequest::getCurrentSemester();
+    }
+
     public function selectItem(Item $item, User $user)
     {
         $user = Auth::user();
@@ -80,7 +88,7 @@ class ItemRequest extends Component
         $user = Auth::user();
         $annualItems = $user->getActiveRequest();
         $annualItems = Stock::addUserBalances($annualItems);
-        $annualItems = Stock::addUserYearConsumed($annualItems);
+        $annualItems = Stock::addUserCurrentSemesterConsumed($annualItems);
 
         $this->itemsToShow = $annualItems->items->filter(function ($item) {
             return str_contains(strtolower($item->name), strtolower($this->search));

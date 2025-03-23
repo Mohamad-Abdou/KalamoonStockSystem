@@ -29,6 +29,12 @@ class AuthenticatedSessionController extends Controller
 
     public function store(LoginRequest $request): RedirectResponse
     {
+        if(env('APP_ENV') === 'local') {
+            $request->authenticate();
+            $request->session()->regenerate();
+            return redirect()->intended(route('dashboard'));
+        }
+
         $request->validate([
             'name' => ['required', 'string'],
             'password' => ['required', 'string'],
