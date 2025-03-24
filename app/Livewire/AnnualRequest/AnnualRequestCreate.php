@@ -1,10 +1,8 @@
 <?php
-// @cody: why the error here?
 
-namespace App\Livewire;
+namespace App\Livewire\AnnualRequest;
 
 use App\Models\AnnualRequest;
-use App\Models\Item;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -19,6 +17,7 @@ class AnnualRequestCreate extends Component
     public $itemsToRequest;
     public $selectedItems = [];
     public $isProcessing = false;
+    public $filterdItems;
 
     public function mount()
     {

@@ -2,5 +2,5 @@
     <x-slot:header>
         طلب جديد
     </x-slot:header>
-    @livewire('annual-request-create')
+    @livewire('AnnualRequest.AnnualRequestCreate')
 </x-app-layout>

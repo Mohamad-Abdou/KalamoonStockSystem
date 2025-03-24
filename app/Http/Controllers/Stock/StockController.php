@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Stock;
+
 
 use App\Models\Stock;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

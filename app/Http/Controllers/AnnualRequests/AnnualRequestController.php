@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AnnualRequests;
 
 use App\Http\Middleware\CheckRequestPeriod;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;

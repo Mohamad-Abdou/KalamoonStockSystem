@@ -1,3 +1,3 @@
 <x-app-layout>
-    @livewire('annual-request-archive')
+    @livewire('AnnualRequest.AnnualRequestArchive')
 </x-app-layout>
