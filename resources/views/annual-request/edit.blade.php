@@ -1,3 +1,3 @@
 <x-app-layout>
-        @livewire('annual-request-edit', ['annualRequestId' => $request])
+        @livewire('AnnualRequest.AnnualRequestEdit', ['annualRequestId' => $request])
 </x-app-layout>

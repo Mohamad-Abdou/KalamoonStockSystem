@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\PeriodicRequests;
 
 use App\Http\Middleware\CheckYearState;
 use App\Models\AnnualRequest;

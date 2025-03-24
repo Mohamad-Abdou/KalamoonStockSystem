@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\AnnualRequest;
 
 use App\Models\AnnualRequest;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -56,7 +55,7 @@ class AnnualRequestArchive extends Component
 
     public function render()
     {
-        return view('annual-request.annual-request-archive', [
+        return view('livewire.annual-request.annual-request-archive', [
             'annual_requests' => $this->loadAnnualRequests()
         ]);
     }

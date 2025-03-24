@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\AnnualRequest;
 
 use App\Models\AnnualRequest;
 use App\Models\Item;
@@ -135,6 +135,6 @@ class AnnualRequestEdit extends Component
 
     public function render()
     {
-        return view('annual-request.edit-livewire');
+        return view('livewire.annual-request.edit');
     }
 }

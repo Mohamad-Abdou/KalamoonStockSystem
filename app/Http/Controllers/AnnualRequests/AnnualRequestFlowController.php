@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\AnnualRequests;
 
 use App\Models\AnnualRequest;
 use App\Models\Stock;

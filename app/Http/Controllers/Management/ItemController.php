@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Management;
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Item;
