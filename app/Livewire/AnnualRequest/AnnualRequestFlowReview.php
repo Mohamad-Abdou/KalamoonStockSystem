@@ -89,6 +89,6 @@ class AnnualRequestFlowReview extends Component
         if ($this->previous_annual_request) {
             $this->linkPrevious();
         }
-        return view('livewire.annual-request-flow-review');
+        return view('livewire.AnnualRequest.annual-request-flow-review');
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\CheckAdmin;
 use App\Http\Middleware\UserPartOfTheAnnualFlow;
 use App\Http\Middleware\UserPartOfThePeriodicFlow;
 use Illuminate\Foundation\Application;
@@ -14,6 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
+            'CheckAdmin' => CheckAdmin::class,
             'AnnualFlow' => UserPartOfTheAnnualFlow::class,
             'PeriodicFlow' => UserPartOfThePeriodicFlow::class,
         ]);
