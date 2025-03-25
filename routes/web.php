@@ -16,3 +16,5 @@ require __DIR__ . '/management.php';
 require __DIR__ . '/stock.php';
 require __DIR__ . '/annual_requests.php';
 require __DIR__ . '/periodic_requests.php';
+require __DIR__ . '/temporary_requests.php';
+
