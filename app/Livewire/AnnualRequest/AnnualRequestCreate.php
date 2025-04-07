@@ -25,6 +25,7 @@ class AnnualRequestCreate extends Component
         // اختيار المواد التي يمكن للمستخدم طلبها فقط
         $this->itemsToRequest = $user->items();
         $this->filterdItems = $this->itemsToRequest;
+        
     }
 
     public function updatedSearch()
@@ -121,6 +122,6 @@ class AnnualRequestCreate extends Component
 
     public function render()
     {
-        return view('annual-request.create');
+        return view('livewire.annual-request.create');
     }
 }
