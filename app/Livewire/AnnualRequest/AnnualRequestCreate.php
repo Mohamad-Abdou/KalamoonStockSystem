@@ -121,6 +121,6 @@ class AnnualRequestCreate extends Component
 
     public function render()
     {
-        return view('annual-request.create-livewire');
+        return view('annual-request.create');
     }
 }
