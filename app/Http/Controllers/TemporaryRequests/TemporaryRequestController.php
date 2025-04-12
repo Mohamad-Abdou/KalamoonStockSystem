@@ -7,5 +7,8 @@ use Illuminate\Http\Request;
 
 class TemporaryRequestController extends RoutingController
 {
-    //
+    public function index()
+    {
+        return view('temporary-requests.index');
+    }
 }
