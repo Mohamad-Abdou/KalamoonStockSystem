@@ -14,6 +14,8 @@ return [
         'password_confirmation' => 'تأكيد كلمة المرور',
         'editingUser.name' => 'اسم المستخدم',
         'editingUser.office_number' => 'رقم الهاتف الداخلي',
+        'editingUser.password' => 'كلمة المرور',
+        'editingUser.password_confirmation' => 'تأكيد كلمة المرور',
     ],
     'accepted'             => 'يجب قبول :attribute.',
     'accepted_if'          => 'يجب قبول :attribute في حالة :other يساوي :value.',
