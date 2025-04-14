@@ -19,7 +19,7 @@
                     نوع المستخدم
                 </x-table.table-header-element>
                 <x-table.table-header-element class="w-1">
-                    الحالة
+                    التوثيق عبر LDAP
                 </x-table.table-header-element>
                 <x-table.table-header-element class="w-1">
                     عمليات
@@ -42,7 +42,8 @@
                         {{ $user->user_type_text }}
                     </x-table.data>
                     <x-table.data class="w-fit">
-                        {{ $user->active ? 'مفعل' : 'غير مفعل' }}
+                        <input type="checkbox" class="toggle-checkbox text-primary border-gray-300 rounded"
+                            wire:click="toggleState({{ $user->id }})" @checked($user->LDAP)>
                     </x-table.data>
                     <x-table.data class="w-fit">
                         <div class="flex gap-2 justify-center">
@@ -80,7 +81,8 @@
                     <p>مستخدم</p>
                 </x-table.data>
                 <x-table.data>
-                    <p>فعال</p>
+                    <input wire:model="newUser.LDAP" type="checkbox"
+                        class="toggle-checkbox text-primary border-gray-300 rounded">
                 </x-table.data>
                 <x-table.data>
                     <button wire:click="saveNewUser" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
@@ -115,7 +117,25 @@
                         <span class="text-red-500 text-sm">{{ $message }}</span>
                     @enderror
                 </div>
+                @if (!$editingUser['LDAP'])
+                    <div class="mb-4">
+                        <label class="block mb-2">كلمة المرور الجديدة</label>
+                        <input wire:model="editingUser.password" type="password"
+                            class="border px-4 py-2 rounded w-full">
+                        @error('editingUser.password')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
 
+                    <div class="mb-4">
+                        <label class="block mb-2">تأكيد كلمة المرور</label>
+                        <input wire:model="editingUser.password_confirmation" type="password"
+                            class="border px-4 py-2 rounded w-full">
+                        @error('editingUser.password_confirmation')
+                            <span class="text-red-500 text-sm">{{ $message }}</span>
+                        @enderror
+                    </div>
+                @endif
                 <div class="flex justify-end gap-2">
                     <button wire:click="updateUser" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                         حفظ

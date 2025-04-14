@@ -13,7 +13,7 @@ class UsersList extends Component
 
     public $usersTypes = [
         1 => 'أمين المستودع',
-        2 => 'أمين الجامعة',
+        2 => 'مسؤول',
         3 => 'المدير المالي',
         4 => 'مستخدم',
     ];
@@ -39,7 +39,8 @@ class UsersList extends Component
     public $newUser = [
         'name' => '',
         'role' => '',
-        'office_number' => ''
+        'office_number' => '',
+        'LDAP' => true
     ];
 
     public $isEditModalOpen = false;
@@ -47,7 +48,10 @@ class UsersList extends Component
     public $editingUser = [
         'id' => '',
         'name' => '',
-        'office_number' => ''
+        'office_number' => '',
+        'LDAP' => false,
+        'password' => '',
+        'password_confirmation' => ''
     ];
 
     protected $editRules = [
@@ -71,24 +75,62 @@ class UsersList extends Component
         $this->editingUser = [
             'id' => $user->id,
             'name' => $user->name,
-            'office_number' => $user->office_number
+            'office_number' => $user->office_number,
+            'LDAP' => $user->LDAP,
+            'password' => '',
+            'password_confirmation' => ''
         ];
         $this->isEditModalOpen = true;
     }
 
+    public function toggleState($id)
+    {
+        $this->authorize('update', User::class);
+        $user = User::find($id);
+        if ($user) {
+            $user->LDAP = !$user->LDAP;
+            $user->save();
+        }
+    }
+
+    protected function getEditRules()
+    {
+        $rules = [
+            'editingUser.name' => 'required|min:3',
+            'editingUser.office_number' => 'required|numeric'
+        ];
+
+        $userId = $this->editingUser['id'];
+        $rules['editingUser.name'] .= "|unique:users,name,{$userId}";
+
+        if (!$this->editingUser['LDAP']) {
+            $rules['editingUser.password'] = 'nullable|min:8|confirmed';
+        }
+
+        return $rules;
+    }
     public function updateUser()
     {
         $this->authorize('update', User::class);
-        $this->validate($this->editRules);
+        $this->validate($this->getEditRules());
+
         $user = User::find($this->editingUser['id']);
-        $user->update([
+
+        $userData = [
             'name' => $this->editingUser['name'],
             'email' => $this->editingUser['name'] . '@uok.edu.sy',
             'office_number' => $this->editingUser['office_number']
-        ]);
+        ];
+
+        if (!$user->LDAP && !empty($this->editingUser['password'])) {
+            $userData['password'] = bcrypt($this->editingUser['password']);
+        }
+
+        $user->update($userData);
+
         $this->isEditModalOpen = false;
         $this->reset('editingUser');
-        $this->dispatch('showMessage', 'عملية ناجحة','تم تعديل المستخدم بنجاح');
+        $this->dispatch('showMessage', 'عملية ناجحة', 'تم تعديل المستخدم بنجاح');
     }
 
     public function closeEditModal()
@@ -107,7 +149,8 @@ class UsersList extends Component
             'password' => env('DEFAULT_PASSWORD'),
             'role' => $this->newUser['role'],
             'office_number' => $this->newUser['office_number'],
-            'type' => 4 
+            'LDAP' => $this->newUser['LDAP'],
+            'type' => 4
         ]);
         $this->reset();
     }
