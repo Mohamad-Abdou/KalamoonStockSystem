@@ -49,8 +49,8 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
-        // مدير النظام تحقق محلي فقط
-        if ($user->type === '0') {
+        // التحقق من اتجاه التوثيق
+        if (!$user->LDAP) {
             $request->authenticate();
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard'));

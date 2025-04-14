@@ -67,7 +67,7 @@ class User extends Authenticatable
     public static $usersTypes = [
         0 => 'مدير النظام',
         1 => 'أمين المستودع',
-        2 => 'أمين الجامعة',
+        2 => 'مسؤول',
         3 => 'المدير المالي',
         4 => 'مستخدم',
     ];
