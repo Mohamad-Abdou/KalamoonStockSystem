@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\AnnualRequest;
 
 use App\Models\Stock;
 use Livewire\Component;
@@ -89,6 +89,6 @@ class AnnualRequestFlowReview extends Component
         if ($this->previous_annual_request) {
             $this->linkPrevious();
         }
-        return view('livewire.AnnualRequest.annual-request-flow-review');
+        return view('livewire.annual-request.annual-request-flow-review');
     }
 }
