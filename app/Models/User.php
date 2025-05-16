@@ -111,6 +111,11 @@ class User extends Authenticatable
         return $this->hasMany(PeriodicRequest::class)->orderBy('created_at', 'desc');
     }
 
+    public function temporaryRequests(): HasMany
+    {
+        return $this->hasMany(TemporaryRequest::class)->with('item')->where('created_at', '>=', AnnualRequest::getLastYearReset())->orderBy('created_at', 'desc');
+    }
+
     public function items()
     {
         return Item::whereIn('item_group_id', $this->itemGroups->pluck('id'))->where('active', 1)->get();

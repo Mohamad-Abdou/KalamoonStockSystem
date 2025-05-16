@@ -4,6 +4,7 @@ namespace App\Livewire\PeriodicRequestFlow;
 
 use App\Models\PeriodicRequest;
 use App\Models\Stock;
+use App\Models\TemporaryRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
@@ -11,6 +12,8 @@ use Livewire\Component;
 class FlowList extends Component
 {
     public $RequestsList;
+    public $TemporaryRequestsList;
+
     public $showDetailsModal;
     public $showRejectionModal;
     public $rejcetedRequestId;
@@ -70,13 +73,28 @@ class FlowList extends Component
         $request->rejection_reason = $this->rejection_reason;
         $request->save();
         $request->rejectRequest();
-        $this->closeReqjectionMoadl();
+        $this->closeRejectionMoadl();
     }
 
     public function acceptRequest($id)
     {
         $request = PeriodicRequest::find($id);
         $request->forwardRequest();
+    }
+
+    public function showTemporaryRequestDetails($id)
+    {
+        $request = TemporaryRequest::where('id', $id)->with(['user', 'item'])->first();
+        $user = User::find($request->user_id);
+        $this->selectedItemDetails['requestQuantity'] = $request->quantity;
+        $this->selectedItem = $request->item;
+        $this->selectedItem = Stock::addStockToItem($this->selectedItem);
+        $this->selectedItemDetails['stock'] = $this->selectedItem->inStockAvalible;
+        $annual_request = $user->getActiveRequest();
+        $annual_request = Stock::addUserYearConsumed($annual_request);
+        $this->selectedItemDetails['userConsumed'] = $annual_request->items->firstWhere('id', $this->selectedItem->id)->consumed;
+        $this->selectedItemDetails['userRequested'] = $annual_request->items->firstWhere('id', $this->selectedItem->id)->pivot->quantity;
+        $this->showDetailsModal = true;
     }
 
     public function showDetails($id)
@@ -104,6 +122,7 @@ class FlowList extends Component
     {
         $user = Auth::user();
         $this->RequestsList = PeriodicRequest::with(['item', 'user'])->where('state', $user->id)->orderBy('created_at')->get();
+        $this->TemporaryRequestsList = TemporaryRequest::with(['item', 'user'])->where('state', 1)->orderBy('created_at')->get();
         return view('livewire.periodic-request-flow.flow-list');
     }
 }

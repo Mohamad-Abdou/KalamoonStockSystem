@@ -13,7 +13,7 @@ class TemporaryRequestPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->$user->getIsPartOfTheAnnualFlowAttribute();
+        return $user->getIsPartOfTheAnnualFlowAttribute();
     }
 
     /**
@@ -21,7 +21,7 @@ class TemporaryRequestPolicy
      */
     public function view(User $user, TemporaryRequest $temporaryRequest): bool
     {
-        //
+        return false;
     }
 
     /**
@@ -29,38 +29,6 @@ class TemporaryRequestPolicy
      */
     public function create(User $user): bool
     {
-        //
-    }
-
-    /**
-     * Determine whether the user can update the model.
-     */
-    public function update(User $user, TemporaryRequest $temporaryRequest): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can delete the model.
-     */
-    public function delete(User $user, TemporaryRequest $temporaryRequest): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, TemporaryRequest $temporaryRequest): bool
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, TemporaryRequest $temporaryRequest): bool
-    {
-        //
+        return !$user->type == 0;
     }
 }
