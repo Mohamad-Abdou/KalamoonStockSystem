@@ -103,7 +103,7 @@
                                 </x-table.data>
                             @else
                                 <x-table.data>
-                                    {{ $request->rejection_reason }} سبب الرفض:
+                                    {{ $request->rejection_reason }}
                                 </x-table.data>
                             @endif
                             <x-table.data class="w-1 text-nowrap">
