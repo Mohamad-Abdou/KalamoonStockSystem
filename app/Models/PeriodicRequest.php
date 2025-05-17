@@ -64,6 +64,11 @@ class PeriodicRequest extends Model
         else return 'قيد الدراسة';
     }
 
+    public function getSemesterTextAttribute()
+    {
+        return $this->semester == 1 ? 'الفصل الأول' : ($this->semester == 2 ? 'الفصل الثاني' : 'الفصل الثالث');
+    }
+
     //Relations
     public function user()
     {
