@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Management;
 
+use App\Models\BufferStock;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use App\Models\Item;
 use App\Models\ItemGroup;
@@ -48,6 +49,10 @@ class ItemController extends RoutingController
             'description' => $validatedData['description'],
             'unit' => $validatedData['unit'],
             'item_group_id' => $validatedData['item_group_id'],
+        ]);
+        BufferStock::create([
+            'item_id' => Item::latest()->first()->id,
+            'quantity' => 0,
         ]);
 
         return redirect()->back();

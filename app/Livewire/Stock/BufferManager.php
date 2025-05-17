@@ -20,7 +20,6 @@ class BufferManager extends Component
     public function mount()
     {
         $this->list = BufferStock::with('item.item_group')->get();
-        
         // Initialize quantities array with current values
         foreach ($this->list as $item) {
             $this->quantities[$item->id] = $item->quantity;

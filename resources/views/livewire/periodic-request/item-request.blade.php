@@ -1,12 +1,17 @@
 <div class="flex gap-4 w-full flex-col">
-    <div class="flex items-center gap-4 border-b-2 border-gray-400 pb-4 justify-center">
-        <x-text-input wire:model.live="search" type="search" placeholder="البحث عن مادة" />
-        <div class="flex flex-col justify-start">
+    <div class="flex items-center gap-4 border-b-2 border-gray-400 pb-4 justify-between">
+        <div class="flex flex-row gap-4 justify-start">
+            <x-text-input wire:model.live="search" type="search" placeholder="البحث عن مادة" />
             <div class="flex flex-row gap-2 justify-center items-center">
                 <input name="canRequest" type="checkbox" class="toggle-checkbox text-primary border-gray-300 rounded"
                     wire:model.live.="canRequest" @checked($canRequest) />
                 <label for="canRequest">يمكن طلبها</label>
             </div>
+        </div>
+        <div>
+            <x-primary-button wire:click="goToTempRequest" class="bg-grey-400 text-white px-4 py-2 rounded">
+                طلب غير مخطط
+            </x-primary-button>
         </div>
     </div>
     <div class="flex w-full flex-wrap">

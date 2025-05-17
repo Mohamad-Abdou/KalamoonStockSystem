@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\BufferStock;
 use App\Models\Item;
 use App\Models\ItemGroup;
 use Illuminate\Database\Seeder;
@@ -26,6 +27,10 @@ class ItemSeeder extends Seeder
                 'item_group_id' => $faker->randomElement($groupIds),
                 'unit' => $faker->randomElement($units),
                 'active' => true,
+            ]);
+            BufferStock::create([
+                'item_id' => Item::latest()->first()->id,
+                'quantity' => 0,
             ]);
         }
     }

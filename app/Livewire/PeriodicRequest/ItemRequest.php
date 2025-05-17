@@ -83,6 +83,11 @@ class ItemRequest extends Component
         $this->dispatch('showMessage', "تم إرسال الطلب", 'عملية ناجحة');
     }
 
+    public function goToTempRequest()
+    {
+        $this->redirect(route('temporary_requests.create'));
+    }
+
     public function render(User $user)
     {
         $user = Auth::user();
