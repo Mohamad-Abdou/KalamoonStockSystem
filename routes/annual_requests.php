@@ -20,5 +20,5 @@ Route::prefix('reports')->group(function () {
     Route::get('/annual-request', [RepoertsController::class, 'annualRequest'])->name('reports.annual-request')->middleware(['auth']);
 });
 Route::get('/reset-year', [AnnualRequestController::class, 'resetYear'])->name('annual-request.reset')->middleware(['auth']);
-Route::get('/balance-manager', [AnnualRequestController::class, 'manageBalances'])->name('annual-request.balanes')->middleware(['auth']);
+Route::get('/balance-manager/{request?}', [AnnualRequestController::class, 'manageBalances'])->name('annual-request.balanes')->middleware(['auth']);
 

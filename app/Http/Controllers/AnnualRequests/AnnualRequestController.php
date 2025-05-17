@@ -95,7 +95,7 @@ class AnnualRequestController extends RoutingController
         return view('annual-request.archive');
     }
 
-    public function manageBalances ()
+    public function manageBalances()
     {
         $this->authorize('balancesManager', AnnualRequest::class);
         $activeYear = AnnualRequest::getYearState();
