@@ -61,17 +61,17 @@
                             <x-table.data>{{ $details['description'] }}</x-table.data>
                             <x-table.data>
                                 <x-text-input class="w-full" type="number"
-                                    wire:model.live.debounce="selectedItems.{{ $id }}.first_semester_quantity"
+                                    wire:model.live="selectedItems.{{ $id }}.first_semester_quantity"
                                     min="0" step="1" />
                             </x-table.data>
                             <x-table.data>
                                 <x-text-input class="w-full" type="number"
-                                    wire:model.live.debounce="selectedItems.{{ $id }}.second_semester_quantity"
+                                    wire:model.live="selectedItems.{{ $id }}.second_semester_quantity"
                                     min="0" step="1" />
                             </x-table.data>
                             <x-table.data>
                                 <x-text-input class="w-full" type="number"
-                                    wire:model.live.debounce="selectedItems.{{ $id }}.third_semester_quantity"
+                                    wire:model.live="selectedItems.{{ $id }}.third_semester_quantity"
                                     min="0" step="1" />
                             </x-table.data>
                             <x-table.data class="text-center">
