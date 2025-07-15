@@ -10,8 +10,8 @@
     <section class="bg-white shadow-sm sm:rounded-lg basis-3/4">
         <div class="p-6 text-gray-900 flex flex-col space-y-5">
             <div class="relative">
-                <x-text-input wire:model.live="search" type="text" class="w-full" placeholder="البحث عن مادة..." />
-
+                <x-text-input wire:model.live="search" wire:focus="$set('showDropdown', true)" type="text" class="w-full" placeholder="البحث عن مادة..." />
+                
                 @if ($showDropdown)
                     <div class="absolute z-10 w-full mt-1 bg-white rounded-md shadow-lg">
                         <ul class="py-1 max-h-60 overflow-y-auto">

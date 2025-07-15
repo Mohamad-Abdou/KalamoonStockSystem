@@ -14,6 +14,7 @@ class AnnualRequestEdit extends Component
     public $annualRequest;
     public $itemsToRequest;
     public $selectedItems = [];
+    public $filterdItems;
     public $search = '';
     public $showDropdown = false;
 
@@ -34,17 +35,20 @@ class AnnualRequestEdit extends Component
         }
         $user = Auth::user();
         $this->itemsToRequest = $user->items();
+        $this->filterdItems = $this->itemsToRequest;
+
+        
     }
 
     public function updatedSearch()
     {
-        $this->showDropdown = strlen($this->search) > 0;
+        $this->showDropdown = true;
     }
 
     public function getFilteredItemsProperty()
     {
         if (!$this->search) {
-            return collect();
+            return $this->itemsToRequest;
         }
 
         return $this->itemsToRequest
