@@ -16,52 +16,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // المستخدمين الرئيسيين
-        User::factory()->createMany([
-            [
-                'name' => 'admin.uok',
-                'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'مدير النظام',
-                'office_number' => '1234',
-                'type' => '0'
-            ],
-            [
-                'name' => 'stock.uok',
-                'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'المستودع',
-                'office_number' => '1234',
-                'type' => '1'
-            ],
-            [
-                'name' => 'ameen.uok',
-                'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'أمانة الجامعة',
-                'office_number' => '1234',
-                'type' => '2'
-            ],
-            [
-                'name' => 'presViesAdmin.uok',
-                'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'نائب الرئاسة للشؤون الإدارية',
-                'office_number' => '1234',
-                'type' => '2'
-            ],
-            [
-                'name' => 'fin.uok',
-                'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'مديرية المالية',
-                'office_number' => '1234',
-                'type' => '3'
-            ],
-            [
-                'name' => 'it.uok',
-                'password' => env('DEFAULT_PASSWORD'),
-                'role' => 'مديرية النظم',
-                'office_number' => '1234',
-                'type' => '4'
-            ],
-        ]);
-
         ItemGroup::factory()->createMany([
             ['name' => 'طبي'],
             ['name' => 'قرطاسية'],
