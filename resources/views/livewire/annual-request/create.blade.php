@@ -52,13 +52,13 @@
                         <x-table.data>{{ $details['description'] }}</x-table.data>
 
                         <x-table.data >
-                            <x-text-input type="number" wire:model.live="selectedItems.{{ $id }}.first_semester_quantity" class="w-full"/>
+                            <x-text-input type="number" wire:model.blur="selectedItems.{{ $id }}.first_semester_quantity" class="w-full"/>
                         </x-table.data>
                         <x-table.data >
-                            <x-text-input type="number" wire:model.live="selectedItems.{{ $id }}.second_semester_quantity" class="w-full"/>
+                            <x-text-input type="number" wire:model.blur="selectedItems.{{ $id }}.second_semester_quantity" class="w-full"/>
                         </x-table.data>
                         <x-table.data >
-                            <x-text-input type="number" wire:model.live="selectedItems.{{ $id }}.third_semester_quantity" class="w-full"/>
+                            <x-text-input type="number" wire:model.blur="selectedItems.{{ $id }}.third_semester_quantity" class="w-full"/>
                         </x-table.data>
                         <x-table.data >
                             {{ $details['total_quantity'] }}
