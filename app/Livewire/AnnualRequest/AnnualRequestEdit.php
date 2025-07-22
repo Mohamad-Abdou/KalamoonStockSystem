@@ -118,9 +118,9 @@ class AnnualRequestEdit extends Component
                 ]);
             } else {
                 $this->annualRequest->items()->attach($itemId, [
-                    'first_semester_quantity' => $details['first_semester_quantity']?? 0,
-                    'second_semester_quantity' => $details['second_semester_quantity']?? 0,
-                    'third_semester_quantity' => $details['third_semester_quantity']?? 0,
+                    'first_semester_quantity' => (int)$details['first_semester_quantity']?? 0,
+                    'second_semester_quantity' => (int)$details['second_semester_quantity']?? 0,
+                    'third_semester_quantity' => (int)$details['third_semester_quantity']?? 0,
                     'quantity' => $details['total_quantity']
                 ]);
             }
