@@ -107,10 +107,10 @@ class AnnualRequestCreate extends Component
             $request->items()->attach(
                 $itemId,
                 [
-                    'quantity' => $details['first_semester_quantity'] + $details['second_semester_quantity'] + $details['third_semester_quantity'],
-                    'first_semester_quantity' => $details['first_semester_quantity'],
-                    'second_semester_quantity' => $details['second_semester_quantity'],
-                    'third_semester_quantity' => $details['third_semester_quantity'],
+                    'quantity' => $details['first_semester_quantity']?? 0 + $details['second_semester_quantity']?? 0 + $details['third_semester_quantity']?? 0,
+                    'first_semester_quantity' => (int)$details['first_semester_quantity'],
+                    'second_semester_quantity' => (int)$details['second_semester_quantity'],
+                    'third_semester_quantity' => (int)$details['third_semester_quantity'],
                 ]
             );;
         }
