@@ -80,7 +80,7 @@
                         {{ $item->name }} ({{ $item->unit }})
                     </x-table.data>
                     <x-table.data>
-                        {{ $item->description }}
+                        {{ $item->description }} \\ {{ $item->group }}
                     </x-table.data>
                     <x-table.data>
                         {{ $item->mainInStock }}
@@ -119,6 +119,11 @@
             <x-primary-button wire:click="exportToExcel" target="_blank">
                 تصدير ملف excel
             </x-primary-button>
-        </div>
+            @if ($items->count() >= $perPage)
+                <x-primary-button wire:click="loadMore">
+                    تحميل المزيد
+                </x-primary-button>
+            @endif
+        </div>  
     </div>
 </div>
