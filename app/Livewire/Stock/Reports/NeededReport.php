@@ -15,6 +15,7 @@ class NeededReport extends Component
     public $filterOption = 'all';
     public $yearState;
     public $semester;
+    public $perPage = 50;
 
     public function mount()
     {
@@ -25,17 +26,22 @@ class NeededReport extends Component
 
     public function exportToExcel()
     {
+        $lastReset = $this->lastReset;
+        $currentSemester = $this->semester;
+
         $toExcel = Item::query()
             ->when($this->searchByNameAndDetails, function ($query) {
                 return $query->where('name', 'like', '%' . $this->searchByNameAndDetails . '%')
                     ->orWhere('description', 'like', '%' . $this->searchByNameAndDetails . '%');
             })
+            ->with('Item_group')
             ->get()
             ->map(function ($item) {
-                $item = Stock::addStockToItem($item);
-                $item->needed = Stock::NeededStock($item);
-                $item->totalOut = Stock::totalOut($item);
-                $item->mainInStock = Stock::mainInStock($item);
+                $item->group = $item->Item_group->name;
+                $item = Stock::addStockToItem($item, $this->lastReset);
+                $item->needed = Stock::NeededStock($item, $this->semester, $this->lastReset);
+                $item->totalOut = Stock::totalOut($item, $this->lastReset);
+                $item->mainInStock = Stock::mainInStock($item, $this->semester, $this->lastReset);
                 $item->extras = $item->mainInStock - $item->needed < 0 ? 0 : $item->mainInStock - $item->needed;
                 $item->remainQuantity = $item->needed - $item->mainInStock + $item->extras < 0 ? 0 : $item->needed - $item->mainInStock + $item->extras;
                 return $item;
@@ -73,25 +79,34 @@ class NeededReport extends Component
         });
     }
 
+    public function loadMore()
+    {
+        $this->perPage += 50;
+    }
+
     public function render()
     {
+        $lastReset = $this->lastReset;
+        $currentSemester = $this->semester;
+
         $items = Item::query()
             ->when($this->searchByNameAndDetails, function ($query) {
                 return $query->where('name', 'like', '%' . $this->searchByNameAndDetails . '%')
                     ->orWhere('description', 'like', '%' . $this->searchByNameAndDetails . '%');
             })
-            ->get()
-            ->map(function ($item) {
-                $item = Stock::addStockToItem($item);
-                $item->needed = Stock::NeededStock($item);
-                $item->firstSemesterNeeded = Stock::getFirstSemesterNeeded($item);
-                $item->secondSemesterNeeded = Stock::getSecondSemesterNeeded($item);
-                $item->thirdSemesterNeeded = Stock::getThirdSemesterNeeded($item);
-                $item->totalOut = Stock::totalOut($item);
-                $item->mainInStock = Stock::mainInStock($item);
+            ->with('Item_group')
+            ->paginate($this->perPage)
+            ->map(function ($item) use ($lastReset, $currentSemester) {
+                $item->group = $item->Item_group->name;
+                $item = Stock::addStockToItem($item, $lastReset);
+                $item->needed = Stock::NeededStock($item, $currentSemester, $lastReset);
+                $item->firstSemesterNeeded = Stock::getFirstSemesterNeeded($item, $lastReset);
+                $item->secondSemesterNeeded = Stock::getSecondSemesterNeeded($item, $lastReset);
+                $item->thirdSemesterNeeded = Stock::getThirdSemesterNeeded($item, $lastReset);
+                $item->totalOut = Stock::totalOut($item, $lastReset);
+                $item->mainInStock = Stock::mainInStock($item, $currentSemester, $lastReset);
                 $item->extras = $item->mainInStock - $item->needed < 0 ? 0 : $item->mainInStock - $item->needed;
                 $item->remainQuantity = $item->needed - $item->mainInStock + $item->extras < 0 ? 0 : $item->needed - $item->mainInStock + $item->extras;
-                
                 return $item;
             })
             ->when($this->filterOption === 'stock', function ($collection) {
