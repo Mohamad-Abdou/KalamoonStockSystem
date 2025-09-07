@@ -247,9 +247,9 @@ class Stock extends Model
         });
     }
 
-    public static function addStockToItem(Item $item): Item
-    {
-        $lastReset = AnnualRequest::getLastYearReset();
+    public static function addStockToItem(Item $item, $lastReset = null): Item
+{
+    $lastReset = $lastReset ?? AnnualRequest::getLastYearReset();
         $stock = Stock::where('user_id', 2)->where('created_at', '>=', $lastReset)->where('item_id', $item->id)->get();
         $totalIn = $stock->sum('in_quantity');
         $totalOut = $stock->sum('out_quantity');
@@ -257,30 +257,30 @@ class Stock extends Model
         return $item;
     }
 
-    public static function totalOut(Item $item)
+    public static function totalOut(Item $item, $lastReset = null)
     {
-        $lastReset = AnnualRequest::getLastYearReset();
+        $lastReset = $lastReset ?? AnnualRequest::getLastYearReset();
         return (int)Stock::where('created_at', '>=', $lastReset)->where('item_id', $item->id)->where('user_id', 2)->sum('out_quantity');
     }
 
-    public static function totalOutFirstSemester(Item $item)
+    public static function totalOutFirstSemester(Item $item, $lastReset = null)
     {
-        return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('semester', 1)->where('item_id', $item->id)->sum('out_quantity');
+        return Stock::where('created_at', '>=', $lastReset ?? AnnualRequest::getLastYearReset())->where('user_id', 2)->where('semester', 1)->where('item_id', $item->id)->sum('out_quantity');
     }
-    public static function totalOutSecondSemester(Item $item)
+    public static function totalOutSecondSemester(Item $item, $lastReset = null)
     {
-        return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->where('semester', 2)->sum('out_quantity');
+        return Stock::where('created_at', '>=', $lastReset ?? AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->where('semester', 2)->sum('out_quantity');
     }
-    public static function mainInStock(Item $item): int
+    public static function mainInStock(Item $item, $currentSemester = null,$lastReset = null): int
     {
-        $currentSemester = AnnualRequest::getCurrentSemester();
+        $currentSemester = $currentSemester ?? AnnualRequest::getCurrentSemester();
         $betweenSemesters = 0;
         if ($currentSemester == 2) {
-            $betweenSemesters = Stock::totalOutFirstSemester($item);
+            $betweenSemesters = Stock::totalOutFirstSemester($item, $lastReset);
         } elseif ($currentSemester == 3) {
-            $betweenSemesters = Stock::totalOutFirstSemester($item) + Stock::totalOutSecondSemester($item);
+            $betweenSemesters = Stock::totalOutFirstSemester($item, $lastReset) + Stock::totalOutSecondSemester($item, $lastReset);
         }
-        return Stock::where('created_at', '>=', AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->sum('in_quantity') - $betweenSemesters;
+        return Stock::where('created_at', '>=', $lastReset?? AnnualRequest::getLastYearReset())->where('user_id', 2)->where('item_id', $item->id)->sum('in_quantity') - $betweenSemesters;
     }
 
     public static function extras(Item $item)
@@ -289,9 +289,10 @@ class Stock extends Model
         return Stock::where('created_at', '>=', $lastReset)->whereNot('user_id', 2)->where('item_id', $item->id)->where('details', 'إضافي حر')->sum('in_quantity');
     }
 
-    public static function NeededStock(Item $item): int
-    {
-        $lastReset = AnnualRequest::getLastYearReset();
+    public static function NeededStock(Item $item, $currentSemester = null, $lastReset = null): int
+{
+    $currentSemester = $currentSemester ?? AnnualRequest::getCurrentSemester();
+    $lastReset = $lastReset ?? AnnualRequest::getLastYearReset();
         $currentSemester = AnnualRequest::getCurrentSemester();
         $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
             $query->where('state', 2);
@@ -340,9 +341,9 @@ class Stock extends Model
         return $totalRequested;
     }
 
-    public static function getFirstSemesterNeeded(Item $item)
-    {
-        $lastReset = AnnualRequest::getLastYearReset();
+    public static function getFirstSemesterNeeded(Item $item, $lastReset = null)
+{
+    $lastReset = $lastReset ?? AnnualRequest::getLastYearReset();
         $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
             $query->where('state', 2);
         })
@@ -352,9 +353,9 @@ class Stock extends Model
         return $totalRequested;
     }
 
-    public static function getSecondSemesterNeeded(Item $item)
-    {
-        $lastReset = AnnualRequest::getLastYearReset();
+    public static function getSecondSemesterNeeded(Item $item, $lastReset = null)
+{
+    $lastReset = $lastReset ?? AnnualRequest::getLastYearReset();
         $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
             $query->where('state', 2);
         })
@@ -364,9 +365,9 @@ class Stock extends Model
         return $totalRequested;
     }
 
-    public static function getThirdSemesterNeeded(Item $item)
-    {
-        $lastReset = AnnualRequest::getLastYearReset();
+    public static function getThirdSemesterNeeded(Item $item, $lastReset = null)
+{
+    $lastReset = $lastReset ?? AnnualRequest::getLastYearReset();
         $totalRequested = AnnualRequestItem::whereHas('annualRequest', function ($query) {
             $query->where('state', 2);
         })
