@@ -31,7 +31,7 @@
     <x-table.table>
         <thead class="bg-gray-100 text-gray-700 text-center">
             <tr>
-                <th colspan="11" class="px-4 py-2 border-2 border-gray-300 text-center bg-gray-100">
+                <th colspan="12" class="px-4 py-2 border-2 border-gray-300 text-center bg-gray-100">
                     <div class="text-black text-center font-extrabold flex flex-col justify-center align-middle">
                         <label for="date"
                             class="block text-xl mb-2 font-extrabold w-full border-b-2 border-black">تاريخ بداية
@@ -43,6 +43,9 @@
             <tr class=" text-center">
                 <x-table.table-header-element rowspan='2'>
                     اسم المادة (الوحدة)
+                </x-table.table-header-element>
+                <x-table.table-header-element rowspan='2'>
+                    المجموعة
                 </x-table.table-header-element>
                 <x-table.table-header-element class="w-1/6 text-center" rowspan='2'>
                     وصف المادة
@@ -80,7 +83,10 @@
                         {{ $item->name }} ({{ $item->unit }})
                     </x-table.data>
                     <x-table.data>
-                        {{ $item->description }} \\ {{ $item->group }}
+                        {{ $item->group }}
+                    </x-table.data>
+                    <x-table.data>
+                        {{ $item->description }}
                     </x-table.data>
                     <x-table.data>
                         {{ $item->mainInStock }}
