@@ -249,7 +249,7 @@
                             </div>
                             <div class="text-center p-2 bg-gray-50 rounded">
                                 <h4 class="font-bold">الكمية الاحتياطية</h4>
-                                {{ $selectedItem->quantity ?? 0 }}
+                                {{ $selectedItem->BufferQuantity ?? 0 }}
                             </div>
                         </div>
                     </div>

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Stock extends Model
 {
@@ -250,6 +251,9 @@ class Stock extends Model
     public static function addStockToItem(Item $item, $lastReset = null): Item
 {
     $lastReset = $lastReset ?? AnnualRequest::getLastYearReset();
+    Log::info($item);
+    Log::info($lastReset);
+
         $stock = Stock::where('user_id', 2)->where('created_at', '>=', $lastReset)->where('item_id', $item->id)->get();
         $totalIn = $stock->sum('in_quantity');
         $totalOut = $stock->sum('out_quantity');

@@ -1,5 +1,16 @@
 <section class="bg-white shadow-sm sm:rounded-lg w-full">
     <div class="p-6 text-gray-900"> 
+        <div class="flex items-center gap-4 w-1/4">
+            <label class="inline-flex items-center">
+                <input type="radio" wire:model.live="filterOption" value="0" class="form-radio text-primary">
+                <span class="mr-2">الطلبات الدورية</span>
+            </label>
+
+            <label class="inline-flex items-center">
+                <input type="radio" wire:model.live="filterOption" value="1" class="form-radio text-primary">
+                <span class="mr-2">الطلبات الغير مخطط لها</span>
+            </label>
+        </div>
         <x-table.table>
             <thead class="bg-gray-100  font-fit text-gray-700 text-center">
                 <tr>
@@ -11,7 +22,7 @@
                             الهاتف الداخلي للجهة
                         </p>
                     </x-table.table-header-element>
-                    <x-table.table-header-element>
+                    <x-table.table-header-element>  
                         اسم المادة (وحدة)
                     </x-table.table-header-element>
                     <x-table.table-header-element>
@@ -26,7 +37,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-                @foreach ($periodicRequests as $request)
+                @foreach ($listToShow as $request)
                     <tr class="hover:bg-gray-50 transition duration-200 text-center">
                         <x-table.data>
                             {{ $request->user->role }}
@@ -59,7 +70,7 @@
             </tbody>
         </x-table.table>
         <div class="mt-4">
-            {{ $periodicRequests->links() }}
+            {{ $listToShow->links() }}
         </div>
     </div>
 </section>

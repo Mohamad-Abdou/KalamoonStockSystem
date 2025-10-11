@@ -16,7 +16,8 @@ class TemporaryRequest extends Model
 
     public static $stateText = [
         1 => 'قيد المراجعة',
-        2 => 'منفذ',
+        2 => 'لدى المستودع',
+        -2 => 'منفذ',
         -1 => 'مرفوض',
     ];
     
