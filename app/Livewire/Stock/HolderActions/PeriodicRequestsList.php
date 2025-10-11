@@ -5,6 +5,7 @@ namespace App\Livewire\Stock\HolderActions;
 use App\Models\PeriodicRequest;
 use App\Models\Stock;
 use App\Models\TemporaryRequest;
+use App\Models\User;
 use Livewire\Component;
 use Livewire\WithPagination;
 
@@ -13,6 +14,30 @@ class PeriodicRequestsList extends Component
     use WithPagination;
 
     public $filterOption = 0;
+    public $users;
+    public $selectedUser = null;
+    public $WaitingRequests = true;
+    
+    public function mount()
+    {
+        $this->users = User::where('type', '>=', 2)->get();
+    }
+
+    public function toggleWaitingRequests()
+    {
+        $this->WaitingRequests = !$this->WaitingRequests;
+    }
+
+    public function filterByUser($userId)
+    {
+        if ($userId == 0) {
+            $this->selectedUser = null;
+            $this->resetPage();
+            return;
+        }
+        $this->selectedUser = $userId;
+        $this->resetPage();
+    }
 
     public function applied($id)
     {
@@ -33,14 +58,24 @@ class PeriodicRequestsList extends Component
     {
         $preiodicRequests = PeriodicRequest::with(['item', 'user'])
         ->whereIn('state', [-1, 2])
+        ->where('user_id', $this->selectedUser ? $this->selectedUser : '!=', null)
         ->orderByRaw('CASE WHEN state = 2 THEN 0 ELSE 1 END')
         ->orderBy('updated_at', 'desc');
+
+        if ($this->WaitingRequests) {
+            $preiodicRequests = $preiodicRequests->where('state', 2);
+        }
         
         $temporaryRequests = TemporaryRequest::with(['item', 'user'])
         ->whereIn('state', [-2, 2])
+        ->where('user_id', $this->selectedUser ? $this->selectedUser : '!=', null)
         ->orderByRaw('CASE WHEN state = 2 THEN 0 ELSE 1 END')
         ->orderBy('updated_at', 'desc');
         
+        if ($this->WaitingRequests) {
+            $temporaryRequests = $temporaryRequests->where('state', 2);
+        }
+
         if ($this->filterOption == 0) {
             $listToShow = $preiodicRequests->paginate(20);
         } elseif ($this->filterOption == 1) {
