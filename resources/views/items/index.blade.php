@@ -10,7 +10,6 @@
     </section>
     <!-- العمود الأيسر-->
     <div class="basis-1/3" style="position: sticky; top: 1rem; height: fit-content">
-        <!-- قسم لإضافة مجموعة -->
         <x-card header="إضافة مادة جديدة" class="bg-primary">
             <form method="POST" action="{{ route('items.store') }}" class="space-y-4">
                 @csrf

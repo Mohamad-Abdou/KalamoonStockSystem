@@ -118,14 +118,12 @@ class FlowList extends Component
     public function showTemporaryCheckModalButton($id)
     {
         $this->temporarySelectedRequest = TemporaryRequest::with(['user', 'item'])->find($id);
-        
         $this->selectedItem = $this->temporarySelectedRequest->item;
         $this->selectedItem = Stock::addStockToItem($this->selectedItem);
         
         $annual_request = $this->temporarySelectedRequest->user->getActiveRequest();
-        
         $this->selectedItem->BufferQuantity = BufferStock::with('item.item_group')->where('item_id', $this->selectedItem->id)->first()->quantity;
-
+        
         $inStockAvailble = Stock::addStockToItem($this->selectedItem)->inStockAvalible;
         $this->selectedItem->inStockAvailble = $inStockAvailble ?? 0;
         

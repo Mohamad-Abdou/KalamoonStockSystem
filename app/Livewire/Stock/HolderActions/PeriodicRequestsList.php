@@ -45,7 +45,7 @@ class PeriodicRequestsList extends Component
             $request = PeriodicRequest::where('id', $id)->with(['item', 'user'])->first();
             Stock::outStock($request->item, $request->quantity, 'تسليم طلب احتياج دوري ل' . $request->user->role);
             Stock::removeBalance($request->item, $request->quantity, 'طلب احتياج', $request->user);
-            $request->state = -2    ;
+            $request->state = -1    ;
             $request->save();
         } elseif ($this->filterOption == 1) {
             $request = TemporaryRequest::where('id', $id)->with(['item', 'user'])->first();
