@@ -53,7 +53,7 @@ class NeededReport extends Component
                 return $collection->where('needed', '>', 0);
             })
             ->sortByDesc('mainInStock')
-            ->select(['name', 'description', 'unit', 'inStockAvalible', 'needed', 'totalOut', 'mainInStock', 'extras', 'remainQuantity']);
+            ->select(['name', 'description','group', 'unit', 'inStockAvalible', 'needed', 'totalOut', 'mainInStock', 'extras', 'remainQuantity']);
         $reportName = 'تقرير' . '.xlsx';
         if ($this->filterOption === 'stock')
             $reportName = 'جرد المستودع ' . now()  . '.xlsx';
@@ -67,6 +67,7 @@ class NeededReport extends Component
             return [
                 'اسم المادة' => $item['name'],
                 'الوصف' => $item['description'],
+                'المجموعة' => $item['group'],
                 'الوحدة' => $item['unit'],
                 'الكمية الموجودة في المستودع' => $item['inStockAvalible'],
                 'الكمية المطلوبة' => $item['needed'],

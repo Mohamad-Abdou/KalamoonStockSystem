@@ -9,6 +9,7 @@ use App\Models\Stock;
 use App\Models\TemporaryRequest;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 
 class FlowList extends Component
@@ -117,23 +118,21 @@ class FlowList extends Component
     public function showTemporaryCheckModalButton($id)
     {
         $this->temporarySelectedRequest = TemporaryRequest::with(['user', 'item'])->find($id);
-        
         $this->selectedItem = $this->temporarySelectedRequest->item;
         $this->selectedItem = Stock::addStockToItem($this->selectedItem);
         
         $annual_request = $this->temporarySelectedRequest->user->getActiveRequest();
+        $this->selectedItem->BufferQuantity = BufferStock::with('item.item_group')->where('item_id', $this->selectedItem->id)->first()->quantity;
         
-        $this->selectedItem = BufferStock::with('item.item_group')->find($this->selectedItem->id);
-        
-        $inStockAvailble = Stock::addStockToItem($this->selectedItem->item)->inStockAvalible;
+        $inStockAvailble = Stock::addStockToItem($this->selectedItem)->inStockAvalible;
         $this->selectedItem->inStockAvailble = $inStockAvailble ?? 0;
         
-        $this->selectedItem->first_semester_needed = Stock::getFirstSemesterNeeded($this->selectedItem->item);
-        $this->selectedItem->second_semester_needed = Stock::getSecondSemesterNeeded($this->selectedItem->item);
-        $this->selectedItem->third_semester_needed = Stock::getThirdSemesterNeeded($this->selectedItem->item);
+        $this->selectedItem->first_semester_needed = Stock::getFirstSemesterNeeded($this->selectedItem);
+        $this->selectedItem->second_semester_needed = Stock::getSecondSemesterNeeded($this->selectedItem);
+        $this->selectedItem->third_semester_needed = Stock::getThirdSemesterNeeded($this->selectedItem);
         
         $this->currentSemester = AnnualRequest::getCurrentSemester();
-        $this->selectedItemDetails['NeededStockForSemester'] = Stock::SemesterNeededStock($this->selectedItem->item);
+        $this->selectedItemDetails['NeededStockForSemester'] = Stock::SemesterNeededStock($this->selectedItem);
         
         if ($annual_request) {
             $annual_request = Stock::addUserYearConsumed($annual_request);

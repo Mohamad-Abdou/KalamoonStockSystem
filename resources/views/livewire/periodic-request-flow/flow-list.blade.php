@@ -249,7 +249,7 @@
                             </div>
                             <div class="text-center p-2 bg-gray-50 rounded">
                                 <h4 class="font-bold">الكمية الاحتياطية</h4>
-                                {{ $selectedItem->quantity ?? 0 }}
+                                {{ $selectedItem->BufferQuantity ?? 0 }}
                             </div>
                         </div>
                     </div>
@@ -283,11 +283,18 @@
                     </div>
                 </div>
                 <div class="flex justify-between w-full align-middle mt-6">
-                    <div class="flex gap-2">
+                    <div class="flex gap-2 items-center justify-center">
                         <button wire:click="closeModal"
                             class="mt-4 bg-gray-500 text-white px-4 py-2 rounded">إغلاق</button>
-                        <button wire:click="acceptTemporaryRequest"
-                            class="mt-4 bg-green-500 text-white px-4 py-2 rounded">قبول</button>
+                        @if ($temporarySelectedRequest->quantity <= $selectedItem->inStockAvailble)
+                            <button wire:click="acceptTemporaryRequest"
+                                class="mt-4 bg-green-500 text-white px-4 py-2 rounded">قبول</button>
+
+                            @else
+                            <div>
+                                <p class="text-center text-sm">لا يوجد كمية كافية في المستودع للقبول</p>
+                            </div>
+                            @endif
                     </div>
                     <button wire:click="goToBalances"
                         class="mt-4 bg-blue-500 text-white px-4 py-2 rounded">الذهاب إلى الأرصدة</button>
